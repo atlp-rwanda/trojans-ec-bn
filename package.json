@@ -9,7 +9,7 @@
     "down": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
     "undo-seed": "npx sequelize-cli db:seed:undo",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest  --forceExit --collect-coverage && coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "@babel/plugin-transform-runtime": "^7.19.6",
     "babel-plugin-add-module-exports": "^1.0.4",
     "babel-plugin-istanbul": "^6.1.1",
+    "coveralls": "^3.1.1",
     "sequelize-cli": "^6.6.0"
   }
 }

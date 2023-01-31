@@ -11,8 +11,19 @@ const {
   TEST_DATABASE,
   TEST_DATABASE_HOST,
   TEST_DATABASE_PORT,
-
+  TEST_GIT_ACTIONS,
 } = process.env;
+
+const dialectToggle = () => {
+  return TEST_GIT_ACTIONS == 'true'
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {};
+};
 
 
 module.exports = {
@@ -23,6 +34,9 @@ module.exports = {
     host: DATABASE_HOST,
     port: DATABASE_PORT,
     dialect: 'postgres',
+    logging: false,
+    protocol: 'postgres',
+    dialectOptions: dialectToggle(),
   },
   test: {
     username: TEST_DATABASE_USER,

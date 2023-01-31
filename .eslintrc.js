@@ -1,0 +1,27 @@
+module.exports = {
+  root: true,
+  extends: ["airbnb-base", "prettier"],
+  env: {
+    node: true,
+    es6: true,
+    jest: true,
+  },
+  plugins: ["prettier"],
+  rules: {
+    "prettier/prettier": "error",
+    "one-var": 0,
+    "one-var-declaration-per-line": 0,
+    "new-cap": 0,
+    "consistent-return": 0,
+    "no-param-reassign": 1,
+    "comma-dangle": 1,
+    "no-console": 1,
+    "no-unused-vars": 1,
+    "import/no-dynamic-require": 0,
+    "global-require": 0,
+    "import/prefer-default-export": 0,
+    curly: ["error", "multi-line"],
+    "import/no-unresolved": [2, { commonjs: true }],
+    "no-shadow": ["error", { allow: ["req", "res", "err"] }],
+  },
+};

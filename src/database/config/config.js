@@ -45,6 +45,9 @@ module.exports = {
     host: TEST_DATABASE_HOST,
     port: TEST_DATABASE_PORT,
     dialect: 'postgres',
+    logging: false,
+    protocol: 'postgres',
+    dialectOptions: dialectToggle(),
   },
   production: {
     username: DATABASE_USER,
@@ -53,6 +56,9 @@ module.exports = {
     host: DATABASE_HOST,
     port: DATABASE_PORT,
     dialect: 'postgres',
+    logging: false,
+    protocol: 'postgres',
+    dialectOptions: dialectToggle(),
   },
 };
 

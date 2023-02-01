@@ -39,3 +39,20 @@ export class UserController {
     }
   }
 }
+
+const userLogin = async (req, res) => {
+  try {
+    const user = {
+      name: req.user.name,
+      email: req.user.email,
+    };
+    const token = Jwt.sign(user, process.env.ACCESS_TOKEN);
+    return res.status(200).json({
+      name: req.user.name,
+      token,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "server error" });
+  }
+};
+export default userLogin;

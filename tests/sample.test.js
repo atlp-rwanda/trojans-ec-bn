@@ -46,3 +46,34 @@ describe("Testing swagger", () => {
     expect(response.statusCode).toBe(301);
   });
 });
+test("user login for getting status of 200", async () => {
+  const response = await request(app).post("/login").send({
+    email: `test1234@gmail.com`,
+    password: "test12345",
+  });
+  expect(response.statusCode).toBe(200);
+});
+
+test("user login for getting status of 400", async () => {
+  const response = await request(app).post("/login").send({
+    email: "jimmygmcom",
+    password: "jimmy3535",
+  });
+  expect(response.statusCode).toBe(400);
+});
+
+test("user login for getting status of 401", async () => {
+  const response = await request(app).post("/login").send({
+    email: "jim@gmail.com",
+    password: "jimmy3535",
+  });
+  expect(response.statusCode).toBe(401);
+});
+
+test("user login for getting status of 401", async () => {
+  const response = await request(app).post("/login").send({
+    email: `test1234@gmail.com`,
+    password: "jimmy35",
+  });
+  expect(response.statusCode).toBe(401);
+});

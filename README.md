@@ -1,9 +1,11 @@
 ## Table of contents
-* [Badges](#badges)
-* [General info](#general-info)
-* [Setup](#setup)
+
+- [Badges](#badges)
+- [General info](#general-info)
+- [Setup](#setup)
 
 ## Badges
+
 ### Coverals
 
 [![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/trojans-ec-bn/badge.svg?branch=ch-intergrate-circleci-coveralls-184347078)](https://coveralls.io/github/atlp-rwanda/trojans-ec-bn?branch=ch-intergrate-circleci-coveralls-184347078)
@@ -11,6 +13,10 @@
 ### CircleCi
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/atlp-rwanda/trojans-ec-bn/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/atlp-rwanda/trojans-ec-bn/tree/main)
+
+### HoundCi
+
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 ## General info
 

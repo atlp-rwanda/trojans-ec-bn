@@ -14,6 +14,6 @@ app.use(morgan("dev"));
 app.use("/api-docs", documentation);
 app.use(allRouter);
 
-app.listen(port, console.log(`server is starting on port ${port}`));
+app.listen(port, console.log(`server is starting on port ${port}`)); // eslint-disable-line no-console
 
 export default app;

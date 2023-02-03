@@ -16,18 +16,18 @@ if (config.use_env_variable) {
     config.database,
     config.username,
     config.password,
-    config
+    config // eslint-disable-line comma-dangle
   );
 }
 fs.readdirSync(__dirname)
   .filter(
     (file) =>
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js" // eslint-disable-line comma-dangle
   )
   .forEach((file) => {
     const model = require(path.join(__dirname, file))(
       sequelize,
-      Sequelize.DataTypes
+      Sequelize.DataTypes // eslint-disable-line comma-dangle
     );
     db[model.name] = model;
   });

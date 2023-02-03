@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc, valid-jsdoc */
 
 const { Model } = require("sequelize");

@@ -37,7 +37,6 @@ const options = {
         },
       },
     },
-
     "/signup": {
       post: {
         tags: ["User"],
@@ -61,6 +60,33 @@ const options = {
           },
           409: {
             description: "email already exists",
+          },
+        },
+      },
+    },
+    "/login": {
+      post: {
+        tags: ["User"],
+        description: "User Login",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Login",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
           },
         },
       },
@@ -98,6 +124,24 @@ const options = {
           name: "Jane Doe",
           email: "janedoe@gmail.com",
           password: "janedoel250",
+        },
+      },
+      Login: {
+        type: "object",
+        properties: {
+          email: {
+            type: "string",
+            required: true,
+            description: "email of user",
+          },
+          password: {
+            type: "string",
+            description: "password of user",
+          },
+        },
+        example: {
+          email: "ntare@gmail.com",
+          password: "ntare3535",
         },
       },
     },

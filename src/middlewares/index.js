@@ -1,1 +1,1 @@
-//middleware function belong here
+// middleware function belong here

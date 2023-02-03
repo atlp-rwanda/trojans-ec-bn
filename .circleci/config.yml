@@ -1,0 +1,26 @@
+version: 2.1
+orbs:
+  coveralls: coveralls/coveralls@1.0.6
+jobs:
+  build:
+    docker:
+      - image: cimg/node:18.12.1
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: npm install
+      - run:
+          name: run lint
+          command: npm run lint
+      - run:
+          name: run test
+          command: npm run test
+      - coveralls/upload
+notify:
+  webhooks:
+    - url: https://coveralls.io/webhook?repo_token=${process.env.COVERALLS_REPO_TOKEN}
+workflows:
+  test-deploy:
+    jobs:
+      - build

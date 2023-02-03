@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 
@@ -25,7 +26,7 @@ export class UserController {
           id: user.id,
           email: user.email,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET // eslint-disable-line
       );
       const userObj = {
         username: user.name,

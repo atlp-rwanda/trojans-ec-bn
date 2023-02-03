@@ -1,3 +1,5 @@
+/* eslint-disable require-jsdoc, valid-jsdoc */
+
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
@@ -20,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
-    }
+    } // eslint-disable-line comma-dangle
   );
   return User;
 };

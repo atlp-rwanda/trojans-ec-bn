@@ -10,7 +10,7 @@ const options = {
   info: {
     title: "TROJAN-EC-BN",
     version: "1.0.0",
-    description: "atlp rwanda - Trojan team ",
+    description: "atlp rwanda - Trojan team",
   },
   servers: [
     {
@@ -37,6 +37,34 @@ const options = {
         },
       },
     },
+
+    "/signup": {
+      post: {
+        tags: ["User"],
+        description: "User Signup",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Signup",
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          409: {
+            description: "email already exists",
+          },
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -44,6 +72,33 @@ const options = {
         type: "http",
         scheme: "bearer",
         bearerFormat: "JWT",
+      },
+    },
+    schemas: {
+      Signup: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            required: true,
+            description: "name of user",
+          },
+          email: {
+            type: "string",
+            required: true,
+            description: "email of user",
+          },
+          password: {
+            type: "string",
+            required: true,
+            description: "password of user",
+          },
+        },
+        example: {
+          name: "Jane Doe",
+          email: "janedoe@gmail.com",
+          password: "janedoel250",
+        },
       },
     },
   },

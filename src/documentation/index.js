@@ -268,6 +268,45 @@ const options = {
         },
       },
     },
+    "/users/{Token}/auth/validate": {
+      post: {
+        tags: ["User"],
+        description: "authentication a user using a two factor authenticator",
+        parameters: [
+          {
+            in: "path",
+            name: "Token",
+            description: "id for the User",
+            required: true,
+            schema: {
+              type: "string",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Authentication",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -361,6 +400,19 @@ const options = {
           oldPassword: "janedoel250",
           newPassword: "update1234",
           confirmPassword: "update1234",
+        },
+      },
+      Authentication: {
+        type: "object",
+        properties: {
+          token: {
+            type: "string",
+            required: true,
+            description: "token obtained by the user",
+          },
+        },
+        example: {
+          token: "123456",
         },
       },
     },

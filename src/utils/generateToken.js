@@ -2,8 +2,8 @@
 import Jwt from "jsonwebtoken";
 
 class JwtUtil {
-  static generate(data) {
-    const token = Jwt.sign({ data }, process.env.JWT_SECRET);
+  static generate(data, options) {
+    const token = Jwt.sign({ data }, process.env.JWT_SECRET, options);
     return token;
   }
 

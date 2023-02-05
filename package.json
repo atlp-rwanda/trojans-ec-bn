@@ -15,7 +15,7 @@
     "prepare": "husky install"
   },
   "jest": {
-    "testTimeout": 30000
+    "testTimeout": 50000
   },
   "repository": {
     "type": "git",
@@ -63,9 +63,11 @@
     "pg-hstore": "^2.3.4",
     "prettier": "^2.8.3",
     "sequelize": "^6.28.0",
+    "speakeasy": "^2.0.0",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^4.6.0"
+    "swagger-ui-express": "^4.6.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.19.6",

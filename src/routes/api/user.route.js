@@ -1,3 +1,5 @@
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable import/no-named-as-default */
 import { Router } from "express";
 import UserController from "../../controllers/userController";
 import authLogin from "../../utils/passport";
@@ -11,10 +13,17 @@ import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
 import checkAdmin from "../../middlewares/checkAdmin";
 import checkRole from "../../middlewares/selectRole";
+import findUser from "../../middlewares/findUser";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
-route.post("/login", loginValidation, authLogin, UserController.login);
+route.post(
+  "/login",
+  loginValidation,
+  authLogin,
+  findUser,
+  UserController.login
+);
 route.put(
   "/password-update",
   extractToken,
@@ -37,13 +46,14 @@ route.post(
   extractToken,
   checkAdmin,
   checkRole,
-  UserController.assignRole,
+  UserController.assignRole
 );
 route.post(
   "/:id/update-status",
   extractToken,
   checkAdmin,
-  UserController.disableAccount,
+  UserController.disableAccount
 );
+route.post("/:token/auth/validate/", UserController.Validate);
 
 export default route;

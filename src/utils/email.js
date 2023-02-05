@@ -29,10 +29,11 @@ const emailTransport = () => {
 };
 
 class SendEmail {
-  constructor(user, url) {
+  constructor(user, url, randomAuth) {
     this.to = user.email;
     this.name = user.name;
     this.url = url;
+    this.randomAuth = randomAuth;
     this.from = `ATLP-Trojans <${process.env.EMAIL_FROM}>`;
   }
 
@@ -43,6 +44,7 @@ class SendEmail {
       {
         firstName: this.name,
         url: this.url,
+        authNum: this.randomAuth,
       }
     );
 
@@ -71,6 +73,10 @@ class SendEmail {
 
   async activate() {
     await this.send("accActivation", "Account Activation");
+  }
+
+  async twoFactorAuth() {
+    await this.send("2FAToken", "Verification Code");
   }
 }
 

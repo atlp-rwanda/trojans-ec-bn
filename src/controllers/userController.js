@@ -1,5 +1,10 @@
+/* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
 import UserServices from "../services/userService";
+import TwoFactorAuthenticator from "../utils/send2FA";
+import generateRandom from "../utils/generateRandom";
+import SendEmail from "../utils/email";
+import JwtUtil from "../utils/generateToken";
 
 class UserController {
   static async register(req, res) {
@@ -13,8 +18,20 @@ class UserController {
 
   static async login(req, res) {
     try {
-      const response = await UserServices.login(req.user);
-      return res.status(200).json({ status: 200, user: response });
+      const { name, email, role, status, id } = req.user;
+
+      if (role === "seller" || role === "Admin") {
+        const randomAuth = generateRandom();
+        const Options = {
+          expiresIn: "120000",
+        };
+        const token = JwtUtil.generate({ name, email, randomAuth }, Options);
+        await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+        return res.status(200).json({ name, token, randomAuth });
+      } else {
+        const token = JwtUtil.generate({ name, email, id, role, status });
+        return res.status(200).json({ name, token });
+      }
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });
     }
@@ -34,14 +51,16 @@ class UserController {
       const { email } = req.body;
       const response = await UserServices.resetRequest(email);
       if (!response) {
-        return res.status(403).json({ message: "Email couldn't be verified" });
+        return res
+          .status(403)
+          .json({ status: 403, message: "Email couldn't be verified" });
       }
       return res.status(200).json({
-        message: "Sent",
-        link: `${process.env.UI_URL}/users/password-reset/${response.token}`,
+        status: 200,
+        message: "Request complete",
       });
     } catch (error) {
-      return res.status(500).json({ error });
+      return res.status(500).json({ status: 500, error: "server error" });
     }
   }
 
@@ -49,7 +68,7 @@ class UserController {
     try {
       return res.status(200).json({ details: req.user });
     } catch (error) {
-      return res.status(500).json({ error });
+      return res.status(500).json({ status: 500, error: "server error" });
     }
   }
 
@@ -60,9 +79,9 @@ class UserController {
         email: req.user.email,
       };
       await UserServices.resetpassword(data);
-      return res.status(200).json({ message: "Password updated" });
+      return res.status(200).json({ status: 200, message: "Password updated" });
     } catch (error) {
-      return res.status(500).json({ error });
+      return res.status(500).json({ status: 500, error: "server error" });
     }
   }
 
@@ -103,6 +122,23 @@ class UserController {
         status: 500,
         message: "server error",
       });
+    }
+  }
+
+  static async Validate(req, res) {
+    try {
+      const response = await TwoFactorAuthenticator.validateTwoFacor(req);
+      if (response.value) {
+        return res.status(200).json({
+          status: "200",
+          token: response.newToken,
+          message: "authentication was successful",
+        });
+      } else {
+        return res.status(400).json({ status: "400", data: response.message });
+      }
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
   }
 }

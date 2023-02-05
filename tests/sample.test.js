@@ -1,8 +1,11 @@
+/* eslint-disable prefer-template */
 /* eslint-disable no-underscore-dangle */
 import request from "supertest";
 import app from "../src/app";
+import { User } from "../src/database/models/index";
+import JwtUtil from "../src/utils/generateToken";
 
-const { User } = require("../src/database/models");
+// const { User } = require("../src/database/models");
 
 // afterAll(async () => {
 //   await User.destroy({ truncate: true, cascade: false });
@@ -75,12 +78,67 @@ test("user login for getting status of 401", async () => {
   expect(response.statusCode).toBe(401);
 });
 
-test("user login for getting status of 401", async () => {
-  const response = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@gmail.com`,
-    password: "jimmy35",
+describe("testing the two factor authentication", () => {
+  test("validate the token and get a 200", async () => {
+    const signup = await request(app).post("/api/v1/users/signup").send({
+      name: "test",
+      email: `test14@gmail.com`,
+      password: "test12345",
+    });
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: `test14@gmail.com`,
+      password: "test12345",
+    });
+    const MyTokener = login.body.token;
+    const extractor = JwtUtil.verify(MyTokener);
+    // const {role} = extractor.data;
+    // console.log(role)
+    const authToken = extractor.data.randomAuth;
+    const checkToken = await request(app)
+      .post(`/api/v1/users/${MyTokener}/auth/validate`)
+      .send({
+        token: authToken,
+      });
+    expect(checkToken.statusCode).toBe(200);
   });
-  expect(response.statusCode).toBe(401);
+
+  test("verify a user and get a 500", async () => {
+    const signup = await request(app).post("/api/v1/users/signup").send({
+      name: "test",
+      email: `test14@gmail.com`,
+      password: "test12345",
+    });
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: `test14@gmail.com`,
+      password: "test12345",
+    });
+    const MyTokener = login.body.token.user;
+    const authToken = "1234";
+    const response = await request(app)
+      .post(`/api/v1/users/${MyTokener}/auth/validate`)
+      .send({
+        token: authToken,
+      });
+    expect(response.statusCode).toBe(500);
+  });
+
+  test("verify a user and get a 400", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: `test14@gmail.com`,
+      password: "test12345",
+    });
+    const MyTokener = login.body.token;
+    const authToken = "1234";
+    const response = await request(app)
+      .post(`/api/v1/users/${MyTokener}/auth/validate`)
+      .send({
+        token: authToken,
+      });
+    expect(response.statusCode).toBe(400);
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "test14@gmail.com" } });
+  });
 });
 
 describe("Testing the update password", () => {
@@ -172,25 +230,25 @@ describe("Testing the reset password via email", () => {
       });
     expect(resetRequest.statusCode).toBe(200);
     const getreset = await request(app)
-      .get(resetRequest.body.link.replace("http://localhost:3000", ""))
+      .get("/api/v1/users/password-reset/" + signup.body.user.token)
       .send();
     expect(getreset.statusCode).toBe(200);
     const reset = await request(app)
-      .post(resetRequest.body.link.replace("http://localhost:3000", ""))
+      .post("/api/v1/users/password-reset/" + signup.body.user.token)
       .send({
         newPassword: "andela25",
         confirmPassword: "andela25",
       });
     expect(reset.statusCode).toBe(200);
     const invalidReset = await request(app)
-      .post(resetRequest.body.link.replace("http://localhost:3000", ""))
+      .post("/api/v1/users/password-reset/" + signup.body.user.token)
       .send({
         newPassword: "andel",
         confirmPassword: "andel",
       });
     expect(invalidReset.statusCode).toBe(400);
     const confirmFail = await request(app)
-      .post(resetRequest.body.link.replace("http://localhost:3000", ""))
+      .post("/api/v1/users/password-reset/" + signup.body.user.token)
       .send({
         newPassword: "andela25",
         confirmPassword: "andela26",
@@ -211,7 +269,7 @@ describe("Testing the admin routes", () => {
     expect(login.statusCode).toBe(200);
     const getID = await request(app)
       .get("/api/v1/users")
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     expect(getID.statusCode).toBe(200);
   });
@@ -224,18 +282,18 @@ describe("Testing the admin routes", () => {
     expect(login.statusCode).toBe(200);
     const getID = await request(app)
       .get("/api/v1/users")
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
     const { id } = user.dataValues;
     const assign = await request(app)
       .post(`/api/v1/users/${id}/role`)
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send({ role: "seller" });
     expect(assign.statusCode).toBe(200);
     const wrongRole = await request(app)
       .post(`/api/v1/users/${id}/role`)
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send({ role: "hbnxbweu" });
     expect(wrongRole.statusCode).toBe(400);
   });
@@ -248,45 +306,45 @@ describe("Testing the admin routes", () => {
     expect(login.statusCode).toBe(200);
     const getID = await request(app)
       .get("/api/v1/users")
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
     const { id } = user.dataValues;
     const disableStatus = await request(app)
       .post(`/api/v1/users/${id}/update-status`)
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     expect(disableStatus.statusCode).toBe(200);
     const enableStatus = await request(app)
       .post(`/api/v1/users/${id}/update-status`)
-      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     expect(enableStatus.statusCode).toBe(200);
   });
   test("Get a status of 401 if its not an Admin", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       // name:"test",
-      email: "admin123@gmail.com",
-      password: "admin123",
+      email: "test1234@gmail.com",
+      password: "test12345",
     });
     expect(login.statusCode).toBe(200);
     const getID = await request(app)
       .get("/api/v1/users")
-      .set("Authorization", `Bearer ${login.body.user}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
     const { id } = user.dataValues;
     const disableStatus = await request(app)
       .post(`/api/v1/users/${id}/update-status`)
-      .set("Authorization", `Bearer ${login.body.user}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     expect(disableStatus.statusCode).toBe(401);
   });
   test("Get a status of 401 if its not an Admin", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       // name:"test",
-      email: "admin123@gmail.com",
-      password: "admin123",
+      email: "test1234@gmail.com",
+      password: "test12345",
     });
     expect(login.statusCode).toBe(200);
     const getID = await request(app).get("/api/v1/users").send();
@@ -294,7 +352,7 @@ describe("Testing the admin routes", () => {
     const { id } = user.dataValues;
     const disableStatus = await request(app)
       .post(`/api/v1/users/${id}/update-status`)
-      .set("Authorization", `Bearer ${login.body.user}`)
+      .set("Authorization", `Bearer ${login.body.token}`)
       .send();
     expect(disableStatus.statusCode).toBe(401);
   });

@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc, valid-jsdoc */
-
+/* eslint-disable valid-jsdoc */
+/* eslint-disable require-jsdoc */
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
@@ -19,11 +18,13 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
+      role: { type: DataTypes.STRING, defaultValue: "buyer" },
+      status: { type: DataTypes.STRING, defaultValue: "active" },
     },
     {
       sequelize,
       modelName: "User",
-    } // eslint-disable-line comma-dangle
+    },
   );
   return User;
 };

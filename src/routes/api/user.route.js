@@ -9,6 +9,8 @@ import checkPass from "../../middlewares/checkPass";
 import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
+import checkAdmin from "../../middlewares/checkAdmin";
+import checkRole from "../../middlewares/selectRole";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -28,4 +30,20 @@ route.post(
   passwordResetValidation,
   UserController.resetpassword
 );
+
+route.get("/", extractToken, checkAdmin, UserController.getUsers);
+route.post(
+  "/:id/role",
+  extractToken,
+  checkAdmin,
+  checkRole,
+  UserController.assignRole,
+);
+route.post(
+  "/:id/update-status",
+  extractToken,
+  checkAdmin,
+  UserController.disableAccount,
+);
+
 export default route;

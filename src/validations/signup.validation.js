@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import Joi from "joi";
 import PasswordComplexity from "joi-password-complexity";
 
@@ -20,12 +21,13 @@ const validatesignUp = validateForm(signUpSchema);
 const signupValidation = (req, res, next) => {
   const { error } = validatesignUp(req.body);
   if (error) {
-    res.status(400).send(
-      error.details.map(
+    res.status(400).json({
+      status: 400,
+      error: error.details.map(
         (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
         // eslint-disable-next-line comma-dangle
-      )
-    );
+      ),
+    });
   } else {
     next();
   }

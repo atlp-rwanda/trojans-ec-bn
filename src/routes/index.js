@@ -1,10 +1,8 @@
-import express, { Router } from "express";
-import home from "./api/home.route";
-import user from "./api/user.route";
+import express from "express";
+import allRoute from "./api/index";
 
 const routes = express.Router();
 
-routes.use("/", home);
-routes.use("/users", user);
+routes.use("/", allRoute);
 
 export default routes;

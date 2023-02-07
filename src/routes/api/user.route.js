@@ -1,12 +1,12 @@
-import express, { Router } from "express";
-import passport from "passport";
-import userLogin, { UserController } from "../../controllers/userController";
-import signupValidation from "../../middlewares/validations/signupValidation";
-
-import userVald from "../../validation/user.vald";
+import { Router } from "express";
+import UserController from "../../controllers/userController";
+import authLogin from "../../utils/passport";
+import signupValidation from "../../validations/signup.validation";
+import loginValidation from "../../validations/login.validation";
+import verifyUser from "../../middlewares/verifyUser";
 
 const router = Router();
-router.post("/signup", signupValidation, UserController.register);
-router.post("/login", userVald, passport.authenticate("local"), userLogin);
+router.post("/signup", signupValidation, verifyUser, UserController.register);
+router.post("/login", loginValidation, authLogin, UserController.login);
 
 export default router;

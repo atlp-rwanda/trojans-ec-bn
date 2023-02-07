@@ -1,7 +1,7 @@
 import passport from "passport";
 import PassportLocal from "passport-local";
-import bcrypt from "bcrypt";
 import models from "../database/models";
+import BcryptUtil from "./bcrypt";
 
 passport.use(
   new PassportLocal.Strategy(
@@ -15,7 +15,7 @@ passport.use(
       if (!userFound) {
         done(null, false);
       } else {
-        const isPin = await bcrypt.compare(password, userFound.password);
+        const isPin = await BcryptUtil.compare(password, userFound.password);
         if (!isPin) {
           done(null, false);
         } else {

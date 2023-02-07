@@ -1,0 +1,16 @@
+/* eslint-disable require-jsdoc */
+import Jwt from "jsonwebtoken";
+
+class JwtUtil {
+  static generate(data) {
+    const token = Jwt.sign({ data }, process.env.JWT_SECRET);
+    return token;
+  }
+
+  static verify(token) {
+    const obj = Jwt.verify(token, process.env.JWT_SECRET);
+    return obj;
+  }
+}
+
+export default JwtUtil;

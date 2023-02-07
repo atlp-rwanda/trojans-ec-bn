@@ -7,10 +7,10 @@ class JwtUtil {
     return token;
   }
 
-  static verify(token) {
-    const obj = Jwt.verify(token, process.env.JWT_SECRET);
-    return obj;
-  }
+  // static verify(token) {
+  //   const obj = Jwt.verify(token, process.env.JWT_SECRET);
+  //   return obj;
+  // }
 }
 
 export default JwtUtil;

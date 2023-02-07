@@ -1,7 +1,5 @@
 import express from "express";
-import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
-import dotenv from "dotenv";
 import passport from "passport";
 import session from "express-session";
 import "./utils/passport.config";

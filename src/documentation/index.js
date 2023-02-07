@@ -1,3 +1,5 @@
+/* eslint-disable require-jsdoc */
+
 import { Router } from "express";
 import { serve, setup } from "swagger-ui-express";
 import dotenv from "dotenv";
@@ -25,7 +27,7 @@ const options = {
   ],
   tags: [],
   paths: {
-    "/home": {
+    "/": {
       get: {
         tags: ["homepage"],
         description: "Welcome message",
@@ -37,7 +39,30 @@ const options = {
         },
       },
     },
-    "/signup": {
+    "/users/verify-email/{token}": {
+      get: {
+        tags: ["authentication"],
+        description: "User verification",
+        parameters: [     {
+          name: 'token',
+          in: 'path',
+          type: 'string',
+          description: 'verification token',
+          required: true,
+        },],
+        responses: {
+          201: {
+            description: 'Email validated successfully.',
+            
+          },
+          409:{
+  description:'Sorry, your validation token is invalid or expired. ',
+  
+          }
+        },
+      },
+    },
+    "/users/signup": {
       post: {
         tags: ["User"],
         description: "User Signup",
@@ -64,7 +89,7 @@ const options = {
         },
       },
     },
-    "/login": {
+    "/users/login": {
       post: {
         tags: ["User"],
         description: "User Login",

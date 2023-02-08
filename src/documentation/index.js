@@ -91,6 +91,33 @@ const options = {
         },
       },
     },
+    "/users/password-update": {
+      put: {
+        tags: ["Profile"],
+        description: "Update user password",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/PasswordUpdate",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -140,8 +167,33 @@ const options = {
           },
         },
         example: {
-          email: "ntare@gmail.com",
-          password: "ntare3535",
+          email: "janedoe@gmail.com",
+          password: "janedoel250",
+        },
+      },
+      PasswordUpdate: {
+        type: "object",
+        properties: {
+          oldPassword: {
+            type: "string",
+            required: true,
+            description: "Old user password",
+          },
+          newPassword: {
+            type: "string",
+            required: true,
+            description: "New user password",
+          },
+          confirmPassword: {
+            type: "string",
+            required: true,
+            description: "Confirm new user password",
+          },
+        },
+        example: {
+          oldPassword: "janedoel250",
+          newPassword: "update1234",
+          confirmPassword: "update1234",
         },
       },
     },

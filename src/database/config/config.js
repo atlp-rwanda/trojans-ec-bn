@@ -33,9 +33,9 @@ module.exports = {
     host: DATABASE_HOST,
     port: DATABASE_PORT,
     dialect: "postgres",
-    logging: false,
-    protocol: "postgres",
-    dialectOptions: dialectToggle(),
+    // logging: false,
+    // protocol: "postgres",
+    // dialectOptions: dialectToggle(),
   },
   test: {
     username: TEST_DATABASE_USER,

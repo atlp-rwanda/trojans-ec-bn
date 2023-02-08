@@ -25,7 +25,7 @@ const options = {
   ],
   tags: [],
   paths: {
-    "/home": {
+    "/": {
       get: {
         tags: ["homepage"],
         description: "Welcome message",
@@ -37,7 +37,7 @@ const options = {
         },
       },
     },
-    "/signup": {
+    "/users/signup": {
       post: {
         tags: ["User"],
         description: "User Signup",
@@ -64,7 +64,7 @@ const options = {
         },
       },
     },
-    "/login": {
+    "/users/login": {
       post: {
         tags: ["User"],
         description: "User Login",
@@ -81,6 +81,124 @@ const options = {
         responses: {
           200: {
             description: "successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/password-update": {
+      put: {
+        tags: ["User"],
+        description: "Update user password",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/PasswordUpdate",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/password-reset-request": {
+      post: {
+        tags: ["User"],
+        description: "Reset user password",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  email: {
+                    type: "string",
+                    required: true,
+                    description: "Email to send the link",
+                  },
+                },
+                example: {
+                  email: "janedoe@gmail.com",
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/password-reset/{token}": {
+      post: {
+        tags: ["User"],
+        description: "Reset user password",
+        parameters: [
+          {
+            in: "path",
+            name: "token",
+            description: "token of the user",
+            required: true,
+            schema: {
+              type: "string",
+              format: "token",
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  newPassword: {
+                    type: "string",
+                    required: true,
+                    description: "New password ",
+                  },
+                  confirmPassword: {
+                    type: "string",
+                    required: true,
+                    description: "Confirm new password ",
+                  },
+                },
+                example: {
+                  email: "janedoe@gmail.com",
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
           },
           400: {
             description: "Bad request",
@@ -140,8 +258,33 @@ const options = {
           },
         },
         example: {
-          email: "ntare@gmail.com",
-          password: "ntare3535",
+          email: "janedoe@gmail.com",
+          password: "janedoel250",
+        },
+      },
+      PasswordUpdate: {
+        type: "object",
+        properties: {
+          oldPassword: {
+            type: "string",
+            required: true,
+            description: "Old user password",
+          },
+          newPassword: {
+            type: "string",
+            required: true,
+            description: "New user password",
+          },
+          confirmPassword: {
+            type: "string",
+            required: true,
+            description: "Confirm new user password",
+          },
+        },
+        example: {
+          oldPassword: "janedoel250",
+          newPassword: "update1234",
+          confirmPassword: "update1234",
         },
       },
     },

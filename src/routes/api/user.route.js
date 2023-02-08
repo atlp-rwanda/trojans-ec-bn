@@ -2,7 +2,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Router } from "express";
 import UserController from "../../controllers/userController";
-import authLogin from "../../utils/passport";
 import signupValidation from "../../validations/signup.validation";
 import loginValidation from "../../validations/login.validation";
 import verifyUser from "../../middlewares/verifyUser";
@@ -12,8 +11,9 @@ import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
 import checkAdmin from "../../middlewares/checkAdmin";
-import checkRole from "../../middlewares/selectRole";
 import findUser from "../../middlewares/findUser";
+import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
+import validateRole from "../../validations/role.validation";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -24,6 +24,8 @@ route.post(
   findUser,
   UserController.login
 );
+route.get("/auth/google", googleAuth);
+route.get("/google/callback", googleCallBack, UserController.googleAuth);
 route.put(
   "/password-update",
   extractToken,
@@ -41,11 +43,11 @@ route.post(
 );
 
 route.get("/", extractToken, checkAdmin, UserController.getUsers);
-route.post(
+route.patch(
   "/:id/role",
   extractToken,
   checkAdmin,
-  checkRole,
+  validateRole,
   UserController.assignRole
 );
 route.post(

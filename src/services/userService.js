@@ -1,6 +1,6 @@
 /* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
-import BcryptUtil from "../utils/bcrypt";
+import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
 import generateRandom from "../utils/generateRandom";

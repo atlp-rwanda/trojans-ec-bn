@@ -104,7 +104,7 @@ const options = {
       },
     },
     "/users/{id}/role": {
-      post: {
+      patch: {
         tags: ["User"],
         description: "Assign user roles",
         parameters: [{ in: "path", name: "id", required: true }],
@@ -305,6 +305,16 @@ const options = {
             description: "internal server error",
           },
         },
+      },
+    },
+  },
+  securityDefinitions: {
+    google_oautho2: {
+      type: "oauth2",
+      flow: "accessCode",
+      authorizationUrl: "https://accounts.google.com/o/oauth2/auth",
+      scopes: {
+        read: "Read access to API",
       },
     },
   },

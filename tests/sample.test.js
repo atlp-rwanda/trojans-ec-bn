@@ -1,23 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 import request from "supertest";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import app from "../src/app";
 
 
 // afterAll(async () => {
 //   await User.destroy({ truncate: true, cascade: false });
 // });
-
-describe("Testing the home route", () => {
-  test("Get a status of 401", async () => {
-    const response = await request(app).get("/api/v1").send();
-    expect(response.statusCode).toBe(401);
-  });
-  test("get status od 200",async()=>{
-    const response= await request(app).get("/api/v1").set('Authorization' , AuthToken).send();
-    expect(response.statusCode).toBe(200);
-  });
-});
 
 describe("Testing the registration route", () => {
   test("Get a status of 400", async () => {
@@ -35,7 +24,7 @@ describe("Testing the registration route", () => {
       password: "test12345",
     });
     expect(response.statusCode).toBe(201);
-    AuthToken= "Bearer "+ response.body.token
+    // AuthToken= "Bearer "+ response.body.token
   });
   test("Get a status of 409", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
@@ -52,18 +41,20 @@ describe("Testing the registration route", () => {
 });
 describe("Testing the home route", () => {
   test("Get a status of 401", async () => {
-    const response = await request(app).get("/home").send();
+    const response = await request(app).get("/api/v1").send();
     expect(response.statusCode).toBe(401);
   });
-  test("get status od 200",async()=>{
-    const login = await request(app).post("/login").send({
+  test("get status od 200", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
       email: `test1234@gmail.com`,
       password: "test12345",
     });
-    console.log(login.body)
-    const authentic="Bearer "+ login.body.user.token
-    console.log(authentic)
-    const response= await request(app).get("/home").set({Authorization : authentic}).send();
+    console.log(login.body);
+    const authentic = `Bearer ${login.body.user.token}`;
+    const response = await request(app)
+      .get("/api/v1")
+      .set({ Authorization: authentic })
+      .send();
     expect(response.statusCode).toBe(200);
   });
 });

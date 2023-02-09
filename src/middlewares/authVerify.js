@@ -1,6 +1,6 @@
 import passport from "passport";
 
 const authLogin = passport.authenticate("local");
-const checkAuth=passport.authenticate("jwt",{session: false})
+const checkAuth = passport.authenticate("jwt", { session: false });
 
-export {authLogin, checkAuth};
+export { authLogin, checkAuth };

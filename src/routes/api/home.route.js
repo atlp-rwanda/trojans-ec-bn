@@ -1,12 +1,12 @@
 import express from "express";
-//import testpassport from "../../utils/authVerify";
+// import testpassport from "../../utils/authVerify";
 import { checkAuth } from "../../middlewares/authVerify";
 
-//testpassport()
+// testpassport()
 
 const home = express.Router();
 
-home.get("/",checkAuth, (req, res) => {
+home.get("/", checkAuth, (req, res) => {
   res.status(200).json({ message: "Welcome to our homepage" });
 });
 

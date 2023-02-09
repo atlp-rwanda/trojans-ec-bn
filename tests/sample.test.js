@@ -6,7 +6,7 @@ import app from "../src/app";
 
 const { User } = require("../src/database/models");
 dotenv.config();
-let AuthToken=process.env.TOKEN;
+//let AuthToken=process.env.TOKEN;
 afterAll(async () => {
   await User.destroy({ truncate: true, cascade: false });
 });
@@ -26,7 +26,7 @@ describe("Testing the registration route", () => {
       password: "test12345",
     });
     expect(response.statusCode).toBe(201);
-    AuthToken= "Bearer "+ response.body.token
+   // AuthToken= "Bearer "+ response.body.token
   });
   test("Get a status of 409", async () => {
     const response = await request(app).post("/signup").send({
@@ -49,7 +49,6 @@ describe("Testing the home route", () => {
     });
     console.log(login.body)
     const authentic="Bearer "+ login.body.user.token
-    console.log(authentic)
     const response= await request(app).get("/home").set({Authorization : authentic}).send();
     expect(response.statusCode).toBe(200);
   });

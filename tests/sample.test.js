@@ -1,15 +1,23 @@
+//import { response } from "express";
 import request from "supertest";
+import dotenv from 'dotenv';
 import app from "../src/app";
 
-const { User } = require("../src/database/models");
 
+const { User } = require("../src/database/models");
+dotenv.config();
+const AuthToken=process.env.TOKEN;
 afterAll(async () => {
   await User.destroy({ truncate: true, cascade: false });
 });
 
 describe("Testing the home route", () => {
-  test("Get a status of 200", async () => {
+  test("Get a status of 401", async () => {
     const response = await request(app).get("/home").send();
+    expect(response.statusCode).toBe(401);
+  });
+  test("get status od 200",async()=>{
+    const response= await request(app).get("/home").set('Authorization' , AuthToken).send();
     expect(response.statusCode).toBe(200);
   });
 });
@@ -17,7 +25,7 @@ describe("Testing the home route", () => {
 describe("Testing the registration route", () => {
   test("Get a status of 400", async () => {
     const response = await request(app).post("/signup").send({
-      // name:"test",
+      //name:"test",
       email: "test123@gmail.com",
       password: "test12345",
     });

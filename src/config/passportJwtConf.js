@@ -10,7 +10,7 @@ const JwtStrategy= newJwt.Strategy;
 
 const extractJwt= Extract.ExtractJwt;
 
-async function testpassport(){
+//async function passportJwtConfig(){
     passport.use(
         new JwtStrategy(
             {
@@ -27,6 +27,6 @@ async function testpassport(){
               }
         )
     )
-}
+//}
 
-export default testpassport
+export default passport;

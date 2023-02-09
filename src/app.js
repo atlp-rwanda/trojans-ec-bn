@@ -6,6 +6,7 @@ import "./utils/passport.config";
 import allRouter from "./routes/index";
 import documentation from "./documentation/index";
 import "dotenv/config";
+import passportJwtConf from "./config/passportJwtConf"
 
 const app = express();
 

@@ -1,16 +1,20 @@
 /* eslint-disable no-underscore-dangle */
 import request from "supertest";
+import dotenv from 'dotenv';
 import app from "../src/app";
 
-const { User } = require("../src/database/models");
 
 // afterAll(async () => {
 //   await User.destroy({ truncate: true, cascade: false });
 // });
 
 describe("Testing the home route", () => {
-  test("Get a status of 200", async () => {
+  test("Get a status of 401", async () => {
     const response = await request(app).get("/api/v1").send();
+    expect(response.statusCode).toBe(401);
+  });
+  test("get status od 200",async()=>{
+    const response= await request(app).get("/api/v1").set('Authorization' , AuthToken).send();
     expect(response.statusCode).toBe(200);
   });
 });

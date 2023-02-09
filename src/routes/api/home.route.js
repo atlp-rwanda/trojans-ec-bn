@@ -1,8 +1,8 @@
 import express from "express";
-import testpassport from "../../utils/authVerify";
-import { checkAuth } from "../../utils/passport";
+//import testpassport from "../../utils/authVerify";
+import { checkAuth } from "../../middlewares/authVerify";
 
-testpassport()
+//testpassport()
 
 const home = express.Router();
 

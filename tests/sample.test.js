@@ -35,6 +35,7 @@ describe("Testing the registration route", () => {
       password: "test12345",
     });
     expect(response.statusCode).toBe(201);
+    AuthToken= "Bearer "+ response.body.token
   });
   test("Get a status of 409", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
@@ -48,6 +49,23 @@ describe("Testing the registration route", () => {
   // afterAll(async () => {
   //     await User.destroy({ where : {email:"test1234@gmail.com"} });
   // });
+});
+describe("Testing the home route", () => {
+  test("Get a status of 401", async () => {
+    const response = await request(app).get("/home").send();
+    expect(response.statusCode).toBe(401);
+  });
+  test("get status od 200",async()=>{
+    const login = await request(app).post("/login").send({
+      email: `test1234@gmail.com`,
+      password: "test12345",
+    });
+    console.log(login.body)
+    const authentic="Bearer "+ login.body.user.token
+    console.log(authentic)
+    const response= await request(app).get("/home").set({Authorization : authentic}).send();
+    expect(response.statusCode).toBe(200);
+  });
 });
 describe("Testing swagger", () => {
   test("Get a status of 304", async () => {

@@ -7,6 +7,13 @@ class JwtUtil {
     return token;
   }
 
+  static generateExp(data, min) {
+    const token = Jwt.sign({ data }, process.env.JWT_SECRET, {
+      expiresIn: min,
+    });
+    return token;
+  }
+
   static verify(token) {
     const obj = Jwt.verify(token, process.env.JWT_SECRET);
     return obj;

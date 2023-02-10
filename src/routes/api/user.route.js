@@ -1,5 +1,6 @@
 import { Router } from "express";
 import UserController from "../../controllers/userController";
+import authLogin from "../../utils/passport";
 import signupValidation from "../../validations/signup.validation";
 import loginValidation from "../../validations/login.validation";
 import verifyUser from "../../middlewares/verifyUser";
@@ -8,13 +9,10 @@ import checkPass from "../../middlewares/checkPass";
 import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
-import verifyToken from "../../middlewares/verifyToken";
-import checkIsVerified from "../../middlewares/checkUserVerification";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
-route.post("/login", loginValidation, checkIsVerified, UserController.login);
-route.get("/verify-email/:token", verifyToken, UserController.verify_email);
+route.post("/login", loginValidation, authLogin, UserController.login);
 route.put(
   "/password-update",
   extractToken,
@@ -31,5 +29,3 @@ route.post(
   UserController.resetpassword
 );
 export default route;
-
-

@@ -1,3 +1,5 @@
+/* eslint-disable require-jsdoc */
+
 const { User } = require("../database/models");
 
 const verifyUser = async (req, res, next) => {

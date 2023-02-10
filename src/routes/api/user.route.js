@@ -30,6 +30,7 @@ route.post(
 route.get("/verify-email/:token", verifyToken, UserController.verify_email);
 route.get("/auth/google", googleAuth);
 route.get("/google/callback", googleCallBack, UserController.googleAuth);
+route.get("/logout", extractToken, UserController.logout);
 route.put(
   "/password-update",
   extractToken,

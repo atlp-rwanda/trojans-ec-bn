@@ -16,6 +16,8 @@
     "prepare": "husky install"
   },
   "jest": {
+    "resetMocks": true,
+    "restoreMocks": true,
     "testTimeout": 50000
   },
   "repository": {

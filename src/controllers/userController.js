@@ -44,7 +44,17 @@ class UserController {
 
       const response = await UserServices.updateUserStatus(token);
       return res.status(200).json({ status: 200, response });
+  }
 
+  static async logout(req, res) {
+    try {
+      await UserServices.logout(req.headers.authorization);
+      return res
+        .status(200)
+        .json({ status: 200, message: "You are logged out" });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: error });
+    }
   }
 
   static async updatePassword(req, res) {

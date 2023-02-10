@@ -6,7 +6,7 @@ import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
 import generateRandom from "../utils/generateRandom";
 
-const { User } = require("../database/models");
+const { User, Blacklist } = require("../database/models");
 
 class UserServices {
   static async register(data) {
@@ -40,6 +40,25 @@ class UserServices {
     const url = `${process.env.UI_URL}/users/verify-email/${token}`;
     await new SendEmail(userObj, url).sendWelcome();
     return userObj;
+  }
+
+  static async login(data) {
+    const { email, name } = data;
+    const user = await User.findOne({ where: { email } });
+    const token = JwtUtil.generate({
+      name,
+      email,
+      id: user.id,
+      role: user.role,
+      status: user.status,
+    });
+
+    return { name, token };
+  }
+
+  static async logout(data) {
+    const token = data.split(" ")[1];
+    await Blacklist.create({ token });
   }
 
   static async updatePassword(data) {

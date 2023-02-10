@@ -1,8 +1,7 @@
 /* eslint-disable require-jsdoc */
 import BcryptUtil from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
-import mailer from "../utils/sendmail";
-import emailContent from "../utils/emailHtml";
+import SendEmail from "../utils/email";
 
 const { User } = require("../database/models");
 
@@ -22,6 +21,8 @@ class UserServices {
         name,
         id: user.id,
         email,
+        role: user.role,
+        status: user.status,
       }),
     };
     return userObj;
@@ -29,7 +30,15 @@ class UserServices {
 
   static async login(data) {
     const { email, name } = data;
-    const token = JwtUtil.generate({ name, email });
+    const user = await User.findOne({ where: { email } });
+    const token = JwtUtil.generate({
+      name,
+      email,
+      id: user.id,
+      role: user.role,
+      status: user.status,
+    });
+
     return { name, token };
   }
 
@@ -47,7 +56,10 @@ class UserServices {
       { email: olduser.email, id: olduser.id },
       "5m"
     );
-    await mailer(email, "Reset Password", emailContent.reset(token));
+    await new SendEmail(
+      olduser,
+      `${process.env.UI_URL}/users/password-reset/${token}`
+    ).reset();
     return { message: "Sent", token };
   }
 
@@ -62,6 +74,52 @@ class UserServices {
       }
     );
     return true;
+  }
+
+  static async getUsers() {
+    const users = await User.findAll();
+    return users;
+  }
+
+  static async assignRole(role, id) {
+    await User.update(
+      { role },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+  }
+
+  static async disableAccount(id) {
+    const user = await User.findOne({
+      where: { id },
+    });
+    if (user.status === "active") {
+      await User.update(
+        { status: "inactive" },
+        {
+          where: {
+            id,
+          },
+        },
+      );
+      await new SendEmail(user, null).deactivate();
+      return "deactivated";
+    }
+    if (user.status === "inactive") {
+      await User.update(
+        { status: "active" },
+        {
+          where: {
+            id,
+          },
+        },
+      );
+      await new SendEmail(user, null).activate();
+      return "activated";
+    }
   }
 }
 

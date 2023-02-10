@@ -4,9 +4,9 @@ import app from "../src/app";
 
 const { User } = require("../src/database/models");
 
-afterAll(async () => {
-  await User.destroy({ truncate: true, cascade: false });
-});
+// afterAll(async () => {
+//   await User.destroy({ truncate: true, cascade: false });
+// });
 
 describe("Testing the home route", () => {
   test("Get a status of 200", async () => {
@@ -16,6 +16,7 @@ describe("Testing the home route", () => {
 });
 
 describe("Testing the registration route", () => {
+  let token = ""
   test("Get a status of 400", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
       // name:"test",
@@ -30,6 +31,7 @@ describe("Testing the registration route", () => {
       email: `test1234@gmail.com`,
       password: "test12345",
     });
+    token=response.body.user.token
     expect(response.statusCode).toBe(201);
   });
   test("Get a status of 409", async () => {
@@ -40,6 +42,24 @@ describe("Testing the registration route", () => {
     });
     expect(response.statusCode).toBe(409);
   });
+
+
+  test("Get a status of 200", async () => {
+    const response = await request(app)
+      .get(`/api/v1/users/verify-email/${token}`)
+      .send();
+    expect(response.statusCode).toBe(200);
+  });
+  test("Get a status of 409", async () => {
+    const response = await request(app)
+      .get(`/api/v1/users/verify-email/${token}`)
+      .send();
+    expect(response.statusCode).toBe(409);
+  });
+
+  // afterAll(async () => {
+  //     await User.destroy({ where : {email:"test1234@gmail.com"} });
+  // });
 });
 describe("Testing swagger", () => {
   test("Get a status of 304", async () => {
@@ -47,6 +67,7 @@ describe("Testing swagger", () => {
     expect(response.statusCode).toBe(301);
   });
 });
+
 test("user login for getting status of 200", async () => {
   const response = await request(app).post("/api/v1/users/login").send({
     email: `test1234@gmail.com`,
@@ -93,7 +114,7 @@ describe("Testing the update password", () => {
         newPassword: "okay1234",
         confirmPassword: "okay1234",
       })
-      .set("Authorization", `Bearer ${signup._body.user.token}`);
+      .set("Authorization", `Bearer ${signup.body.user.token}`);
     expect(update.statusCode).toBe(200);
     const updateValidation = await request(app)
       .put("/api/v1/users/password-update")
@@ -102,7 +123,7 @@ describe("Testing the update password", () => {
         newPassword: "okay1234",
         confirmPassword: "okay1234",
       })
-      .set("Authorization", `Bearer ${signup._body.user.token}`);
+      .set("Authorization", `Bearer ${signup.body.user.token}`);
     expect(updateValidation.statusCode).toBe(400);
     const updateValidation1 = await request(app)
       .put("/api/v1/users/password-update")
@@ -111,7 +132,7 @@ describe("Testing the update password", () => {
         newPassword: "okay1234",
         confirmPassword: "okay123",
       })
-      .set("Authorization", `Bearer ${signup._body.user.token}`);
+      .set("Authorization", `Bearer ${signup.body.user.token}`);
     expect(updateValidation1.statusCode).toBe(400);
     const updateValidation2 = await request(app)
       .put("/api/v1/users/password-update")
@@ -120,7 +141,7 @@ describe("Testing the update password", () => {
         nwPassword: "okay1234",
         Password: "okay",
       })
-      .set("Authorization", `Bearer ${signup._body.user.token}`);
+      .set("Authorization", `Bearer ${signup.body.user.token}`);
     expect(updateValidation2.statusCode).toBe(400);
     const updateAuth = await request(app)
       .put("/api/v1/users/password-update")
@@ -140,6 +161,9 @@ describe("Testing the update password", () => {
         confirmPassword: "okay1235",
       });
     expect(updateAuth1.statusCode).toBe(401);
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "test@gmail.com" } });
   });
 });
 
@@ -189,5 +213,109 @@ describe("Testing the reset password via email", () => {
         confirmPassword: "andela26",
       });
     expect(confirmFail.statusCode).toBe(400);
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "trojansecommerce@gmail.com" } });
+  });
+});
+describe("Testing the admin routes", () => {
+  test("Get a status of 200", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      // name:"test",
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    expect(login.statusCode).toBe(200);
+    const getID = await request(app)
+      .get("/api/v1/users")
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send();
+    expect(getID.statusCode).toBe(200);
+  });
+  test("Admin assigning roles to users", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      // name:"test",
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    expect(login.statusCode).toBe(200);
+    const getID = await request(app)
+      .get("/api/v1/users")
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send();
+    const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
+    const { id } = user.dataValues;
+    const assign = await request(app)
+      .post(`/api/v1/users/${id}/role`)
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send({ role: "seller" });
+    expect(assign.statusCode).toBe(200);
+    const wrongRole = await request(app)
+      .post(`/api/v1/users/${id}/role`)
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send({ role: "hbnxbweu" });
+    expect(wrongRole.statusCode).toBe(400);
+  });
+  test("Get a status of 200 to disable an account", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      // name:"test",
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    expect(login.statusCode).toBe(200);
+    const getID = await request(app)
+      .get("/api/v1/users")
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send();
+    const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
+    const { id } = user.dataValues;
+    const disableStatus = await request(app)
+      .post(`/api/v1/users/${id}/update-status`)
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send();
+    expect(disableStatus.statusCode).toBe(200);
+    const enableStatus = await request(app)
+      .post(`/api/v1/users/${id}/update-status`)
+      .set("Authorization", `Bearer ${login.body.user.token}`)
+      .send();
+    expect(enableStatus.statusCode).toBe(200);
+  });
+  test("Get a status of 401 if its not an Admin", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      // name:"test",
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    expect(login.statusCode).toBe(200);
+    const getID = await request(app)
+      .get("/api/v1/users")
+      .set("Authorization", `Bearer ${login.body.user}`)
+      .send();
+    const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
+    const { id } = user.dataValues;
+    const disableStatus = await request(app)
+      .post(`/api/v1/users/${id}/update-status`)
+      .set("Authorization", `Bearer ${login.body.user}`)
+      .send();
+    expect(disableStatus.statusCode).toBe(401);
+  });
+  test("Get a status of 401 if its not an Admin", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      // name:"test",
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    expect(login.statusCode).toBe(200);
+    const getID = await request(app).get("/api/v1/users").send();
+    const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
+    const { id } = user.dataValues;
+    const disableStatus = await request(app)
+      .post(`/api/v1/users/${id}/update-status`)
+      .set("Authorization", `Bearer ${login.body.user}`)
+      .send();
+    expect(disableStatus.statusCode).toBe(401);
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "test1234@gmail.com" } });
   });
 });

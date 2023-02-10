@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -17,6 +16,16 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
+      },
+      role: {
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
+      isVerified:{
+        type: Sequelize.BOOLEAN,
+        defaultValue:false
       },
       createdAt: {
         allowNull: false,

@@ -4,9 +4,30 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Users", [
       {
-        firstName: "John",
-        lastName: "Doe",
-        email: "example@example.com",
+        name: "Admin",
+        email: "exampleadmin@example.com",
+        password: "example123",
+        role: "admin",
+        status: "active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // add the hashing function
+      },
+      {
+        name: "Buyer",
+        email: "examplebuyer@example.com",
+        password: "example123",
+        role: "buyer",
+        status: "active",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Seller",
+        email: "exampleseller@example.com",
+        password: "example123",
+        role: "seller",
+        status: "active",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

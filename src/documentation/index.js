@@ -37,6 +37,18 @@ const options = {
         },
       },
     },
+    "/users": {
+      get: {
+        tags: ["User"],
+        description: "Displays Account Users",
+        parameters: [],
+        responses: {
+          200: {
+            description: "successfully",
+          },
+        },
+      },
+    },
     "/users/signup": {
       post: {
         tags: ["User"],
@@ -78,6 +90,75 @@ const options = {
             },
           },
         },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/verify-email/{token}": {
+      get: {
+        tags: ["authentication"],
+        description: "User verification",
+        parameters: [     {
+          name: 'token',
+          in: 'path',
+          type: 'string',
+          description: 'verification token',
+          required: true,
+        },],
+        responses: {
+          201: {
+            description: 'Email validated successfully.',
+
+          },
+          409:{
+  description:'Sorry, your validation token is invalid or expired. ',
+
+          }
+        },
+      },
+    },
+    "/users/{id}/role": {
+      post: {
+        tags: ["User"],
+        description: "Assign user roles",
+        parameters: [{ in: "path", name: "id", required: true }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Role",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/{id}/update-status": {
+      post: {
+        tags: ["User"],
+        description: "Disable a user account",
+        parameters: [{ in: "path", name: "id", required: true }],
         responses: {
           200: {
             description: "successfully",
@@ -190,7 +271,8 @@ const options = {
                   },
                 },
                 example: {
-                  email: "janedoe@gmail.com",
+                  newPassword: "janedoe123",
+                  confirmPassword: "janedoe123",
                 },
               },
             },
@@ -260,6 +342,23 @@ const options = {
         example: {
           email: "janedoe@gmail.com",
           password: "janedoel250",
+        },
+      },
+      Role: {
+        type: "object",
+        properties: {
+          email: {
+            type: "string",
+            required: true,
+            description: "email of user",
+          },
+          role: {
+            type: "string",
+            description: "role of user",
+          },
+        },
+        example: {
+          role: "seller",
         },
       },
       PasswordUpdate: {

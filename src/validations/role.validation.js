@@ -1,4 +1,3 @@
-
 /* eslint-disable require-jsdoc */
 import Joi from "joi";
 
@@ -29,5 +28,3 @@ const validateRole = async (req, res, next) => {
   next();
 };
 export default validateRole;
-
-

@@ -57,27 +57,13 @@ class UserServices {
     return userObj;
   }
 
-  static async login(data) {
-    const { email, name } = data;
-    const user = await User.findOne({ where: { email } });
-    const token = JwtUtil.generate({
-      name,
-      email,
-      id: user.id,
-      role: user.role,
-      status: user.status,
-    });
-
-    return { name, token };
-  }
-
   static async logout(data) {
     const token = data.split(" ")[1];
     await Blacklist.create({ token });
   }
 
   static async updatePassword(data) {
-    const password = await BcryptUtil.hash(data.password);
+    const password = BcryptUtil.hash(data.password);
     await User.update({ password }, { where: { email: data.email } });
   }
 
@@ -101,7 +87,7 @@ class UserServices {
   static async resetpassword(data) {
     const { email, password } = data;
     await User.update(
-      { password: await BcryptUtil.hash(password) },
+      { password: BcryptUtil.hash(password) },
       {
         where: {
           email,

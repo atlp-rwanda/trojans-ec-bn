@@ -5,7 +5,7 @@ import Jwt from "jsonwebtoken";
 const { User } = require("../database/models");
 
 const verifyToken = async (req, res, next) => {
-  const {data} = Jwt.verify(
+  const { data } = Jwt.verify(
     `Bearer ${req.params.token}`.split(" ")[1],
     process.env.JWT_SECRET
   );

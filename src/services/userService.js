@@ -1,7 +1,9 @@
+/* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
 import BcryptUtil from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
+import generateRandom from "../utils/generateRandom";
 
 const { User } = require("../database/models");
 
@@ -28,20 +30,6 @@ class UserServices {
     return userObj;
   }
 
-  static async login(data) {
-    const { email, name } = data;
-    const user = await User.findOne({ where: { email } });
-    const token = JwtUtil.generate({
-      name,
-      email,
-      id: user.id,
-      role: user.role,
-      status: user.status,
-    });
-
-    return { name, token };
-  }
-
   static async updatePassword(data) {
     const password = await BcryptUtil.hash(data.password);
     await User.update({ password }, { where: { email: data.email } });
@@ -58,7 +46,8 @@ class UserServices {
     );
     await new SendEmail(
       olduser,
-      `${process.env.UI_URL}/users/password-reset/${token}`
+      `${process.env.UI_URL}/users/password-reset/${token}`,
+      null
     ).reset();
     return { message: "Sent", token };
   }
@@ -103,9 +92,9 @@ class UserServices {
           where: {
             id,
           },
-        },
+        }
       );
-      await new SendEmail(user, null).deactivate();
+      await new SendEmail(user, null, null).deactivate();
       return "deactivated";
     }
     if (user.status === "inactive") {
@@ -115,9 +104,9 @@ class UserServices {
           where: {
             id,
           },
-        },
+        }
       );
-      await new SendEmail(user, null).activate();
+      await new SendEmail(user, null, null).activate();
       return "activated";
     }
   }

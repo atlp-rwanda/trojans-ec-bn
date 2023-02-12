@@ -23,7 +23,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
 try {
   app.use("/api/v1", allRouter);
   app.listen(port, () => {

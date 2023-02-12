@@ -33,8 +33,16 @@ class UserController {
         return res.status(200).json({ name, token });
       }
     } catch (error) {
-      return res.status(500).json({ status: 500, message: error });
+      return res.status(500).json({ status: 500, message: "Server error" });
     }
+  }
+
+  static async verify_email(req, res) {
+    const {token} = req.params;
+
+      const response = await UserServices.updateUserStatus(token);
+      return res.status(200).json({ status: 200, response });
+
   }
 
   static async updatePassword(req, res) {

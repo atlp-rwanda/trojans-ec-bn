@@ -14,6 +14,8 @@ import passwordResetValidation from "../../validations/pass.reset.validation";
 import checkAdmin from "../../middlewares/checkAdmin";
 import checkRole from "../../middlewares/selectRole";
 import findUser from "../../middlewares/findUser";
+import verifyToken from "../../middlewares/verifyToken";
+import checkIsVerified from "../../middlewares/checkUserVerification";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -21,9 +23,10 @@ route.post(
   "/login",
   loginValidation,
   authLogin,
-  findUser,
+  findUser,checkIsVerified,
   UserController.login
 );
+route.get("/verify-email/:token", verifyToken, UserController.verify_email);
 route.put(
   "/password-update",
   extractToken,
@@ -31,6 +34,7 @@ route.put(
   checkPass,
   UserController.updatePassword
 );
+
 route.post("/password-reset-request", UserController.resetRequest);
 route.get("/password-reset/:token", resetData, UserController.getReset);
 route.post(
@@ -40,11 +44,10 @@ route.post(
   UserController.resetpassword
 );
 
-route.get("/", extractToken, checkAdmin, UserController.getUsers);
+route.get("/", extractToken,checkAdmin, UserController.getUsers);
 route.post(
   "/:id/role",
   extractToken,
-  checkAdmin,
   checkRole,
   UserController.assignRole
 );

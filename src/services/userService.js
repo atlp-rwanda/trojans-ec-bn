@@ -1,5 +1,6 @@
 /* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
+import Jwt from "jsonwebtoken";
 import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
@@ -25,8 +26,19 @@ class UserServices {
         email,
         role: user.role,
         status: user.status,
+        isVerified:user.isVerified
       }),
     };
+    const token = JwtUtil.generate({
+      name,
+      id: user.id,
+      email,
+      role: user.role,
+      status: user.status,
+      isVerified:user.isVerified
+    });
+    const url = `${process.env.UI_URL}/users/verify-email/${token}`;
+    await new SendEmail(userObj, url).sendWelcome();
     return userObj;
   }
 
@@ -110,6 +122,28 @@ class UserServices {
       return "activated";
     }
   }
+
+  static async updateUserStatus(token) {
+
+    const {data} = Jwt.verify(
+      `Bearer ${token}`.split(" ")[1],
+      process.env.JWT_SECRET
+    );
+
+
+
+    const user = await User.findOne({
+      where: { id: data.id, isVerified: false }
+    });
+
+    if (user) {
+       user.isVerified = true;
+      await user.save();
+      const response = { message: "Email validated successfully." };
+      return response;
+    }
+  }
+
 }
 
 export default UserServices;

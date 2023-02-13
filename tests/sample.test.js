@@ -4,6 +4,8 @@ import request from "supertest";
 import app from "../src/app";
 import { User } from "../src/database/models/index";
 import JwtUtil from "../src/utils/generateToken";
+import { httpRequest, httpResponse } from "./mock/user.mock.data";
+import UserController from "../src/controllers/userController";
 
 // const { User } = require("../src/database/models");
 
@@ -71,28 +73,57 @@ describe("Testing swagger", () => {
   });
 });
 
-test("user login for getting status of 200", async () => {
-  const response = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@gmail.com`,
-    password: "test12345",
+describe("Login with local passport", () => {
+  test("user login for getting status of 200", async () => {
+    const response = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@gmail.com`,
+      password: "test12345",
+    });
+    expect(response.statusCode).toBe(200);
   });
-  expect(response.statusCode).toBe(200);
+
+  test("user login for getting status of 400", async () => {
+    const response = await request(app).post("/api/v1/users/login").send({
+      email: "jimmygmcom",
+      password: "jimmy3535",
+    });
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("user login for getting status of 401", async () => {
+    const response = await request(app).post("/api/v1/users/login").send({
+      email: "jim@gmail.com",
+      password: "jimmy3535",
+    });
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("user login for getting status of 401", async () => {
+    const res = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@gmail.com`,
+      password: "jimmy35",
+    });
+    expect(res.statusCode).toBe(401);
+  });
 });
 
-test("user login for getting status of 400", async () => {
-  const response = await request(app).post("/api/v1/users/login").send({
-    email: "jimmygmcom",
-    password: "jimmy3535",
+describe("Login via google", () => {
+  test("redirect to google and authenticate", async () => {
+    const data = await UserController.googleAuth(
+      httpRequest("example@example.com"),
+      httpResponse(),
+    );
+    expect(data.body).toHaveProperty("token");
   });
-  expect(response.statusCode).toBe(400);
-});
 
-test("user login for getting status of 401", async () => {
-  const response = await request(app).post("/api/v1/users/login").send({
-    email: "jim@gmail.com",
-    password: "jimmy3535",
+  test("testing register", async () => {
+    const data = await UserController.googleAuth(
+      httpRequest("test123@gmail.com"),
+      httpResponse(),
+    );
+    expect(data.body.user).toHaveProperty("token");
   });
-  expect(response.statusCode).toBe(401);
+  // expect(response.statusCode).toBe(401);
 });
 
 describe("testing the two factor authentication", () => {
@@ -313,15 +344,20 @@ describe("Testing the admin routes", () => {
     const user = await User.findOne({ where: { email: "test1234@gmail.com" } });
     const { id } = user.dataValues;
     const assign = await request(app)
-      .post(`/api/v1/users/${id}/role`)
+      .patch(`/api/v1/users/${id}/role`)
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ role: "seller" });
     expect(assign.statusCode).toBe(200);
     const wrongRole = await request(app)
-      .post(`/api/v1/users/${id}/role`)
+      .patch(`/api/v1/users/${id}/role`)
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ role: "hbnxbweu" });
     expect(wrongRole.statusCode).toBe(400);
+    const alreadyAssigned = await request(app)
+      .patch(`/api/v1/users/${id}/role`)
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ role: "seller" });
+    expect(alreadyAssigned.statusCode).toBe(409);
   });
   test("Get a status of 200 to disable an account", async () => {
     const login = await request(app).post("/api/v1/users/login").send({

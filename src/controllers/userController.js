@@ -6,6 +6,8 @@ import generateRandom from "../utils/generateRandom";
 import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
 
+const { User } = require("../database/models");
+
 class UserController {
   static async register(req, res) {
     try {
@@ -149,5 +151,34 @@ class UserController {
       res.status(500).json({ message: err.message });
     }
   }
+
+  static async googleAuth(req, res) {
+    try {
+      const { id, displayName, email } = req.user;
+      const userExist = await User.findAll({
+        where: { email },
+      });
+      if (userExist.length > 0) {
+        const token = JwtUtil.generate({ id, email });
+        const response = {
+          name: displayName,
+          token,
+        };
+        return res.status(200).json({
+          message: req.user.displayName,
+          token,
+        });
+      }
+      const response = await UserServices.register({
+        displayName,
+        email,
+        password: "defaultPassword",
+      });
+      return res.status(201).json({ status: 201, user: response });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
+
 export default UserController;

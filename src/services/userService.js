@@ -1,8 +1,8 @@
 /* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
-import Jwt from 'jsonwebtoken'
 
-import BcryptUtil from "../utils/bcrypt";
+import Jwt from 'jsonwebtoken'
+import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
 import generateRandom from "../utils/generateRandom";

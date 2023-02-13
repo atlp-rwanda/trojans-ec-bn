@@ -2,7 +2,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Router } from "express";
 import UserController from "../../controllers/userController";
-import authLogin from "../../utils/passport";
 import signupValidation from "../../validations/signup.validation";
 import loginValidation from "../../validations/login.validation";
 import verifyUser from "../../middlewares/verifyUser";
@@ -12,10 +11,12 @@ import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
 import checkAdmin from "../../middlewares/checkAdmin";
-import checkRole from "../../middlewares/selectRole";
 import findUser from "../../middlewares/findUser";
 import verifyToken from "../../middlewares/verifyToken";
 import checkIsVerified from "../../middlewares/checkUserVerification";
+import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
+import validateRole from "../../validations/role.validation";
+
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -27,6 +28,9 @@ route.post(
   UserController.login
 );
 route.get("/verify-email/:token", verifyToken, UserController.verify_email);
+route.get("/auth/google", googleAuth);
+route.get("/google/callback", googleCallBack, UserController.googleAuth);
+
 route.put(
   "/password-update",
   extractToken,
@@ -44,11 +48,13 @@ route.post(
   UserController.resetpassword
 );
 
-route.get("/", extractToken,checkAdmin, UserController.getUsers);
-route.post(
+
+route.get("/", extractToken, checkAdmin, UserController.getUsers);
+route.patch(
   "/:id/role",
   extractToken,
-  checkRole,
+  checkAdmin,
+  validateRole,
   UserController.assignRole
 );
 route.post(

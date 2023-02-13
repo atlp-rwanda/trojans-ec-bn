@@ -1,4 +1,4 @@
-import BcryptUtil from "../utils/bcrypt";
+import { BcryptUtil } from "../utils/bcrypt";
 
 const { User } = require("../database/models");
 

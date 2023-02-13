@@ -1,7 +1,7 @@
 import passport from "passport";
 import PassportLocal from "passport-local";
 import models from "../database/models";
-import BcryptUtil from "./bcrypt";
+import { BcryptUtil } from "./bcrypt";
 
 passport.use(
   new PassportLocal.Strategy(
@@ -23,7 +23,7 @@ passport.use(
         }
       }
     }
-  )
+  ),
 );
 
 passport.serializeUser((user, done) => done(null, user));

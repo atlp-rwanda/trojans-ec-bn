@@ -103,6 +103,29 @@ const options = {
         },
       },
     },
+    "/users/verify-email/{token}": {
+      get: {
+        tags: ["authentication"],
+        description: "User verification",
+        parameters: [     {
+          name: 'token',
+          in: 'path',
+          type: 'string',
+          description: 'verification token',
+          required: true,
+        },],
+        responses: {
+          201: {
+            description: 'Email validated successfully.',
+
+          },
+          409:{
+  description:'Sorry, your validation token is invalid or expired. ',
+
+          }
+        },
+      },
+    },
     "/users/{id}/role": {
       patch: {
         tags: ["User"],

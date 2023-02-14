@@ -21,6 +21,7 @@ describe("Testing the home route", () => {
 });
 
 describe("Testing the registration route", () => {
+  let token = ""
   test("Get a status of 400", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
       // name:"test",
@@ -35,6 +36,7 @@ describe("Testing the registration route", () => {
       email: `test1234@gmail.com`,
       password: "test12345",
     });
+    token=response.body.user.token
     expect(response.statusCode).toBe(201);
   });
   test("Get a status of 409", async () => {
@@ -43,6 +45,19 @@ describe("Testing the registration route", () => {
       email: `test1234@gmail.com`,
       password: "test12345",
     });
+    expect(response.statusCode).toBe(409);
+  });
+
+  test("Verify User Get a status of 200", async () => {
+    const response = await request(app)
+      .get(`/api/v1/users/verify-email/${token}`)
+      .send();
+    expect(response.statusCode).toBe(200);
+  });
+  test("Verify User Get a status of 409", async () => {
+    const response = await request(app)
+      .get(`/api/v1/users/verify-email/${token}`)
+      .send();
     expect(response.statusCode).toBe(409);
   });
 
@@ -117,6 +132,11 @@ describe("testing the two factor authentication", () => {
       email: `test14@gmail.com`,
       password: "test12345",
     });
+
+    await request(app)
+    .get(`/api/v1/users/verify-email/${signup.body.user.token}`)
+    .send();
+
     const login = await request(app).post("/api/v1/users/login").send({
       email: `test14@gmail.com`,
       password: "test12345",

@@ -14,6 +14,8 @@ import checkAdmin from "../../middlewares/checkAdmin";
 import findUser from "../../middlewares/findUser";
 import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
+import verifyToken from "../../middlewares/verifyToken";
+import checkIsVerified from "../../middlewares/checkUserVerification";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -22,8 +24,10 @@ route.post(
   loginValidation,
   authLogin,
   findUser,
+  checkIsVerified,
   UserController.login
 );
+route.get("/verify-email/:token", verifyToken, UserController.verify_email);
 route.get("/auth/google", googleAuth);
 route.get("/google/callback", googleCallBack, UserController.googleAuth);
 route.put(

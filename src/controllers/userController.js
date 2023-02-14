@@ -39,6 +39,14 @@ class UserController {
     }
   }
 
+  static async verify_email(req, res) {
+    const {token} = req.params;
+
+      const response = await UserServices.updateUserStatus(token);
+      return res.status(200).json({ status: 200, response });
+
+  }
+
   static async updatePassword(req, res) {
     try {
       await UserServices.updatePassword(req.user);

@@ -22,9 +22,33 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
       },
-      isVerified:{
+      isVerified: {
         type: Sequelize.BOOLEAN,
-        defaultValue:false
+        defaultValue: false,
+      },
+      gender: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      birthdate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      preferredLanguage: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      preferredCurrency: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      profilePic: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      billingAddress: {
+        type: Sequelize.JSON,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

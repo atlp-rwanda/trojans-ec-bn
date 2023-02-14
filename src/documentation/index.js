@@ -107,15 +107,95 @@ const options = {
       get: {
         tags: ["User"],
         description: "User Logout",
-        security: [
-            {bearerAuth:[]}
-        ],
+        security: [{ bearerAuth: [] }],
         responses: {
           200: {
             description: "Successfully",
           },
           401: {
-            description: "Unauthorized", 
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/users/profile": {
+      patch: {
+        tags: ["User"],
+        summary: "Profile update",
+        description:
+          "You can choose application/json if you do not need to update a profile picture",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  profilePic: {
+                    type: "string",
+                    required: true,
+                    format: "binary",
+                    description: "A profile picture",
+                  },
+                  preferredLanguage: {
+                    type: "string",
+                    required: true,
+                    description: "prefered language of the user",
+                  },
+                  preferredCurrency: {
+                    type: "string",
+                    required: true,
+                    description: "prefered currency of the user",
+                  },
+                  province: {
+                    type: "string",
+                    required: true,
+                    description:
+                      "province/state depending on the country's system",
+                  },
+                  city: {
+                    type: "string",
+                    required: true,
+                    description: "The current living city",
+                  },
+                  postalCode: {
+                    type: "string",
+                    required: true,
+                    description:
+                      "postal/zip code depending on the country's system",
+                  },
+                  street: {
+                    type: "string",
+                    required: true,
+                    description: "Street address/number",
+                  },
+                  country: {
+                    type: "string",
+                    required: true,
+                    description: "The country of living",
+                  },
+                },
+              },
+            },
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/UpdateProfile",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Updated successfully",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Not logged in",
+          },
+          500: {
+            description: "Internal Server Error",
           },
         },
       },
@@ -124,22 +204,22 @@ const options = {
       get: {
         tags: ["authentication"],
         description: "User verification",
-        parameters: [     {
-          name: 'token',
-          in: 'path',
-          type: 'string',
-          description: 'verification token',
-          required: true,
-        },],
+        parameters: [
+          {
+            name: "token",
+            in: "path",
+            type: "string",
+            description: "verification token",
+            required: true,
+          },
+        ],
         responses: {
           201: {
-            description: 'Email validated successfully.',
-
+            description: "Email validated successfully.",
           },
-          409:{
-  description:'Sorry, your validation token is invalid or expired. ',
-
-          }
+          409: {
+            description: "Sorry, your validation token is invalid or expired. ",
+          },
         },
       },
     },
@@ -385,11 +465,114 @@ const options = {
             required: true,
             description: "password of user",
           },
+          gender: {
+            type: "string",
+            required: true,
+            description: "gender of the user",
+          },
+          preferredLanguage: {
+            type: "string",
+            required: true,
+            description: "prefered language of the user",
+          },
+          preferredCurrency: {
+            type: "string",
+            required: true,
+            description: "prefered currency of the user",
+          },
+          birthdate: {
+            type: "date",
+            required: true,
+            description: "The birthdate of the user",
+          },
+          province: {
+            type: "string",
+            required: true,
+            description: "province/state depending on the country's system",
+          },
+          city: {
+            type: "string",
+            required: true,
+            description: "Current city",
+          },
+          postalCode: {
+            type: "string",
+            required: true,
+            description: "postal/zip code depending on the country's system",
+          },
+          street: {
+            type: "string",
+            required: true,
+            description: "Street address/number",
+          },
+          country: {
+            type: "string",
+            required: true,
+            description: "The country",
+          },
         },
         example: {
           name: "Jane Doe",
           email: "janedoe@gmail.com",
           password: "janedoel250",
+          gender: "Male",
+          preferredLanguage: "English",
+          preferredCurrency: "RWF",
+          birthdate: "01/01/2000",
+          city: "Kigali",
+          province: "Kigali",
+          postalCode: "90231",
+          street: "KG 305 ST",
+          country: "Rwanda",
+        },
+      },
+      UpdateProfile: {
+        type: "object",
+        properties: {
+          preferredLanguage: {
+            type: "string",
+            required: true,
+            description: "prefered language of the user",
+          },
+          preferredCurrency: {
+            type: "string",
+            required: true,
+            description: "prefered currency of the user",
+          },
+          province: {
+            type: "string",
+            required: true,
+            description: "province/state depending on the country's system",
+          },
+          city: {
+            type: "string",
+            required: true,
+            description: "The current city",
+          },
+          postalCode: {
+            type: "string",
+            required: true,
+            description: "postal/zip code depending on the country's system",
+          },
+          street: {
+            type: "string",
+            required: true,
+            description: "Street address/number",
+          },
+          country: {
+            type: "string",
+            required: true,
+            description: "Your country",
+          },
+        },
+        example: {
+          preferredLanguage: "English",
+          preferredCurrency: "RWF",
+          city: "Kigali",
+          province: "Kigali",
+          postalCode: "90231",
+          street: "KG 305 ST",
+          country: "Rwanda",
         },
       },
       Login: {

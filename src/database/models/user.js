@@ -21,11 +21,21 @@ module.exports = (sequelize, DataTypes) => {
       role: { type: DataTypes.STRING, defaultValue: "buyer" },
       status: { type: DataTypes.STRING, defaultValue: "active" },
       isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
+      gender: DataTypes.STRING,
+      birthdate: DataTypes.DATE,
+      preferredLanguage: DataTypes.STRING,
+      preferredCurrency: DataTypes.STRING,
+      profilePic: {
+        type: DataTypes.STRING,
+        defaultValue:
+          "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
+      },
+      billingAddress: DataTypes.JSONB,
     },
     {
       sequelize,
       modelName: "User",
-    },
+    }
   );
   return User;
 };

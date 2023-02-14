@@ -16,9 +16,18 @@ import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
 import verifyToken from "../../middlewares/verifyToken";
 import checkIsVerified from "../../middlewares/checkUserVerification";
+import profileUpdateValidation from "../../validations/profile.update.validation";
+import upload from "../../utils/multer";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
+route.patch(
+  "/profile",
+  extractToken,
+  upload.single("profilePic"),
+  profileUpdateValidation,
+  UserController.updateProfile
+);
 route.post(
   "/login",
   loginValidation,

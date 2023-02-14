@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import request from "supertest";
 import app from "../src/app";
 import { User, Blacklist } from "../src/database/models/index";
@@ -21,7 +20,7 @@ describe("Testing the home route", () => {
 });
 
 describe("Testing the registration route", () => {
-  let token = ""
+  let token = "";
   test("Get a status of 400", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
       // name:"test",
@@ -35,8 +34,17 @@ describe("Testing the registration route", () => {
       name: "test",
       email: `test1234@gmail.com`,
       password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
-    token=response.body.user.token
+    token = response.body.user.token;
     expect(response.statusCode).toBe(201);
   });
   test("Get a status of 409", async () => {
@@ -44,6 +52,15 @@ describe("Testing the registration route", () => {
       name: "test",
       email: `test1234@gmail.com`,
       password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
     expect(response.statusCode).toBe(409);
   });
@@ -64,18 +81,28 @@ describe("Testing the registration route", () => {
   // afterAll(async () => {
   //     await User.destroy({ where : {email:"test1234@gmail.com"} });
   // });
- 
-    
-  test("test server error failed to signup the user ",async ()=>{
-    jest.spyOn(User, "create").mockImplementation(
-      jest.fn().mockRejectedValue(new Error("Database error"))
-    );
+
+  test("test server error failed to signup the user ", async () => {
+    jest
+      .spyOn(User, "create")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
     const response = await request(app).post("/api/v1/users/signup").send({
       name: "test",
       email: `test12345@gmail.com`,
       password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
-    expect(response.statusCode).toBe(500)
+    expect(response.statusCode).toBe(500);
   });
 });
 describe("Testing swagger", () => {
@@ -123,7 +150,7 @@ describe("Login via google", () => {
   test("redirect to google and authenticate", async () => {
     const data = await UserController.googleAuth(
       httpRequest("example@example.com"),
-      httpResponse(),
+      httpResponse()
     );
     expect(data.body).toHaveProperty("token");
   });
@@ -131,7 +158,7 @@ describe("Login via google", () => {
   test("testing register", async () => {
     const data = await UserController.googleAuth(
       httpRequest("test123@gmail.com"),
-      httpResponse(),
+      httpResponse()
     );
     expect(data.body.user).toHaveProperty("token");
   });
@@ -144,11 +171,20 @@ describe("testing the two factor authentication", () => {
       name: "test",
       email: `test14@gmail.com`,
       password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
 
     await request(app)
-    .get(`/api/v1/users/verify-email/${signup.body.user.token}`)
-    .send();
+      .get(`/api/v1/users/verify-email/${signup.body.user.token}`)
+      .send();
 
     const login = await request(app).post("/api/v1/users/login").send({
       email: `test14@gmail.com`,
@@ -172,6 +208,15 @@ describe("testing the two factor authentication", () => {
       name: "test",
       email: `test14@gmail.com`,
       password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
     const login = await request(app).post("/api/v1/users/login").send({
       email: `test14@gmail.com`,
@@ -207,28 +252,35 @@ describe("testing the two factor authentication", () => {
 });
 describe("User logout", () => {
   test("User logout for getting status of 200 ", async () => {
-    const user = await request(app).post("/api/v1/users/signup")
-    .send({
+    const user = await request(app).post("/api/v1/users/signup").send({
       name: "test",
       email: `test@gmail.com`,
       password: "test1234",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
-   await request(app)
-    .get(`/api/v1/users/verify-email/${user.body.user.token}`)
-    .send();
-    const userLogin = await request(app).post("/api/v1/users/login")
-    .send({
+    await request(app)
+      .get(`/api/v1/users/verify-email/${user.body.user.token}`)
+      .send();
+    const userLogin = await request(app).post("/api/v1/users/login").send({
       email: `test@gmail.com`,
       password: "test1234",
-    })
-    const token= userLogin.body.token;
+    });
+    const token = userLogin.body.token;
     const response = await request(app)
       .get("/api/v1/users/logout")
       .set("Authorization", "Bearer " + token)
       .send();
     expect(response.statusCode).toBe(200);
   });
-  
+
   test("User logout for getting status of 401", async () => {
     const token = process.env.TOKEN;
     const response = await request(app)
@@ -237,38 +289,45 @@ describe("User logout", () => {
       .send();
     expect(response.statusCode).toBe(401);
   });
- 
+
   test("User logout for getting status of 500 ", async () => {
-   
-    const user = await request(app).post("/api/v1/users/signup")
-    .send({
+    const user = await request(app).post("/api/v1/users/signup").send({
       name: "test1",
       email: `test1@gmail.com`,
       password: "test1234",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
     await request(app)
-    .get(`/api/v1/users/verify-email/${user.body.user.token}`)
-    .send();
-    const userLogin = await request(app).post("/api/v1/users/login")
-    .send({
+      .get(`/api/v1/users/verify-email/${user.body.user.token}`)
+      .send();
+    const userLogin = await request(app).post("/api/v1/users/login").send({
       email: `test1@gmail.com`,
       password: "test1234",
-    })
-    const token= userLogin.body.token;
-    jest.spyOn(Blacklist, "create").mockImplementation(
-      jest.fn().mockRejectedValue(new Error("Database error"))
-    );
+    });
+    const token = userLogin.body.token;
+    jest
+      .spyOn(Blacklist, "create")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
     const response = await request(app)
       .get("/api/v1/users/logout")
       .set("Authorization", "Bearer " + token)
       .send();
     expect(response.statusCode).toBe(500);
-  }); 
-  
+  });
+
   afterAll(async () => {
     await User.destroy({ where: { email: "test@gmail.com" } });
   });
-  
 });
 
 describe("Testing the update password", () => {
@@ -277,6 +336,15 @@ describe("Testing the update password", () => {
       name: "test",
       email: `test@gmail.com`,
       password: "test1234",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
     const update = await request(app)
       .put("/api/v1/users/password-update")
@@ -352,6 +420,15 @@ describe("Testing the reset password via email", () => {
       name: "test",
       email: `trojansecommerce@gmail.com`,
       password: "test1234",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
     });
     const resetRequest = await request(app)
       .post("/api/v1/users/password-reset-request")
@@ -493,5 +570,102 @@ describe("Testing the admin routes", () => {
   });
   afterAll(async () => {
     await User.destroy({ where: { email: "test1234@gmail.com" } });
+  });
+});
+
+describe("Test user profile update", () => {
+  let userToken;
+  beforeAll(async () => {
+    const loginRes = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+
+    userToken = loginRes.body.token;
+  });
+
+  test("Should be logged in to update your profile", async () => {
+    const response = await request(app).patch("/api/v1/users/profile").send({
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
+    });
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("User doesn't exist", async () => {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWUiOiJNdXNoYWlqYSIsImVtYWlsIjoiamFja3NvbkBnbWFpbC5jb20ifSwiaWF0IjoxNjc1OTE4MjE1fQ.jOwSOO4AZWNGNIx80gyus7l28dqH7tE55deI0vQceaQ";
+    const response = await request(app)
+      .patch("/api/v1/users/profile")
+      .send({
+        preferredLanguage: "English",
+        preferredCurrency: "RWF",
+        city: "Kigali",
+        province: "Kigali",
+        postalCode: "90231",
+        street: "KG 305 ST",
+        country: "Rwanda",
+      })
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("Testing bad request", async () => {
+    const response = await request(app)
+      .patch("/api/v1/users/profile")
+      .send({})
+      .set("Authorization", `Bearer ${userToken}`);
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("Test success profile update", async () => {
+    const response = await request(app)
+      .patch("/api/v1/users/profile")
+      .send({
+        preferredLanguage: "English",
+        preferredCurrency: "RWF",
+        city: "Kigali",
+        province: "Kigali",
+        postalCode: "90231",
+        street: "KG 305 ST",
+        country: "Rwanda",
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("Test Page not found", async () => {
+    const loginRes = await request(app).post("/api/login").send({
+      email: `exampleemail2@gmail.com`,
+      password: "test1234",
+    });
+    expect(loginRes.statusCode).toBe(404);
+  });
+
+  test("Test Internal server error", async () => {
+    jest
+      .spyOn(User, "update")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
+
+    const response = await request(app)
+      .patch("/api/v1/users/profile")
+      .send({
+        preferredLanguage: "English",
+        preferredCurrency: "RWF",
+        city: "Kigali",
+        province: "Kigali",
+        postalCode: "90231",
+        street: "KG 305 ST",
+        country: "Rwanda",
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+    expect(response.statusCode).toBe(500);
   });
 });

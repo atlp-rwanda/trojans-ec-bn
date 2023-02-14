@@ -1,12 +1,12 @@
-/* eslint-disable prefer-template */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable */
+
 import request from "supertest";
 import app from "../src/app";
-import { User } from "../src/database/models/index";
+import { User, Blacklist } from "../src/database/models/index";
 import JwtUtil from "../src/utils/generateToken";
 import { httpRequest, httpResponse } from "./mock/user.mock.data";
 import UserController from "../src/controllers/userController";
-
+import "dotenv/config";
 // const { User } = require("../src/database/models");
 
 // afterAll(async () => {
@@ -64,6 +64,19 @@ describe("Testing the registration route", () => {
   // afterAll(async () => {
   //     await User.destroy({ where : {email:"test1234@gmail.com"} });
   // });
+ 
+    
+  test("test server error failed to signup the user ",async ()=>{
+    jest.spyOn(User, "create").mockImplementation(
+      jest.fn().mockRejectedValue(new Error("Database error"))
+    );
+    const response = await request(app).post("/api/v1/users/signup").send({
+      name: "test",
+      email: `test12345@gmail.com`,
+      password: "test12345",
+    });
+    expect(response.statusCode).toBe(500)
+  });
 });
 describe("Testing swagger", () => {
   test("Get a status of 304", async () => {
@@ -191,6 +204,71 @@ describe("testing the two factor authentication", () => {
   afterAll(async () => {
     await User.destroy({ where: { email: "test14@gmail.com" } });
   });
+});
+describe("User logout", () => {
+  test("User logout for getting status of 200 ", async () => {
+    const user = await request(app).post("/api/v1/users/signup")
+    .send({
+      name: "test",
+      email: `test@gmail.com`,
+      password: "test1234",
+    });
+   await request(app)
+    .get(`/api/v1/users/verify-email/${user.body.user.token}`)
+    .send();
+    const userLogin = await request(app).post("/api/v1/users/login")
+    .send({
+      email: `test@gmail.com`,
+      password: "test1234",
+    })
+    const token= userLogin.body.token;
+    const response = await request(app)
+      .get("/api/v1/users/logout")
+      .set("Authorization", "Bearer " + token)
+      .send();
+    expect(response.statusCode).toBe(200);
+  });
+  
+  test("User logout for getting status of 401", async () => {
+    const token = process.env.TOKEN;
+    const response = await request(app)
+      .get("/api/v1/users/logout")
+      .set("Authorization", token)
+      .send();
+    expect(response.statusCode).toBe(401);
+  });
+ 
+  test("User logout for getting status of 500 ", async () => {
+   
+    const user = await request(app).post("/api/v1/users/signup")
+    .send({
+      name: "test1",
+      email: `test1@gmail.com`,
+      password: "test1234",
+    });
+    await request(app)
+    .get(`/api/v1/users/verify-email/${user.body.user.token}`)
+    .send();
+    const userLogin = await request(app).post("/api/v1/users/login")
+    .send({
+      email: `test1@gmail.com`,
+      password: "test1234",
+    })
+    const token= userLogin.body.token;
+    jest.spyOn(Blacklist, "create").mockImplementation(
+      jest.fn().mockRejectedValue(new Error("Database error"))
+    );
+    const response = await request(app)
+      .get("/api/v1/users/logout")
+      .set("Authorization", "Bearer " + token)
+      .send();
+    expect(response.statusCode).toBe(500);
+  }); 
+  
+  afterAll(async () => {
+    await User.destroy({ where: { email: "test@gmail.com" } });
+  });
+  
 });
 
 describe("Testing the update password", () => {

@@ -103,6 +103,23 @@ const options = {
         },
       },
     },
+    "/users/logout": {
+      get: {
+        tags: ["User"],
+        description: "User Logout",
+        security: [
+            {bearerAuth:[]}
+        ],
+        responses: {
+          200: {
+            description: "Successfully",
+          },
+          401: {
+            description: "Unauthorized", 
+          },
+        },
+      },
+    },
     "/users/verify-email/{token}": {
       get: {
         tags: ["authentication"],

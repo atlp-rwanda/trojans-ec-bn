@@ -8,6 +8,7 @@ import "./utils/googleAuth";
 import allRouter from "./routes/index";
 import documentation from "./documentation/index";
 import "dotenv/config";
+import notFound from "./controllers/notFound";
 
 const app = express();
 
@@ -16,7 +17,7 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: "*",
-  }),
+  })
 );
 app.use(express.json());
 app.use(morgan("dev"));
@@ -40,4 +41,7 @@ try {
 } catch (error) {
   console.log(error);
 }
+
+app.all("*", notFound);
+
 export default app;

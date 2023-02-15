@@ -13,7 +13,16 @@ const signUpSchema = Joi.object({
     max: 15,
     lowerCase: 1,
     numeric: 1,
-  }),
+  }).required(),
+  gender: Joi.string().min(4).trim().required(),
+  birthdate: Joi.date().required(),
+  preferredLanguage: Joi.string().min(2).trim().required(),
+  preferredCurrency: Joi.string().min(1).trim().required(),
+  street: Joi.string().min(3).trim().required(),
+  country: Joi.string().min(3).trim().required(),
+  postalCode: Joi.string().min(5).trim().required(),
+  city: Joi.string().min(3).trim().required(),
+  province: Joi.string().min(3).trim().required(),
 });
 
 const validatesignUp = validateForm(signUpSchema);

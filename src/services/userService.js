@@ -10,11 +10,25 @@ const { User, Blacklist } = require("../database/models");
 
 class UserServices {
   static async register(data) {
-    const { name, email, password } = data;
+    const {
+      name,
+      email,
+      password,
+      gender,
+      birthdate,
+      preferredLanguage,
+      preferredCurrency,
+      billingAddress,
+    } = data;
     const user = await User.create({
       name,
       email,
       password: await BcryptUtil.hash(password),
+      gender,
+      birthdate,
+      preferredLanguage,
+      preferredCurrency,
+      billingAddress,
     });
     await user.save();
     const userObj = {
@@ -26,7 +40,8 @@ class UserServices {
         email,
         role: user.role,
         status: user.status,
-        isVerified:user.isVerified
+        isVerified: user.isVerified,
+        profilePic: user.profilePic,
       }),
     };
     const token = JwtUtil.generate({
@@ -35,7 +50,7 @@ class UserServices {
       email,
       role: user.role,
       status: user.status,
-      isVerified:user.isVerified
+      isVerified: user.isVerified,
     });
     const url = `${process.env.UI_URL}/users/verify-email/${token}`;
     await new SendEmail(userObj, url).sendWelcome();
@@ -143,26 +158,48 @@ class UserServices {
   }
 
   static async updateUserStatus(token) {
-
-    const {data} = Jwt.verify(
+    const { data } = Jwt.verify(
       `Bearer ${token}`.split(" ")[1],
       process.env.JWT_SECRET
     );
 
-
-
     const user = await User.findOne({
-      where: { id: data.id, isVerified: false }
+      where: { id: data.id, isVerified: false },
     });
 
     if (user) {
-       user.isVerified = true;
+      user.isVerified = true;
       await user.save();
       const response = { message: "Email validated successfully." };
       return response;
     }
   }
 
+  static async updateProfile(data) {
+    const user = await User.findOne({ where: { email: data.email } });
+    if (data.profilePic) {
+      await User.update(
+        { profilePic: data.profilePic },
+        {
+          where: {
+            id: user.id,
+          },
+        }
+      );
+    }
+    await User.update(
+      {
+        preferedLanguage: data.preferedLanguage,
+        preferredCurrency: data.preferredCurrency,
+        billingAddress: data.billingAddress,
+      },
+      {
+        where: {
+          id: user.id,
+        },
+      }
+    );
+  }
 }
 
 export default UserServices;

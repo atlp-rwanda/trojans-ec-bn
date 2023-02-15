@@ -5,13 +5,45 @@ import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
 import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
+import cloudinary from "../utils/clodinary.config";
 
 const { User } = require("../database/models");
 
 class UserController {
   static async register(req, res) {
     try {
-      const response = await UserServices.register(req.body);
+      const {
+        name,
+        email,
+        password,
+        gender,
+        birthdate,
+        preferredLanguage,
+        preferredCurrency,
+        street,
+        city,
+        province,
+        postalCode,
+        country,
+      } = req.body;
+      const billingAddress = JSON.stringify({
+        street,
+        city,
+        province,
+        postalCode,
+        country,
+      });
+      const userData = {
+        name,
+        email,
+        password,
+        gender,
+        birthdate,
+        preferredLanguage,
+        preferredCurrency,
+        billingAddress,
+      };
+      const response = await UserServices.register(userData);
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
       return res.status(500).json({ status: 500, error: "Server error" });
@@ -20,18 +52,28 @@ class UserController {
 
   static async login(req, res) {
     try {
-      const { name, email, role, status, id } = req.user;
+      const { name, email, role, status, id, profilePic } = req.user;
 
       if (role === "seller" || role === "Admin") {
         const randomAuth = generateRandom();
         const Options = {
           expiresIn: "120000",
         };
-        const token = JwtUtil.generate({ name, email, randomAuth }, Options);
+        const token = JwtUtil.generate(
+          { name, email, profilePic, randomAuth },
+          Options
+        );
         await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
         return res.status(200).json({ name, token, randomAuth });
       } else {
-        const token = JwtUtil.generate({ name, email, id, role, status });
+        const token = JwtUtil.generate({
+          name,
+          email,
+          id,
+          role,
+          status,
+          profilePic,
+        });
         return res.status(200).json({ name, token });
       }
     } catch (error) {
@@ -40,10 +82,10 @@ class UserController {
   }
 
   static async verify_email(req, res) {
-    const {token} = req.params;
+    const { token } = req.params;
 
-      const response = await UserServices.updateUserStatus(token);
-      return res.status(200).json({ status: 200, response });
+    const response = await UserServices.updateUserStatus(token);
+    return res.status(200).json({ status: 200, response });
   }
 
   static async logout(req, res) {
@@ -179,14 +221,58 @@ class UserController {
           token,
         });
       }
+
       const response = await UserServices.register({
         displayName,
         email,
         password: "defaultPassword",
+        gender: "Male",
+        preferredLanguage: "English",
+        preferredCurrency: "RWF",
+        birthdate: "01/01/2000",
+        billingAddress:
+          '{"street":"KN 05 ST","city":"Kigali","province":"Kigali","postalCode":"00000","country":"Rwanda"}',
       });
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  static async updateProfile(req, res) {
+    try {
+      const data = {};
+      data.email = req.user.email;
+      if (req.file) {
+        const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+          folder: "profiles",
+        });
+        data.profilePic = uploadedImage.secure_url;
+      }
+      const {
+        preferredCurrency,
+        preferredLanguage,
+        street,
+        city,
+        province,
+        postalCode,
+        country,
+      } = req.body;
+      const billingAddress = JSON.stringify({
+        street,
+        city,
+        province,
+        postalCode,
+        country,
+      });
+      data.preferredCurrency = preferredCurrency;
+      data.preferredLanguage = preferredLanguage;
+      data.billingAddress = billingAddress;
+
+      await UserServices.updateProfile(data);
+      res.status(200).json({ message: "Updated successfully" });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: error });
     }
   }
 }

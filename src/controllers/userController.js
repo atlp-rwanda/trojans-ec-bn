@@ -45,6 +45,7 @@ class UserController {
       const response = await UserServices.register(userData);
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }

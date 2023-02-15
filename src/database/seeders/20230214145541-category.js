@@ -9,6 +9,9 @@ module.exports = {
         {
           name: "clothing",
         },
+        {
+          name: "food",
+        },
       ],
       {}
     ),

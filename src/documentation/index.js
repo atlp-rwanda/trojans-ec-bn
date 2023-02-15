@@ -592,13 +592,11 @@ const options = {
         },
       },
     },
-     "/productWishes": {
+    "/productWishes": {
       post: {
         tags: ["WishList"],
         description: "add/remove product to wishList",
-        parameters: [
-         
-        ],
+        parameters: [],
         requestBody: {
           required: true,
           content: {
@@ -614,7 +612,6 @@ const options = {
                 },
                 example: {
                   product_id: 1,
-                
                 },
               },
             },
@@ -638,12 +635,8 @@ const options = {
       get: {
         tags: ["WishList"],
         description: "get products in wishList",
-        parameters: [
-         
-        ],
-        requestBody: {
-       
-        },
+        parameters: [],
+        requestBody: {},
         responses: {
           200: {
             description: "Success",
@@ -677,9 +670,7 @@ const options = {
             },
           },
         ],
-        requestBody: {
-         
-        },
+        requestBody: {},
         responses: {
           200: {
             description: "Success",
@@ -713,9 +704,7 @@ const options = {
             },
           },
         ],
-        requestBody: {
-         
-        },
+        requestBody: {},
         responses: {
           200: {
             description: "Success",
@@ -732,8 +721,78 @@ const options = {
         },
       },
     },
-  
- 
+    "/products/search": {
+      get: {
+        tags: ["Product"],
+        description: "searching a product",
+        parameters: [
+          {
+            in: "query",
+            name: "sellerId",
+            description: "a seller you want to search for",
+            required: false,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+          {
+            in: "query",
+            name: "categoryId",
+            description: "a category you want to search for",
+            required: false,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+          {
+            in: "query",
+            name: "price",
+            description: "a seller you want to search for",
+            required: false,
+            schema: {
+              type: "string",
+              format: "string",
+            },
+          },
+          {
+            in: "query",
+            name: "product",
+            description: "a product you want to search for",
+            required: false,
+            schema: {
+              type: "string",
+              format: "string",
+            },
+          },
+          {
+            in: "query",
+            name: "expiryDate",
+            description: "product that will expire on the specify date",
+            required: false,
+            schema: {
+              type: "string",
+              format: "string",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
   },
   securityDefinitions: {
     google_oautho2: {
@@ -1008,7 +1067,6 @@ const options = {
             required: true,
             description: "product id",
           },
-         
         },
       },
     },

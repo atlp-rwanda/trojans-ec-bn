@@ -14,12 +14,11 @@ route.post(
   ProductWishesController.addToProductWishes
 );
 route.get(
-    "/",
-    extractToken,
-    checkRole(["buyer"]),
-  
-    ProductWishesController.getProductWishes
-  );
+  "/",
+  extractToken,
+  checkRole(["buyer"]),
 
+  ProductWishesController.getProductWishes
+);
 
 export default route;

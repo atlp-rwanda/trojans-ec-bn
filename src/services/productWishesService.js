@@ -8,13 +8,15 @@ class ProductWishesService {
     const productId = req.body.product_id;
     const { id, name, email } = req.user;
 
-    const wish = await ProductWishes.findOne({ where: { product_id:productId } });
+    const wish = await ProductWishes.findOne({
+      where: { product_id: productId },
+    });
 
     if (wish) {
       let users = wish.users.filter((item) => JSON.parse(item).id === id);
       if (users.length > 0) {
         users = wish.users.filter((item) => JSON.parse(item).id !== id);
-        console.log(id)
+        console.log(id);
         wish.users = users;
         await wish.save();
         if (wish.users.length === 0) {
@@ -24,20 +26,18 @@ class ProductWishesService {
       }
 
       users.push({ id, name, email });
-      wish.users = [JSON.stringify(...users),...wish.users];
+      wish.users = [JSON.stringify(...users), ...wish.users];
       await wish.save();
       return "added to ProductWishes";
-    }else{
-
+    } else {
       const productWish = await ProductWishes.create({
         product_id: productId,
         users: [{ id, name, email }],
       });
-  
+
       await productWish.save();
       return "added to ProductWishes";
     }
-
   }
 
   static async getProductWishes(req) {
@@ -48,8 +48,7 @@ class ProductWishesService {
         include: Product,
       })) || [];
     const newList = [];
-    wishList.forEach( (element)=> {
- 
+    wishList.forEach((element) => {
       const users = element.users || [];
       const user = users.filter((item) => JSON.parse(item).id === id);
       if (user.length > 0) {
@@ -59,7 +58,7 @@ class ProductWishesService {
 
     return newList;
   }
-  
+
   static async getProductWishesByProduct(req) {
     const { id } = req.params;
     const wishList = await ProductWishes.findAll({
@@ -73,15 +72,17 @@ class ProductWishesService {
   static async getProductWishesByUser(req) {
     const { id } = req.params;
     const wishList =
-      await ProductWishes.findAll({
+      (await ProductWishes.findAll({
         attributes: { exclude: ["product_id", "createdAt", "updatedAt"] },
         include: Product,
-      }) || [];
+      })) || [];
     const newList = [];
     wishList.forEach((element) => {
       const users = element.users || [];
-      const user = users.filter((item) => JSON.parse(item).id.toString() === id.toString());
-      console.log(user)
+      const user = users.filter(
+        (item) => JSON.parse(item).id.toString() === id.toString(),
+      );
+      console.log(user);
       if (user.length > 0) {
         newList.push({ id: element.id, product: element.Product });
       }

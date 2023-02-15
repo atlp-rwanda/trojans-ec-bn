@@ -1,7 +1,7 @@
 import { Router } from "express";
 import ProductController from "../../controllers/productController";
-import checkAdmin from "../../middlewares/checkAdmin";
 import extractToken from "../../middlewares/extractToken";
+import checkRole from "../../middlewares/checkRole";
 import {
   verifyCategory,
   verifyCategoryExists,
@@ -13,7 +13,7 @@ const route = Router();
 route.post(
   "/",
   extractToken,
-  checkAdmin,
+  checkRole(["admin"]),
   validateCategory,
   verifyCategory,
   ProductController.addCategory
@@ -22,7 +22,7 @@ route.get("/", ProductController.viewCategories);
 route.delete(
   "/",
   extractToken,
-  checkAdmin,
+  checkRole(["admin"]),
   validateCategory,
   verifyCategoryExists,
   ProductController.deleteCategory

@@ -59,7 +59,7 @@ class UserController {
           expiresIn: "120000",
         };
         const token = JwtUtil.generate(
-          { name, email, role, status, id, randomAuth },
+          { name, email, role, status, id, profilePic, randomAuth },
           Options
         );
         await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
@@ -149,9 +149,9 @@ class UserController {
   static async getUsers(req, res) {
     try {
       const response = await UserServices.getUsers();
-      return res.status(200).json({ users: response });
+      return res.status(200).json({ status: 200, users: response });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
 
@@ -174,7 +174,7 @@ class UserController {
   static async disableAccount(req, res) {
     try {
       const response = await UserServices.disableAccount(req.params.id);
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: `User was successfully ${response}`,
       });
@@ -191,15 +191,15 @@ class UserController {
       const response = await TwoFactorAuthenticator.validateTwoFacor(req);
       if (response.value) {
         return res.status(200).json({
-          status: "200",
+          status: 200,
           token: response.newToken,
           message: "authentication was successful",
         });
       } else {
-        return res.status(400).json({ status: "400", data: response.message });
+        return res.status(400).json({ status: 400, data: response.message });
       }
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ status: 500, message: err.message });
     }
   }
 
@@ -216,6 +216,7 @@ class UserController {
           token,
         };
         return res.status(200).json({
+          status: 200,
           message: req.user.displayName,
           token,
         });
@@ -234,7 +235,7 @@ class UserController {
       });
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
-      console.log(error);
+      return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
 
@@ -266,7 +267,7 @@ class UserController {
       data.billingAddress = billingAddress;
 
       await UserServices.updateProfile(data);
-      res.status(200).json({ message: "Updated successfully" });
+      return res.status(200).json({ message: "Updated successfully" });
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });
     }

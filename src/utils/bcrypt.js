@@ -1,7 +1,6 @@
 /* eslint-disable require-jsdoc */
-
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-
+// import { genSaltSync, hashSync, compareSync } from "bcrypt";
 class BcryptUtil {
   static hash(string) {
     const pasSalt = genSaltSync(10, "b");
@@ -14,5 +13,5 @@ class BcryptUtil {
     return validPass;
   }
 }
-
+// export { BcryptUtil };
 module.exports = { BcryptUtil };

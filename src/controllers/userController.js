@@ -5,7 +5,6 @@ import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
 import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
-import cloudinary from "../utils/clodinary.config";
 
 const { User } = require("../database/models");
 
@@ -60,7 +59,7 @@ class UserController {
           expiresIn: "120000",
         };
         const token = JwtUtil.generate(
-          { name, email, profilePic, randomAuth },
+          { name, email, role, status, id, randomAuth },
           Options
         );
         await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
@@ -244,10 +243,7 @@ class UserController {
       const data = {};
       data.email = req.user.email;
       if (req.file) {
-        const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-          folder: "profiles",
-        });
-        data.profilePic = uploadedImage.secure_url;
+        data.profilePic = req.file.path;
       }
       const {
         preferredCurrency,

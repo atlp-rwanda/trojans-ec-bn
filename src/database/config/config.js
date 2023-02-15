@@ -35,7 +35,7 @@ module.exports = {
     dialect: "postgres",
     logging: false,
     protocol: "postgres",
-    dialectOptions: dialectToggle(), // Have to be commented to be used on local db
+    dialectOptions: dialectToggle(),
   },
   test: {
     username: TEST_DATABASE_USER,
@@ -46,7 +46,7 @@ module.exports = {
     dialect: "postgres",
     logging: false,
     protocol: "postgres",
-    dialectOptions: dialectToggle(), // Have to be commented to be used on local db
+    dialectOptions: dialectToggle(),
   },
   production: {
     username: DATABASE_USER,

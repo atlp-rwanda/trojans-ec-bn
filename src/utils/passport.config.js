@@ -1,7 +1,8 @@
 import passport from "passport";
 import PassportLocal from "passport-local";
 import models from "../database/models";
-import { BcryptUtil } from "./bcrypt";
+
+const { BcryptUtil } = require("./bcrypt");
 
 passport.use(
   new PassportLocal.Strategy(

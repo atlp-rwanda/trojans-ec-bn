@@ -46,6 +46,9 @@ const options = {
           200: {
             description: "successfully",
           },
+          401: {
+            description: "Unauthorized",
+          },
         },
       },
     },
@@ -422,7 +425,118 @@ const options = {
             description: "Bad Request",
           },
           500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
+    "/products": {
+      post: {
+        tags: ["Product"],
+        description: "creating/adding an item to sell",
+        requestBody: {
+          content: {
+            "multipart/form-data": {
+              schema: {
+                $ref: "#/components/schemas/Product",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
             description: "internal server error",
+          },
+        },
+      },
+    },
+    "/category": {
+      post: {
+        tags: ["Product"],
+        description: "Adding a category",
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    description: "Name of the category",
+                    example: "retail",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "internal server error",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+      get: {
+        tags: ["Product"],
+        description: "Viewing categories",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+      delete: {
+        tags: ["Product"],
+        description: "Adding a category",
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    description: "Name of the category",
+                    example: "retail",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "Internal server error",
+          },
+          401: {
+            description: "Unauthorized",
           },
         },
       },
@@ -646,6 +760,51 @@ const options = {
         },
         example: {
           token: "123456",
+        },
+      },
+      Product: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            required: true,
+            description: "Name of the item",
+          },
+          price: {
+            type: "number",
+            required: true,
+            description: "Price of the item",
+          },
+          categoryId: {
+            type: "integer",
+            required: true,
+            description: "Category of the item",
+          },
+          quantity: {
+            type: "integer",
+            required: true,
+            description: "Number of the items",
+          },
+          expiryDate: {
+            type: "date",
+            required: true,
+            description: "Expiry Date of the item",
+            example: "2023-02-30",
+          },
+          bonus: {
+            type: "number",
+            required: true,
+            description: "Bonus section",
+          },
+          image: {
+            type: "array",
+            items: {
+              type: "string",
+              format: "binary",
+              required: true,
+              minItems: 4,
+            },
+          },
         },
       },
     },

@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import "dotenv/config";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -7,4 +7,10 @@ cloudinary.config({
   api_secret: process.env.CLOUD_KEY_SECRET,
 });
 
-export default cloudinary;
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "TrojansEcommerce",
+  },
+});
+export default storage;

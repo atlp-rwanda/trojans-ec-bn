@@ -1,4 +1,4 @@
-const { Product, Category } = require("../database/models");
+const { Category } = require("../database/models");
 
 const verifyCategory = async (req, res, next) => {
   try {

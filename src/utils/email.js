@@ -82,6 +82,14 @@ class SendEmail {
   async sendGooglePassword() {
     await this.send("googlePassword", "Default Password");
   }
+
+  async expiredPassword() {
+    await this.send("expiredPassword", "Password expired");
+  }
+
+  async passwordUpdated() {
+    await this.send("passwordUpdated", "Password updated");
+  }
 }
 
 export default SendEmail;

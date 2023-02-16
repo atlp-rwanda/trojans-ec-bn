@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       birthdate: DataTypes.DATE,
       preferredLanguage: DataTypes.STRING,
       preferredCurrency: DataTypes.STRING,
+      lastTimePasswordUpdated: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
       profilePic: {
         type: DataTypes.STRING,
         defaultValue:

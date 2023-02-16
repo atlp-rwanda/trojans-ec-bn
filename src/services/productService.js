@@ -17,7 +17,7 @@ class ProductServices {
       req.body.expiryDate = "2060/01/01";
     }
     const { price, name, bonus, expiryDate, categoryId, quantity } = req.body;
-    // const images = req.files.map((img) => img.path);
+    const images = req.files.map((img) => img.path);
     const item = await Product.create({
       sellerId: req.user.id,
       price,
@@ -26,7 +26,7 @@ class ProductServices {
       categoryId,
       quantity,
       expiryDate,
-      // images,
+      images,
     });
     await item.save();
     return "item created";
@@ -519,7 +519,7 @@ class ProductServices {
     const images = req.files.map((img) => img.path);
     await Product.update(
       { price, name, bonus, expiryDate, categoryId, quantity, images },
-      { where: { id: req.params.id } },
+      { where: { id: req.params.id } }
     );
   }
 

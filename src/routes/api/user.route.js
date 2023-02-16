@@ -17,16 +17,18 @@ import verifyToken from "../../middlewares/verifyToken";
 import checkRole from "../../middlewares/checkRole";
 import checkIsVerified from "../../middlewares/checkUserVerification";
 import profileUpdateValidation from "../../validations/profile.update.validation";
-import { uploadProfileImages } from "../../config/multer";
+import upload from "../../config/multer";
 import ProductWishesController from "../../controllers/productWishesController";
 import IsUserExist from "../../middlewares/checkUserExist";
+import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
 route.patch(
   "/profile",
   extractToken,
-  uploadProfileImages.single("profilePic"),
+  isPasswordExpired,
+  upload.single("profilePic"),
   profileUpdateValidation,
   UserController.updateProfile
 );
@@ -58,10 +60,17 @@ route.post(
   UserController.resetpassword
 );
 
-route.get("/", extractToken, checkRole(["admin"]), UserController.getUsers);
+route.get(
+  "/",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["admin"]),
+  UserController.getUsers
+);
 route.patch(
   "/:id/role",
   extractToken,
+  isPasswordExpired,
   checkRole(["admin"]),
   validateRole,
   UserController.assignRole
@@ -69,6 +78,7 @@ route.patch(
 route.post(
   "/:id/update-status",
   extractToken,
+  isPasswordExpired,
   checkRole(["admin"]),
   UserController.disableAccount
 );
@@ -77,9 +87,10 @@ route.post("/:token/auth/validate/", UserController.Validate);
 route.get(
   "/:id/productWishes",
   extractToken,
+  isPasswordExpired,
   checkRole(["buyer", "admin"]),
   IsUserExist,
-  ProductWishesController.getWishProductByUser,
+  ProductWishesController.getWishProductByUser
 );
 
 export default route;

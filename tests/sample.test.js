@@ -106,6 +106,14 @@ describe("Login with local passport", () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test("user login for getting status of 200 with the password is expired", async () => {
+    const response = await request(app).post("/api/v1/users/login").send({
+      email: "password@example.com",
+      password: "password123",
+    });
+    expect(response.statusCode).toBe(200);
+  });
+
   test("user login for getting status of 400", async () => {
     const response = await request(app).post("/api/v1/users/login").send({
       email: "jimmygmcom",
@@ -174,6 +182,41 @@ describe("testing the two factor authentication", () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
+    });
+    const MyTokener = login.body.token;
+    const extractor = JwtUtil.verify(MyTokener);
+    const authToken = extractor.data.randomAuth;
+    const checkToken = await request(app)
+      .post(`/api/v1/users/${MyTokener}/auth/validate`)
+      .send({
+        token: authToken,
+      });
+    expect(checkToken.statusCode).toBe(200);
+  });
+
+  test("validate the token and get a 200 with expired password", async () => {
+    const signup = await request(app).post("/api/v1/users/signup").send({
+      name: "test1",
+      email: `test15@gmail.com`,
+      password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
+    });
+
+    await request(app)
+      .get(`/api/v1/users/verify-email/${signup.body.user.token}`)
+      .send();
+
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "password12@example.com",
+      password: "password123",
     });
     const MyTokener = login.body.token;
     const extractor = JwtUtil.verify(MyTokener);
@@ -713,6 +756,27 @@ describe("Test user profile update", () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test("Test fail profile update due to password expiry", async () => {
+    const loginRes = await request(app).post("/api/v1/users/login").send({
+      email: "password12@example.com",
+      password: "password123",
+    });
+
+    const response = await request(app)
+      .patch("/api/v1/users/profile")
+      .send({
+        preferredLanguage: "English",
+        preferredCurrency: "RWF",
+        city: "Kigali",
+        province: "Kigali",
+        postalCode: "90231",
+        street: "KG 305 ST",
+        country: "Rwanda",
+      })
+      .set("Authorization", `Bearer ${loginRes.body.token}`);
+    expect(response.statusCode).toBe(401);
+  });
+
   test("Test Page not found", async () => {
     const loginRes = await request(app).post("/api/login").send({
       email: `exampleemail2@gmail.com`,
@@ -920,10 +984,8 @@ describe("Testing the create/add item route", () => {
   });
 
   test("Testing validateProduct", async () => {
-    const response = await validateProduct(ask(10), answer(), () => {
-    });
-    const responsenxt = await validateProduct(ask(1), answer(), () => {
-    });
+    const response = await validateProduct(ask(10), answer(), () => {});
+    const responsenxt = await validateProduct(ask(1), answer(), () => {});
     expect(response.body.status).toEqual(400);
   });
 });
@@ -932,7 +994,7 @@ describe("Testing getting items routes", () => {
   test("Getting products when a buyer", async () => {
     const product = await Product.findOne({ where: { available: true } });
     const login = await request(app).post("/api/v1/users/login").send({
-      email:  "example@example.com",
+      email: "example@example.com",
       password: "default",
     });
     const getall = await request(app)
@@ -1050,7 +1112,6 @@ describe("Testing wishList Routes", () => {
       password: "test12345",
     });
 
-
     const addToWishList = await request(app)
       .post("/api/v1/productWishes")
       .set("Authorization", `Bearer ${login.body.token}`)
@@ -1058,11 +1119,10 @@ describe("Testing wishList Routes", () => {
     expect(addToWishList.statusCode).toBe(201);
 
     const get500_error = await request(app)
-    .post("/api/v1/productWishes")
-    .set("Authorization", `Bearer ${login.body.token}`)
-    .send({ product_id: "hjjj" });
-  expect(get500_error.statusCode).toBe(500);
-
+      .post("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: "hjjj" });
+    expect(get500_error.statusCode).toBe(500);
 
     const removeToWishList = await request(app)
       .post("/api/v1/productWishes")
@@ -1118,21 +1178,18 @@ describe("Testing wishList Routes", () => {
       .send({ product_id: "gh" });
     expect(geterror.statusCode).toBe(500);
   });
-
- 
 });
 
 describe("A test for search of Products", () => {
   // testing middleware
   test("get a 400 status undefined query", async () => {
-    const response = await request(app)
-      .get("/api/v1/products/search")
+    const response = await request(app).get("/api/v1/products/search");
     expect(response.statusCode).toBe(400);
   });
   test("get a 400 status undefined query", async () => {
     const response = await request(app)
       .get("/api/v1/products/search")
-      .query({sellerId: "hello"})
+      .query({ sellerId: "hello" });
     expect(response.statusCode).toBe(400);
   });
   // testing the actualy products
@@ -1200,8 +1257,8 @@ describe("A test for search of Products", () => {
   test("get a 200 status for searching the price range on all products", async () => {
     const response = await request(app)
       .get("/api/v1/products/search")
-      .query({ price: (1000*1) - (20000) });
-    expect(response.statusCode).toBe(200)  
+      .query({ price: 1000 * 1 - 20000 });
+    expect(response.statusCode).toBe(200);
   });
   afterAll(async () => {
     await User.destroy({ where: { email: "testBuyer@gmail.com" } });
@@ -1211,24 +1268,23 @@ afterAll(async () => {
   await User.destroy({ where: { email: "testBuyer@gmail.com" } });
 });
 
-
-
-
-describe("Testing marking products as available",()=>{
-  test("get status of 200",async () =>{
+describe("Testing marking products as available", () => {
+  test("get status of 200", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
     });
-    const mark =await request(app) .patch("/api/v1/products/1")
-    .set("Authorization", `Bearer ${login.body.token}`);
-  expect(mark.statusCode).toBe(200);
-  const mark2 =await request(app) .patch("/api/v1/products/1")
-  .set("Authorization", `Bearer ${login.body.token}`);
-  expect(mark2.statusCode).toBe(200);
-  })
- 
-  test("get status of 500",async () =>{
+    const mark = await request(app)
+      .patch("/api/v1/products/1")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(mark.statusCode).toBe(200);
+    const mark2 = await request(app)
+      .patch("/api/v1/products/1")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(mark2.statusCode).toBe(200);
+  });
+
+  test("get status of 500", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
@@ -1238,19 +1294,21 @@ describe("Testing marking products as available",()=>{
       .mockImplementation(
         jest.fn().mockRejectedValue(new Error("Database error"))
       );
-    const mark =await request(app) .patch("/api/v1/products/1")
-    .set("Authorization", `Bearer ${login.body.token}`);
-   expect(mark.statusCode).toBe(500);
-  })
-  test("get status of 204 for delete",async () =>{
+    const mark = await request(app)
+      .patch("/api/v1/products/1")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(mark.statusCode).toBe(500);
+  });
+  test("get status of 204 for delete", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
     });
-    const del =await request(app) .delete("/api/v1/products/3")
-    .set("Authorization", `Bearer ${login.body.token}`);
+    const del = await request(app)
+      .delete("/api/v1/products/3")
+      .set("Authorization", `Bearer ${login.body.token}`);
     expect(del.statusCode).toBe(204);
-  })
+  });
 
   test("Get a 200 for updating", async () => {
     const response = await ProductController.updateItem(ask(1), answer());
@@ -1266,4 +1324,4 @@ describe("Testing marking products as available",()=>{
     const response = await ProductController.updateItem(ask(1), answer());
     expect(response.body.status).toBe(500);
   });
-})
+});

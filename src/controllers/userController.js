@@ -1,12 +1,11 @@
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return, require-jsdoc */
+
 import UserServices from "../services/userService";
 import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
 import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
-
-const { User } = require("../database/models");
+import checkPasswordExpired from "../utils/isPasswordExpired";
 
 class UserController {
   static async register(req, res) {
@@ -45,42 +44,106 @@ class UserController {
       const response = await UserServices.register(userData);
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
 
   static async login(req, res) {
     try {
-      const { name, email, role, status, id, profilePic } = req.user;
+      const {
+        name,
+        email,
+        role,
+        status,
+        id,
+        profilePic,
+        lastTimePasswordUpdated,
+      } = req.user;
 
-      if (role === "seller" || role === "Admin") {
-        const randomAuth = generateRandom();
-        const Options = {
-          expiresIn: "120000",
-        };
-        const token = JwtUtil.generate(
-          { name, email, role, status, id, profilePic, randomAuth },
-          Options
-        );
-        await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
-        return res.status(200).json({ name, token, randomAuth });
-      } else {
-        const token = JwtUtil.generate({
-          name,
-          email,
-          id,
-          role,
-          status,
-          profilePic,
-        });
-        return res.status(200).json({ name, token });
+      const expiredPassword = checkPasswordExpired(lastTimePasswordUpdated);
+      if (expiredPassword) {
+        if (role === "seller" || role === "admin") {
+          const randomAuth = generateRandom();
+          const Options = { expiresIn: "120000" };
+          const token = JwtUtil.generate(
+            {
+              name,
+              email,
+              role,
+              status,
+              id,
+              profilePic,
+              randomAuth,
+              lastTimePasswordUpdated,
+            },
+            Options
+          );
+          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          return res.status(200).json({
+            name,
+            message:
+              "Your password is expired, Please update it first to have full access!",
+            token,
+            randomAuth,
+          });
+        } else {
+          const token = JwtUtil.generate({
+            name,
+            email,
+            id,
+            role,
+            status,
+            profilePic,
+            lastTimePasswordUpdated,
+          });
+          return res.status(200).json({
+            name,
+            message:
+              "Your password is expired, Please update it first to have full access!",
+            token,
+          });
+        }
+      }
+      if (!expiredPassword) {
+        if (role === "seller" || role === "admin") {
+          const randomAuth = generateRandom();
+          const Options = {
+            expiresIn: "120000",
+          };
+          const token = JwtUtil.generate(
+            {
+              name,
+              email,
+              role,
+              status,
+              id,
+              profilePic,
+              randomAuth,
+              lastTimePasswordUpdated,
+            },
+            Options
+          );
+          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          return res.status(200).json({ name, token, randomAuth });
+        } else {
+          const token = JwtUtil.generate({
+            name,
+            email,
+            id,
+            role,
+            status,
+            profilePic,
+            lastTimePasswordUpdated,
+          });
+          return res.status(200).json({ name, token });
+        }
       }
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });
     }
   }
 
+  // eslint-disable-next-line camelcase
   static async verify_email(req, res) {
     const { token } = req.params;
 
@@ -252,9 +315,12 @@ class UserController {
       data.billingAddress = billingAddress;
 
       await UserServices.updateProfile(data);
-      return res.status(200).json({ message: "Updated successfully" });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Updated successfully" });
     } catch (error) {
-      return res.status(500).json({ status: 500, message: error });
+      // console.log(error);
+      return res.status(500).json({ status: 500, message: "Server error" });
     }
   }
 }

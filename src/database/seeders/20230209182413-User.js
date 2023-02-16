@@ -1,8 +1,9 @@
 const { BcryptUtil } = require("../../utils/bcrypt");
+require("dotenv/config");
 // import { BcryptUtil } from "../../utils/bcrypt";
 
 module.exports = {
-  up: (queryInterface, Sequelize) =>
+  up: (queryInterface) =>
     queryInterface.bulkInsert(
       "Users",
       [
@@ -17,6 +18,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -35,6 +37,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -53,6 +56,49 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
+          profilePic:
+            "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
+          billingAddress:
+            '{"street":"KN 05 ST","city":"Kigali","province":"Kigali","postalCode":"00000","country":"Rwanda"}',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Password Expired",
+          email: "password@example.com",
+          password: BcryptUtil.hash("password123"),
+          role: "buyer",
+          status: "active",
+          isVerified: true,
+          gender: "Male",
+          preferredLanguage: "English",
+          preferredCurrency: "RWF",
+          birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(
+            parseInt(process.env.PASSWORD_EXPIRATION_TIME, 10)
+          ),
+          profilePic:
+            "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
+          billingAddress:
+            '{"street":"KN 05 ST","city":"Kigali","province":"Kigali","postalCode":"00000","country":"Rwanda"}',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Password Expired",
+          email: "password12@example.com",
+          password: BcryptUtil.hash("password123"),
+          role: "admin",
+          status: "active",
+          isVerified: true,
+          gender: "Male",
+          preferredLanguage: "English",
+          preferredCurrency: "RWF",
+          birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(
+            parseInt(process.env.PASSWORD_EXPIRATION_TIME, 10)
+          ),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -71,6 +117,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -89,6 +136,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -107,6 +155,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -125,6 +174,7 @@ module.exports = {
           preferredLanguage: "English",
           preferredCurrency: "RWF",
           birthdate: "01/01/2000",
+          lastTimePasswordUpdated: new Date(),
           profilePic:
             "https://res.cloudinary.com/dmjxukx09/image/upload/v1675844692/profiles/Profile-Avatar-PNG-Free-Download_paqfrf.png",
           billingAddress:
@@ -136,6 +186,5 @@ module.exports = {
       {}
     ),
 
-  down: (queryInterface, Sequelize) =>
-    queryInterface.bulkDelete("Users", null, {}),
+  down: (queryInterface) => queryInterface.bulkDelete("Users", null, {}),
 };

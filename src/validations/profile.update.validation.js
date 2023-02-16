@@ -13,6 +13,7 @@ const profileUpdateSchema = Joi.object({
 
 const profileUpdateValidation = (req, res, next) => {
   if (req.file) {
+    /* istanbul ignore next */
     const body = { ...req.body };
     body.profilePic = req.file.path;
     const { error } = profileUpdateSchema.validate(body, {

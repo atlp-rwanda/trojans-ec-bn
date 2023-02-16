@@ -1,5 +1,5 @@
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     await queryInterface.bulkInsert(
       "ProductWishes",
       [
@@ -28,11 +28,11 @@ module.exports = {
           updatedAt: new Date(),
         },
       ],
-      {},
+      {}
     );
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     queryInterface.bulkDelete("ProductWishes", null, {});
   },
 };

@@ -18,6 +18,8 @@ import checkRole from "../../middlewares/checkRole";
 import checkIsVerified from "../../middlewares/checkUserVerification";
 import profileUpdateValidation from "../../validations/profile.update.validation";
 import { uploadProfileImages } from "../../config/multer";
+import wishListController from "../../controllers/wishListController";
+import IsUserExist from "../../middlewares/checkUserExist";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -71,5 +73,12 @@ route.post(
   UserController.disableAccount
 );
 route.post("/:token/auth/validate/", UserController.Validate);
+
+route.get(
+  "/:id/product-wishes",
+  extractToken,
+  checkRole(["buyer","admin"]),
+  IsUserExist,
+  wishListController.getWishProductByUser);
 
 export default route;

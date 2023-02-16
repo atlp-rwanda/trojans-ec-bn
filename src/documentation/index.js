@@ -594,6 +594,148 @@ const options = {
         },
       },
     },
+     "/product-wishes": {
+      post: {
+        tags: ["WishList"],
+        description: "add/remove product to wishList",
+        parameters: [
+         
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  product_id: {
+                    type: "number",
+                    required: true,
+                    description: "product id ",
+                  },
+                },
+                example: {
+                  product_id: 1,
+                
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+      get: {
+        tags: ["WishList"],
+        description: "get products in wishList",
+        parameters: [
+         
+        ],
+        requestBody: {
+       
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+
+    "/users/{id}/product-wishes": {
+      get: {
+        tags: ["WishList"],
+        description: "get product from wishList by UserId",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the User",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {
+         
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+
+    "/products/{id}/product-wishes": {
+      get: {
+        tags: ["WishList"],
+        description: "get product from wishList by UserId",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the User",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {
+         
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+  
+ 
   },
   securityDefinitions: {
     google_oautho2: {
@@ -858,6 +1000,17 @@ const options = {
               minItems: 4,
             },
           },
+        },
+      },
+      ProductWishes: {
+        type: "object",
+        properties: {
+          product_id: {
+            type: "number",
+            required: true,
+            description: "product id",
+          },
+         
         },
       },
     },

@@ -1029,3 +1029,116 @@ describe("Testing getting items routes", () => {
     expect(getsingle.statusCode).toBe(500);
   });
 });
+
+// wish list
+
+describe("Testing wishList Routes", () => {
+  test("addingremove product to wishList", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "test1234@example.com",
+      password: "default123",
+    });
+
+    const signup = await request(app).post("/api/v1/users/signup").send({
+      name: "test1",
+      email: `test14@gmail.com`,
+      password: "test12345",
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
+    });
+
+    await request(app)
+      .get(`/api/v1/users/verify-email/${signup.body.user.token}`)
+      .send();
+
+    const login2 = await request(app).post("/api/v1/users/login").send({
+      email: "test14@gmail.com",
+      password: "test12345",
+    });
+
+
+    const addToWishList = await request(app)
+      .post("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: 1 });
+    expect(addToWishList.statusCode).toBe(201);
+
+    const get500_error = await request(app)
+    .post("/api/v1/productWishes")
+    .set("Authorization", `Bearer ${login.body.token}`)
+    .send({ product_id: "hjjj" });
+  expect(get500_error.statusCode).toBe(500);
+
+
+    const removeToWishList = await request(app)
+      .post("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: 1 });
+    expect(removeToWishList.statusCode).toBe(201);
+
+    const addToWishListAgain = await request(app)
+      .post("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: 1 });
+    expect(addToWishListAgain.statusCode).toBe(201);
+    const addToWishListAgain1 = await request(app)
+      .post("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login2.body.token}`)
+      .send({ product_id: 1 });
+    expect(addToWishListAgain1.statusCode).toBe(201);
+    const getWish = await request(app)
+      .get("/api/v1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getWish.statusCode).toBe(200);
+  });
+  test("get wishList by product ", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+
+    const getWishListByProduct = await request(app)
+      .get("/api/v1/products/1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getWishListByProduct.statusCode).toBe(200);
+  });
+  test("get wishList by User ", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "test1234@example.com",
+      password: "default123",
+    });
+    const getWishListByUser = await request(app)
+      .get("/api/v1/users/1/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getWishListByUser.statusCode).toBe(200);
+
+    const geterror = await request(app)
+      .get("/api/v1/users/err/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: "gh" });
+    console.log(geterror.body);
+    expect(geterror.statusCode).toBe(500);
+
+    const geterrorProduct = await request(app)
+      .get("/api/v1/products/err/productWishes")
+      .set("Authorization", `Bearer ${login.body.token}`)
+      .send({ product_id: "gh" });
+    console.log(geterrorProduct.body);
+    expect(geterror.statusCode).toBe(500);
+  });
+
+ 
+});
+
+
+
+
+
+

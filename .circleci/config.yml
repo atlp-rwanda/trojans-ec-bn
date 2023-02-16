@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: install dependencies
-          command: npm install
+          command: npm install --force
       - run:
           name: run lint
           command: npm run lint

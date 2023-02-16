@@ -33,7 +33,6 @@ class ProductController {
       }
       return res.status(200).json({ status: 200, product });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }

@@ -36,10 +36,10 @@ app.use(passport.session());
 try {
   app.use("/api/v1", allRouter);
   app.listen(port, () => {
-    console.log(`server running on port ${port} `);
+    console.log(`server running on port ${port} `); // eslint-disable-line no-console
   });
 } catch (error) {
-  console.log(error);
+  console.log(error); // eslint-disable-line no-console
 }
 
 app.all("*", notFound);

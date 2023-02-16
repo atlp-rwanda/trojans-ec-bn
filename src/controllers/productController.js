@@ -7,6 +7,32 @@ class ProductController {
       await ProductServices.addItem(req);
       return res.status(200).json({ status: 200, message: "Item added" });
     } catch (error) {
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async getAllItems(req, res) {
+    try {
+      const products = await ProductServices.getAllItems(req.user);
+      return res.status(200).json({ status: 200, products });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async getSingleItem(req, res) {
+    try {
+      const product = await ProductServices.getSingleItem(
+        req.user,
+        req.params.id
+      );
+      if (product == null) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "No products found" });
+      }
+      return res.status(200).json({ status: 200, product });
+    } catch (error) {
       console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }

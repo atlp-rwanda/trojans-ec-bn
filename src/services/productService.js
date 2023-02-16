@@ -22,6 +22,32 @@ class ProductServices {
     return "item created";
   }
 
+  static async getAllItems(user) {
+    let products;
+    if (user.role === "seller") {
+      products = await Product.findAll({ where: { sellerId: user.id } });
+    } else if (user.role === "buyer") {
+      products = await Product.findAll({ where: { available: true } });
+    } else if (user.role === "admin") {
+      products = await Product.findAll();
+    }
+    return products;
+  }
+
+  static async getSingleItem(user, id) {
+    let products;
+    if (user.role === "seller") {
+      products = await Product.findOne({
+        where: { sellerId: user.id, id },
+      });
+    } else if (user.role === "buyer") {
+      products = await Product.findOne({ where: { id, available: true } });
+    } else if (user.role === "admin") {
+      products = await Product.findOne({ where: { id } });
+    }
+    return products;
+  }
+
   static async addCategory(name) {
     const category = await Category.create({
       name,

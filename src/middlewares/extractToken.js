@@ -20,7 +20,7 @@ const extractToken = async (req, res, next) => {
       where: { email: details.data.email },
     });
     if (!userExists) {
-      return res.status(401).json({ message: "User not found!" });
+      return res.status(401).json({ status: 401, message: "User not found!" });
     }
     req.user = details.data;
     next();

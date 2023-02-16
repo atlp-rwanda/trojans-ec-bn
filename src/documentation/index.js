@@ -450,6 +450,59 @@ const options = {
           400: {
             description: "Bad Request",
           },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+      get: {
+        tags: ["Product"],
+        description: "creating/adding an item to sell",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+    "/products/{id}": {
+      get: {
+        tags: ["Product"],
+        description: "creating/adding an item to sell",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
           500: {
             description: "internal server error",
           },
@@ -484,7 +537,7 @@ const options = {
             description: "Bad Request",
           },
           500: {
-            description: "internal server error",
+            description: "Internal server error",
           },
           401: {
             description: "Unauthorized",

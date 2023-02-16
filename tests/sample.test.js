@@ -942,63 +942,92 @@ describe("Testing the create/add item route", () => {
     expect(response.body.status).toEqual(400);
   });
 });
-// describe("User logout", () => {
-//   test("User logout for getting status of 200 ", async () => {
-//     const user = await request(app).post("/api/v1/users/signup").send({
-//       name: "test",
-//       email: `test@gmail.com`,
-//       password: "test1234",
-//     });
-//     await request(app)
-//       .get(`/api/v1/users/verify-email/${user.body.user.token}`)
-//       .send();
-//     const userLogin = await request(app).post("/api/v1/users/login").send({
-//       email: `test@gmail.com`,
-//       password: "test1234",
-//     });
-//     const { token } = userLogin.body;
-//     const response = await request(app)
-//       .get("/api/v1/users/logout")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send();
-//     expect(response.statusCode).toBe(200);
-//   });
 
-//   test("User logout for getting status of 401", async () => {
-//     const response = await request(app)
-//       .get("/api/v1/users/logout")
-//       .set("Authorization", "Bearer askj34j3kajdkasdj")
-//       .send();
-//     expect(response.statusCode).toBe(401);
-//   });
-
-//   test("User logout for getting status of 500 ", async () => {
-//     const user = await request(app).post("/api/v1/users/signup").send({
-//       name: "test1",
-//       email: `test1@gmail.com`,
-//       password: "test1234",
-//     });
-//     await request(app)
-//       .get(`/api/v1/users/verify-email/${user.body.user.token}`)
-//       .send();
-//     const userLogin = await request(app).post("/api/v1/users/login").send({
-//       email: `test1@gmail.com`,
-//       password: "test1234",
-//     });
-//     const { token } = userLogin.body;
-//     jest
-//       .spyOn(Blacklist, "create")
-//       .mockImplementation(
-//         jest.fn().mockRejectedValue(new Error("Database error"))
-//       );
-//     const response = await request(app)
-//       .get("/api/v1/users/logout")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send();
-//     expect(response.statusCode).toBe(500);
-//   });
-
-//   afterAll(async () => {
-//     await User.destroy({ where: { email: "test@gmail.com" } });
-//   });
-// });
+describe("Testing getting items routes", () => {
+  test("Getting products when a buyer", async () => {
+    const product = await Product.findOne({ where: { available: true } });
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "test1234@example.com",
+      password: "default123",
+    });
+    const getall = await request(app)
+      .get("/api/v1/products")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getall.statusCode).toBe(200);
+    const getsingle = await request(app)
+      .get("/api/v1/products/" + product.id)
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(200);
+  });
+  test("Getting products when a seller", async () => {
+    const product = await Product.findOne({ where: { sellerId: 2 } });
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    const getall = await request(app)
+      .get("/api/v1/products")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getall.statusCode).toBe(200);
+    const getsingle = await request(app)
+      .get("/api/v1/products/" + product.id)
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(200);
+  });
+  test("Getting products when an admin", async () => {
+    const product = await Product.findOne();
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    const getall = await request(app)
+      .get("/api/v1/products")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getall.statusCode).toBe(200);
+    const getsingle = await request(app)
+      .get("/api/v1/products/" + product.id)
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(200);
+  });
+  test("Getting products giving a 404", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    const getsingle = await request(app)
+      .get("/api/v1/products/23")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(404);
+  });
+  test("Getting products giving a 500 on a single item", async () => {
+    const product = await Product.findOne({ where: { available: true } });
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    jest
+      .spyOn(Product, "findOne")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
+    const getsingle = await request(app)
+      .get("/api/v1/products/" + product.id)
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(500);
+  });
+  test("Getting products giving a 500 on all items", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    jest
+      .spyOn(Product, "findAll")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
+    const getsingle = await request(app)
+      .get("/api/v1/products")
+      .set("Authorization", `Bearer ${login.body.token}`);
+    expect(getsingle.statusCode).toBe(500);
+  });
+});

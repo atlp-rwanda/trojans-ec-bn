@@ -45,7 +45,7 @@ module.exports = {
         {
           name: "test1",
           email: "test1234@example.com",
-          password: BcryptUtil.hash("default"),
+          password: BcryptUtil.hash("default123"),
           role: "buyer",
           status: "active",
           isVerified: true,

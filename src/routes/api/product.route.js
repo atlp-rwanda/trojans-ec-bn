@@ -15,5 +15,11 @@ route.post(
   validateProduct,
   ProductController.addItem
 );
-
+route.get(
+  "/",
+  extractToken,
+  checkRole(["admin", "seller", "buyer"]),
+  ProductController.getAllItems
+);
+route.get("/:id", extractToken, ProductController.getSingleItem);
 export default route;

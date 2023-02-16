@@ -1,15 +1,10 @@
-/* eslint-disable no-else-return */
-/* eslint-disable no-unneeded-ternary */
-/* eslint-disable prefer-const */
-/* eslint-disable no-const-assign */
-/* eslint-disable no-plusplus */
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-nested-ternary */
+/* eslint-disable no-nested-ternary, require-jsdoc */
+
 import { Op } from "sequelize";
 import { expirationDate, splitPrice } from "../utils/searchUtil";
+import SendEmail from "../utils/email";
 
-/* eslint-disable require-jsdoc */
-const { Product, Category } = require("../database/models");
+const { Product, Category, User } = require("../database/models");
 
 class ProductServices {
   static async addItem(req) {
@@ -84,7 +79,7 @@ class ProductServices {
           expiryDate: expiryDate ? new Date(expiryDate) : null,
         },
         { sellerId: sellerId || null },
-        { categoryId: categoryId ? categoryId : null },
+        { categoryId: categoryId || null },
         {
           price: price
             ? {
@@ -101,7 +96,7 @@ class ProductServices {
       [Op.or]: [
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             { sellerId: sellerId || null },
             {
               price: price
@@ -118,7 +113,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             { sellerId: sellerId || null },
             {
               price: price
@@ -135,7 +130,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             { sellerId: sellerId || null },
             { name: product ? { [Op.substring]: product } : null },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
@@ -143,7 +138,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               price: price
                 ? {
@@ -181,7 +176,7 @@ class ProductServices {
       [Op.or]: [
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               price: price
                 ? {
@@ -197,7 +192,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               price: price
                 ? {
@@ -254,7 +249,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
@@ -263,7 +258,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
@@ -274,7 +269,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               sellerId: sellerId || null,
             },
@@ -303,7 +298,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               price: price
                 ? {
@@ -348,18 +343,18 @@ class ProductServices {
         {
           [Op.and]: [
             { name: product ? { [Op.substring]: product } : null },
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
           ],
         },
         {
           [Op.and]: [
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
           ],
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             {
               price: price
                 ? {
@@ -404,7 +399,7 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { categoryId: categoryId ? categoryId : null },
+            { categoryId: categoryId || null },
             { sellerId: sellerId || null },
           ],
         },
@@ -428,7 +423,7 @@ class ProductServices {
     const orCondition = {
       [Op.or]: [
         {
-          categoryId: categoryId ? categoryId : null,
+          categoryId: categoryId || null,
         },
         {
           sellerId: sellerId || null,
@@ -525,6 +520,27 @@ class ProductServices {
 
   static async deleteItem(id) {
     await Product.destroy({ where: { id } });
+  }
+
+  static async productExpired(prodId) {
+    const id = prodId;
+    const [update] = await Product.update({ expired: true }, { where: { id } });
+    if (update === 0) {
+      return "Product not found";
+    }
+    const product = await Product.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          as: "seller",
+        },
+      ],
+    });
+    const { name, email } = product.seller;
+    await new SendEmail({ name, email }, null, product.name).expiredProduct();
+
+    return "Product Expired";
   }
 }
 export default ProductServices;

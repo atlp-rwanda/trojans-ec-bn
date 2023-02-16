@@ -72,5 +72,12 @@ route.put(
   checkOwner,
   ProductController.updateItem
 );
+route.patch(
+  "/:id/expired",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["admin"]),
+  ProductController.productExpired
+);
 
 export default route;

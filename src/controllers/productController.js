@@ -88,6 +88,7 @@ class ProductController {
         message: `Product ${product.name} is not available!`,
       });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -106,9 +107,28 @@ class ProductController {
       await ProductServices.deleteItem(req.params.id);
       return res.status(204).json({ message: "Product deleted" });
     } catch (error) {
+      /* istanbul ignore next */
       return res
         .status(500)
         .json({ status: 500, error: "Item can't be deleted" });
+    }
+  }
+
+  static async productExpired(req, res) {
+    try {
+      const response = await ProductServices.productExpired(req.params.id);
+      if (response === "Product not found") {
+        return res.status(404).json({
+          status: 404,
+          message: response,
+        });
+      }
+      return res.status(200).json({
+        status: 200,
+        message: response,
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
 }

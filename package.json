@@ -2,9 +2,9 @@
   "name": "trojans-ec-bn",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/app.js",
+  "main": "./src/index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/app.js",
+    "start": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/index.js",
     "migrate": "npx sequelize-cli db:migrate",
     "down": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",

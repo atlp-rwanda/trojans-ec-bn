@@ -20,10 +20,9 @@ route.post(
 );
 route.get("/", ProductController.viewCategories);
 route.delete(
-  "/",
+  "/:id",
   extractToken,
   checkRole(["admin"]),
-  validateCategory,
   verifyCategoryExists,
   ProductController.deleteCategory
 );

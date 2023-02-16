@@ -832,21 +832,19 @@ describe("Testing product category routes", () => {
     });
 
     const del = await request(app)
-      .delete("/api/v1/categories")
-      .set("Authorization", `Bearer ${login.body.token}`)
-      .send({ name: "reta" });
+      .delete("/api/v1/categories/34")
+      .set("Authorization", `Bearer ${login.body.token}`);
     expect(del.statusCode).toBe(400);
   });
-  test("deleting a category with 204", async () => {
+  test("deleting a category giving a status of 204", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "admin123@gmail.com",
       password: "admin123",
     });
-
+    const category = await Category.findOne({ where: { name: "retail" } });
     const del = await request(app)
-      .delete("/api/v1/categories")
-      .set("Authorization", `Bearer ${login.body.token}`)
-      .send({ name: "retail" });
+      .delete("/api/v1/categories/" + category.id)
+      .set("Authorization", `Bearer ${login.body.token}`);
     expect(del.statusCode).toBe(204);
   });
   test("testing a 500 with add a category", async () => {

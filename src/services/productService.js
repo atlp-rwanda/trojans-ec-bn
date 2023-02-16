@@ -61,8 +61,8 @@ class ProductServices {
     return categories.map((cat) => ({ id: cat.id, name: cat.name }));
   }
 
-  static async deleteCategory(name) {
-    await Category.destroy({ where: { name } });
+  static async deleteCategory(id) {
+    await Category.destroy({ where: { id } });
   }
 }
 export default ProductServices;

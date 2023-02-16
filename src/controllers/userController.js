@@ -1,5 +1,5 @@
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return, require-jsdoc */
+
 import UserServices from "../services/userService";
 import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
@@ -211,10 +211,6 @@ class UserController {
       });
       if (userExist.length > 0) {
         const token = JwtUtil.generate({ id, email });
-        const response = {
-          name: displayName,
-          token,
-        };
         return res.status(200).json({
           status: 200,
           message: req.user.displayName,

@@ -11,7 +11,7 @@ passport.use(
     },
     async (request, accessToken, refreshToken, profile, done) =>
       done(null, profile)
-  )
+  ),
 );
 
 passport.serializeUser((user, done) => done(null, user));

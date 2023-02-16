@@ -10,21 +10,21 @@ import checkPass from "../../middlewares/checkPass";
 import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
-import checkAdmin from "../../middlewares/checkAdmin";
 import findUser from "../../middlewares/findUser";
 import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
 import verifyToken from "../../middlewares/verifyToken";
+import checkRole from "../../middlewares/checkRole";
 import checkIsVerified from "../../middlewares/checkUserVerification";
 import profileUpdateValidation from "../../validations/profile.update.validation";
-import upload from "../../config/multer";
+import { uploadProfileImages } from "../../config/multer";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
 route.patch(
   "/profile",
   extractToken,
-  upload.single("profilePic"),
+  uploadProfileImages.single("profilePic"),
   profileUpdateValidation,
   UserController.updateProfile
 );
@@ -56,18 +56,18 @@ route.post(
   UserController.resetpassword
 );
 
-route.get("/", extractToken, checkAdmin, UserController.getUsers);
+route.get("/", extractToken, checkRole(["admin"]), UserController.getUsers);
 route.patch(
   "/:id/role",
   extractToken,
-  checkAdmin,
+  checkRole(["admin"]),
   validateRole,
   UserController.assignRole
 );
 route.post(
   "/:id/update-status",
   extractToken,
-  checkAdmin,
+  checkRole(["admin"]),
   UserController.disableAccount
 );
 route.post("/:token/auth/validate/", UserController.Validate);

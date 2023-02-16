@@ -7,6 +7,7 @@ class ProductController {
       await ProductServices.addItem(req);
       return res.status(200).json({ status: 200, message: "Item added" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }

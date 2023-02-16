@@ -1,17 +1,17 @@
 import { Router } from "express";
-import upload from "../../config/multer";
 import ProductController from "../../controllers/productController";
-import checkSeller from "../../middlewares/checkSeller";
+import checkRole from "../../middlewares/checkRole";
 import extractToken from "../../middlewares/extractToken";
 import { validateProduct } from "../../validations/product.validation";
+import { uploadProductImages } from "../../config/multer";
 
 const route = Router();
 
 route.post(
   "/",
-  upload.array("image"),
+  uploadProductImages.array("image"),
   extractToken,
-  checkSeller,
+  checkRole(["seller"]),
   validateProduct,
   ProductController.addItem
 );

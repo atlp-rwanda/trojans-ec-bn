@@ -13,4 +13,10 @@ const storage = new CloudinaryStorage({
     folder: "TrojansEcommerce",
   },
 });
-export default storage;
+const storage1 = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "Profiles",
+  },
+});
+export { storage, storage1 };

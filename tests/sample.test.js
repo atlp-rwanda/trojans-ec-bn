@@ -769,7 +769,7 @@ describe("Testing product category routes", () => {
         token: authToken,
       });
     const add = await request(app)
-      .post("/api/v1/category")
+      .post("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({
         name: 12,
@@ -783,7 +783,7 @@ describe("Testing product category routes", () => {
     });
 
     const add = await request(app)
-      .post("/api/v1/category")
+      .post("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({
         name: "retail",
@@ -796,7 +796,7 @@ describe("Testing product category routes", () => {
       password: "admin123",
     });
     const add = await request(app)
-      .post("/api/v1/category")
+      .post("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({
         name: "retail",
@@ -814,7 +814,7 @@ describe("Testing product category routes", () => {
         jest.fn().mockRejectedValue(new Error("Database error"))
       );
     const add = await request(app)
-      .post("/api/v1/category")
+      .post("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({
         name: "retail",
@@ -822,7 +822,7 @@ describe("Testing product category routes", () => {
     expect(add.statusCode).toBe(500);
   });
   test("Viewing categories with 200", async () => {
-    const get = await request(app).get("/api/v1/category").send();
+    const get = await request(app).get("/api/v1/categories").send();
     expect(get.statusCode).toBe(200);
   });
   test("deleting a category with 400 doesn't exist", async () => {
@@ -832,7 +832,7 @@ describe("Testing product category routes", () => {
     });
 
     const del = await request(app)
-      .delete("/api/v1/category")
+      .delete("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ name: "reta" });
     expect(del.statusCode).toBe(400);
@@ -844,7 +844,7 @@ describe("Testing product category routes", () => {
     });
 
     const del = await request(app)
-      .delete("/api/v1/category")
+      .delete("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ name: "retail" });
     expect(del.statusCode).toBe(204);
@@ -860,7 +860,7 @@ describe("Testing product category routes", () => {
         jest.fn().mockRejectedValue(new Error("Database error"))
       );
     const add = await request(app)
-      .post("/api/v1/category")
+      .post("/api/v1/categories")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({
         name: "retail",
@@ -873,7 +873,7 @@ describe("Testing product category routes", () => {
       .mockImplementation(
         jest.fn().mockRejectedValue(new Error("Database error"))
       );
-    const get = await request(app).get("/api/v1/category").send();
+    const get = await request(app).get("/api/v1/categories").send();
     expect(get.statusCode).toBe(500);
   });
 });

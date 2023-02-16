@@ -456,7 +456,7 @@ const options = {
         },
       },
     },
-    "/category": {
+    "/categories": {
       post: {
         tags: ["Product"],
         description: "Adding a category",

@@ -78,6 +78,10 @@ class SendEmail {
   async twoFactorAuth() {
     await this.send("2FAToken", "Verification Code");
   }
+
+  async sendGooglePassword() {
+    await this.send("googlePassword", "Default Password");
+  }
 }
 
 export default SendEmail;

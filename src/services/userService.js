@@ -19,6 +19,7 @@ class UserServices {
       preferredLanguage,
       preferredCurrency,
       billingAddress,
+      profilePic,
     } = data;
     const user = await User.create({
       name,
@@ -29,20 +30,24 @@ class UserServices {
       preferredLanguage,
       preferredCurrency,
       billingAddress,
+      profilePic,
     });
     await user.save();
     const userObj = {
       name,
       email,
-      token: JwtUtil.generate({
-        name,
-        id: user.id,
-        email,
-        role: user.role,
-        status: user.status,
-        isVerified: user.isVerified,
-        profilePic: user.profilePic,
-      }),
+      token: JwtUtil.generateExp(
+        {
+          name,
+          id: user.id,
+          email,
+          role: user.role,
+          status: user.status,
+          isVerified: user.isVerified,
+          profilePic: user.profilePic,
+        },
+        "2m",
+      ),
     };
     const token = JwtUtil.generate({
       name,
@@ -185,6 +190,48 @@ class UserServices {
         },
       }
     );
+  }
+
+  static async googleAuth(data) {
+    const { displayName, email, picture } = data;
+    const userExist = await User.findOne({
+      where: { email },
+    });
+
+    if (userExist) {
+      if (userExist.isVerified === false) {
+        return "not verified";
+      }
+      const token = JwtUtil.generate({
+        name: userExist.name,
+        id: userExist.id,
+        email: userExist.email,
+        role: userExist.role,
+        status: userExist.status,
+        isVerified: userExist.isVerified,
+        profilePic: userExist.profilePic,
+      });
+
+      return { name: displayName, token };
+    }
+
+    const password = `default${Math.floor(Math.random() * 100)}`;
+    const userObj = {
+      name: displayName,
+      email,
+      password,
+      gender: "Male",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      billingAddress:
+        '{"street":"KN 05 ST","city":"Kigali","province":"Kigali","postalCode":"00000","country":"Rwanda"}',
+      profilePic: picture,
+    };
+    const resp = await this.register(userObj);
+    await new SendEmail(userObj, null, password).sendGooglePassword();
+
+    return resp;
   }
 }
 

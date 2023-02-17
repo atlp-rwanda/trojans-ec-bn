@@ -460,7 +460,7 @@ const options = {
       },
       get: {
         tags: ["Product"],
-        description: "creating/adding an item to sell",
+        description: "Viewing all items/products",
         responses: {
           200: {
             description: "Success",
@@ -480,7 +480,7 @@ const options = {
     "/products/{id}": {
       get: {
         tags: ["Product"],
-        description: "creating/adding an item to sell",
+        description: "Viewing a single item/product",
         parameters: [
           {
             in: "path",
@@ -559,25 +559,23 @@ const options = {
           },
         },
       },
+    },
+    "/categories/{id}": {
       delete: {
         tags: ["Product"],
         description: "Adding a category",
-        requestBody: {
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  name: {
-                    type: "string",
-                    description: "Name of the category",
-                    example: "retail",
-                  },
-                },
-              },
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
             },
           },
-        },
+        ],
         responses: {
           200: {
             description: "Success",

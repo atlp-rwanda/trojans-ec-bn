@@ -16,7 +16,7 @@ const verifyCategory = async (req, res, next) => {
   }
 };
 const verifyCategoryExists = async (req, res, next) => {
-  const exist = await Category.findOne({ where: { name: req.body.name } });
+  const exist = await Category.findOne({ where: { id: req.params.id } });
   if (exist) {
     next();
   } else {

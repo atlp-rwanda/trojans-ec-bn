@@ -205,35 +205,19 @@ class UserController {
 
   static async googleAuth(req, res) {
     try {
-      const { id, displayName, email } = req.user;
-      const userExist = await User.findAll({
-        where: { email },
-      });
-      if (userExist.length > 0) {
-        const token = JwtUtil.generate({ id, email });
-        const response = {
-          name: displayName,
-          token,
-        };
+      const response = await UserServices.googleAuth(req.user);
+      if (response === "not verified") {
+        return res.status(401).json({
+          status: 401,
+          message: "User not verified",
+        });
+      } else {
         return res.status(200).json({
           status: 200,
-          message: req.user.displayName,
-          token,
+          name: response.name,
+          token: response.token,
         });
       }
-
-      const response = await UserServices.register({
-        displayName,
-        email,
-        password: "defaultPassword",
-        gender: "Male",
-        preferredLanguage: "English",
-        preferredCurrency: "RWF",
-        birthdate: "01/01/2000",
-        billingAddress:
-          '{"street":"KN 05 ST","city":"Kigali","province":"Kigali","postalCode":"00000","country":"Rwanda"}',
-      });
-      return res.status(201).json({ status: 201, user: response });
     } catch (error) {
       return res.status(500).json({ status: 500, error: "Server error" });
     }

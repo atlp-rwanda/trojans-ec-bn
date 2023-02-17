@@ -6,6 +6,7 @@ export const httpRequest = (email) => ({
       middleName: "request",
       givenName: "request",
     },
+    isVerified: true,
     password: "defaultPassword",
     gender: "Male",
     preferredLanguage: "English",

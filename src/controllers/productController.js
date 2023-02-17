@@ -58,7 +58,7 @@ class ProductController {
 
   static async deleteCategory(req, res) {
     try {
-      await ProductServices.deleteCategory(req.body.name);
+      await ProductServices.deleteCategory(req.params.id);
       return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ status: 500, error: "Server error" });

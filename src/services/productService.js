@@ -274,5 +274,34 @@ class ProductServices {
       ? response
       : { response, message: "no match found" };
   }
+
+  static async markAvailable(id) {
+    const product = await Product.findOne({ where: { id } });
+    if (product.available === false) {
+      await Product.update({ available: true }, { where: { id } });
+      return { name: product.name, availability: true };
+    }
+    if (product.available === true) {
+      await Product.update({ available: false }, { where: { id } });
+      return { name: product.name, availability: false };
+    }
+  }
+
+  static async updateItem(req) {
+    const product = await Product.findOne({ where: { id: req.params.id } });
+    if (!req.body.expiryDate) {
+      req.body.expiryDate = product.expiryDate;
+    }
+    const { price, name, bonus, expiryDate, categoryId, quantity } = req.body;
+    const images = req.files.map((img) => img.path);
+    await Product.update(
+      { price, name, bonus, expiryDate, categoryId, quantity, images },
+      { where: { id: req.params.id } },
+    );
+  }
+
+  static async deleteItem(id) {
+    await Product.destroy({ where: { id } });
+  }
 }
 export default ProductServices;

@@ -1110,14 +1110,12 @@ describe("Testing wishList Routes", () => {
       .get("/api/v1/users/err/productWishes")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ product_id: "gh" });
-    console.log(geterror.body);
     expect(geterror.statusCode).toBe(500);
 
     const geterrorProduct = await request(app)
       .get("/api/v1/products/err/productWishes")
       .set("Authorization", `Bearer ${login.body.token}`)
       .send({ product_id: "gh" });
-    console.log(geterrorProduct.body);
     expect(geterror.statusCode).toBe(500);
   });
 
@@ -1212,3 +1210,60 @@ describe("A test for search of Products", () => {
 afterAll(async () => {
   await User.destroy({ where: { email: "testBuyer@gmail.com" } });
 });
+
+
+
+
+describe("Testing marking products as available",()=>{
+  test("get status of 200",async () =>{
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    const mark =await request(app) .patch("/api/v1/products/1")
+    .set("Authorization", `Bearer ${login.body.token}`);
+  expect(mark.statusCode).toBe(200);
+  const mark2 =await request(app) .patch("/api/v1/products/1")
+  .set("Authorization", `Bearer ${login.body.token}`);
+  expect(mark2.statusCode).toBe(200);
+  })
+ 
+  test("get status of 500",async () =>{
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    jest
+      .spyOn(Product, "findAll")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
+    const mark =await request(app) .patch("/api/v1/products/1")
+    .set("Authorization", `Bearer ${login.body.token}`);
+   expect(mark.statusCode).toBe(500);
+  })
+  test("get status of 204 for delete",async () =>{
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "example@example.com",
+      password: "default",
+    });
+    const del =await request(app) .delete("/api/v1/products/3")
+    .set("Authorization", `Bearer ${login.body.token}`);
+    expect(del.statusCode).toBe(204);
+  })
+
+  test("Get a 200 for updating", async () => {
+    const response = await ProductController.updateItem(ask(1), answer());
+    expect(response.body).toHaveProperty("message");
+  });
+
+  test("Get a 500 while updating an item", async () => {
+    jest
+      .spyOn(Product, "update")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Database error"))
+      );
+    const response = await ProductController.updateItem(ask(1), answer());
+    expect(response.body.status).toBe(500);
+  });
+})

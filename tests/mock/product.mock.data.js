@@ -16,6 +16,9 @@ export const ask = (categoryId) => ({
     quantity: 20,
     price: 2000,
   },
+  params: {
+    id: 1,
+  },
   files: [
     {
       path: "path1",

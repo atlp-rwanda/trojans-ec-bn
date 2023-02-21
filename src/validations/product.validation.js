@@ -12,7 +12,7 @@ const productSchema = Joi.object({
   quantity: Joi.number().required(),
   expiryDate: Joi.date().allow(""),
   bonus: Joi.number().required(),
-  image: Joi.array().min(4).max(8).items(Joi.object()),
+  image: Joi.array().min(4).max(8).items(Joi.object()).required(),
 });
 const categorySchema = Joi.object({
   name: Joi.string().required(),

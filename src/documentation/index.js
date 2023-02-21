@@ -508,6 +508,102 @@ const options = {
           },
         },
       },
+      patch: {
+        tags: ["Product"],
+        description: "Marking item/product as available",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+      delete: {
+        tags: ["Product"],
+        description: "Deleting item/product",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          204: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+      put: {
+        tags: ["Product"],
+        description: "Updating a product/item",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        requestBody: {
+          content: {
+            "multipart/form-data": {
+              schema: {
+                $ref: "#/components/schemas/Product",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
     },
     "/categories": {
       post: {
@@ -794,6 +890,7 @@ const options = {
       },
     },
   },
+
   securityDefinitions: {
     google_oautho2: {
       type: "oauth2",

@@ -72,6 +72,47 @@ class ProductController {
       return res.status(500).json({ message: error });
     }
   }
+
+  static async markAvailable(req, res) {
+    try {
+      const product = await ProductServices.markAvailable(req.params.id);
+      if (product.availability) {
+        return res.status(200).json({
+          status: 200,
+          message: `Product ${product.name} is available!`,
+        });
+      }
+
+      return res.status(200).json({
+        status: 200,
+        message: `Product ${product.name} is not available!`,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async updateItem(req, res) {
+    try {
+      await ProductServices.updateItem(req);
+      return res.status(200).json({ status: 200, message: "Item updated!" });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async deleteItem(req, res) {
+    try {
+      await ProductServices.deleteItem(req.params.id);
+      return res.status(204).json({message:"Product deleted"});
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ status: 500, error: "Item can't be deleted" });
+    }
+  }
 }
 
 export default ProductController;

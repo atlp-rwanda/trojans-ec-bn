@@ -24,7 +24,9 @@ class ProductWishesController {
 
   static async getWishProductByProduct(req, res) {
     try {
-      const response = await ProductWishesService.getProductWishesByProduct(req);
+      const response = await ProductWishesService.getProductWishesByProduct(
+        req,
+      );
       return res.status(200).json({ status: 200, data: response });
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });

@@ -9,7 +9,7 @@
     "down": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
     "undo-seed": "npx sequelize-cli db:seed:undo",
-    "test": "npm run migrate:all && cross-env NODE_ENV=test  jest  --forceExit --collect-coverage && coveralls < coverage/lcov.info",
+    "test": "cross-env NODE_ENV=test  npm run migrate:all && cross-env NODE_ENV=test jest  --forceExit --collect-coverage && coveralls < coverage/lcov.info",
     "migrate:all": "npm run down && npm run migrate && npm run seed",
     "lint": "npx eslint .",
     "lint-fix": "npx eslint --fix ./",

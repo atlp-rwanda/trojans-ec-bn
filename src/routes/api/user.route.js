@@ -77,8 +77,9 @@ route.post("/:token/auth/validate/", UserController.Validate);
 route.get(
   "/:id/productWishes",
   extractToken,
-  checkRole(["buyer","admin"]),
+  checkRole(["buyer", "admin"]),
   IsUserExist,
-  ProductWishesController.getWishProductByUser);
+  ProductWishesController.getWishProductByUser,
+);
 
 export default route;

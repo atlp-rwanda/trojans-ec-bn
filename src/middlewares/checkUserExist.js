@@ -6,10 +6,9 @@ export default async function IsUserExist(req, res, next) {
   try {
     const user = await User.findOne({ where: { id: req.params.id } });
     if (!user) {
-        return res
+      return res
         .status(404)
         .json({ status: 404, message: "User is not exist" });
-     
     }
     next();
   } catch (error) {

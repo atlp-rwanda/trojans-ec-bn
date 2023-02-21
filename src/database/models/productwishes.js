@@ -1,9 +1,7 @@
 /* eslint-disable valid-jsdoc */
 /* eslint-disable require-jsdoc */
 
-const {
-  Model
-} = require('sequelize');
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class ProductWishes extends Model {
@@ -17,13 +15,18 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Product, { foreignKey: "product_id" });
     }
   }
-  ProductWishes.init({
-    product_id: {type:DataTypes.INTEGER,references: { model: "Products", key: "id" },},
-    users: DataTypes.ARRAY(DataTypes.STRING),
-    
-  }, {
-    sequelize,
-    modelName: 'ProductWishes',
-  });
+  ProductWishes.init(
+    {
+      product_id: {
+        type: DataTypes.INTEGER,
+        references: { model: "Products", key: "id" },
+      },
+      users: DataTypes.ARRAY(DataTypes.STRING),
+    },
+    {
+      sequelize,
+      modelName: "ProductWishes",
+    },
+  );
   return ProductWishes;
 };

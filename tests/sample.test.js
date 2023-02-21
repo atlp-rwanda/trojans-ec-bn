@@ -67,11 +67,6 @@ describe("Testing the registration route", () => {
     });
     expect(response.statusCode).toBe(409);
   });
-
-  // afterAll(async () => {
-  //     await User.destroy({ where : {email:"test1234@gmail.com"} });
-  // });
-
   test("test server error failed to signup the user ", async () => {
     jest
       .spyOn(User, "create")
@@ -79,8 +74,8 @@ describe("Testing the registration route", () => {
         jest.fn().mockRejectedValue(new Error("Database error"))
       );
     const response = await request(app).post("/api/v1/users/signup").send({
-      name: "test1",
-      email: `test12345@gmail.com`,
+      name: "test12",
+      email: `test123456@gmail.com`,
       password: "test12345",
       gender: "Male",
       preferredLanguage: "English",
@@ -147,7 +142,7 @@ describe("Login via google", () => {
 
   test("testing register", async () => {
     const data = await UserController.googleAuth(
-      httpRequest("test12345@gmail.com"),
+      httpRequest("testBuyer@gmail.com"),
       httpResponse()
     );
     expect(data.body).toHaveProperty("token");
@@ -269,15 +264,6 @@ describe("User logout", () => {
     expect(response.statusCode).toBe(200);
   });
 
-  // test("User logout for getting status of 401", async () => {
-  //   const token = process.env.TOKEN;
-  //   const response = await request(app)
-  //     .get("/api/v1/users/logout")
-  //     .set("Authorization", token)
-  //     .send();
-  //   expect(response.statusCode).toBe(401);
-  // });
-
   test("User logout for getting status of 500 ", async () => {
     const user = await request(app).post("/api/v1/users/signup").send({
       name: "test1",
@@ -315,6 +301,9 @@ describe("User logout", () => {
 
   afterAll(async () => {
     await User.destroy({ where: { email: "test@gmail.com" } });
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "test1@gmail.com" } });
   });
 });
 
@@ -932,10 +921,8 @@ describe("Testing the create/add item route", () => {
 
   test("Testing validateProduct", async () => {
     const response = await validateProduct(ask(10), answer(), () => {
-      console.log("next function");
     });
     const responsenxt = await validateProduct(ask(1), answer(), () => {
-      console.log("next function");
     });
     expect(response.body.status).toEqual(400);
   });
@@ -945,8 +932,8 @@ describe("Testing getting items routes", () => {
   test("Getting products when a buyer", async () => {
     const product = await Product.findOne({ where: { available: true } });
     const login = await request(app).post("/api/v1/users/login").send({
-      email: "test1234@example.com",
-      password: "default123",
+      email:  "example@example.com",
+      password: "default",
     });
     const getall = await request(app)
       .get("/api/v1/products")
@@ -1137,8 +1124,91 @@ describe("Testing wishList Routes", () => {
  
 });
 
+describe("A test for search of Products", () => {
+  // testing middleware
+  test("get a 400 status undefined query", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+    expect(response.statusCode).toBe(400);
+  });
+  test("get a 400 status undefined query", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({sellerId: "hello"})
+    expect(response.statusCode).toBe(400);
+  });
+  // testing the actualy products
 
-
-
-
-
+  test("get a 200 status for searching a category", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ categoryId: "1" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching a product in a specific category", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ categoryId: "1", product: "Under" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching a product", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ product: "Under" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching a product in a seller catalog", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ product: "Under Armour", sellerId: "2" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching all products a seller has to sell", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ sellerId: "2" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching  the range price all products a seller has to sell", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ sellerId: "2", price: 1000 - 5000 });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching  the range price on all products in a categorie", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ categoryId: "1", price: 1000 - 50000 });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching  a specific expiration day on all products", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ expiryDate: "2024/01/01" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching  a  specific expiration day a category", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ categoryId: "1", expiryDate: "2035/01/01" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching  a  specific expiration day on product of a specific seller", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ sellerId: "2", expiryDate: "2060/01/01" });
+    expect(response.statusCode).toBe(200);
+  });
+  test("get a 200 status for searching the price range on all products", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ price: (1000*1) - (20000) });
+    expect(response.statusCode).toBe(200)  
+  });
+  afterAll(async () => {
+    await User.destroy({ where: { email: "testBuyer@gmail.com" } });
+  });
+});
+afterAll(async () => {
+  await User.destroy({ where: { email: "testBuyer@gmail.com" } });
+});

@@ -5,7 +5,6 @@
 /* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-nested-ternary */
-import { Op } from "sequelize";
 
 function splitPrice(data) {
   const range = data.split("-");

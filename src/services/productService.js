@@ -77,6 +77,106 @@ class ProductServices {
 
   static async searchService(data) {
     const { categoryId, sellerId, expiryDate, price, product } = data;
+    const allCondition = {
+      [Op.and]: [
+        { name: product ? { [Op.substring]: product } : null },
+        {
+          expiryDate: expiryDate ? new Date(expiryDate) : null,
+        },
+        { sellerId: sellerId || null },
+        { categoryId: categoryId ? categoryId : null },
+        {
+          price: price
+            ? {
+                [Op.between]: [
+                  splitPrice(price).range1,
+                  splitPrice(price).range2,
+                ],
+              }
+            : null,
+        },
+      ],
+    };
+    const quadrupleCodition = {
+      [Op.or]: [
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            { sellerId: sellerId || null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            { sellerId: sellerId || null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            { expiryDate: expiryDate ? new Date(expiryDate) : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            { sellerId: sellerId || null },
+            { name: product ? { [Op.substring]: product } : null },
+            { expiryDate: expiryDate ? new Date(expiryDate) : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+            { expiryDate: expiryDate ? new Date(expiryDate) : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { sellerId: sellerId || null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+            { expiryDate: expiryDate ? new Date(expiryDate) : null },
+          ],
+        },
+      ],
+    };
     const tripleCondition = {
       [Op.or]: [
         {
@@ -125,6 +225,98 @@ class ProductServices {
                 : null,
             },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { sellerId: sellerId || null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { sellerId: sellerId || null },
+            {
+              expiryDate: expiryDate ? new Date(expiryDate) : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            {
+              expiryDate: expiryDate ? new Date(expiryDate) : null,
+            },
+            { name: product ? { [Op.substring]: product } : null },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            {
+              expiryDate: expiryDate ? new Date(expiryDate) : null,
+            },
+            {
+              sellerId: sellerId || null,
+            },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            {
+              sellerId: sellerId || null,
+            },
+            {
+              name: product ? { [Op.substring]: product } : null,
+            },
+          ],
+        },
+        {
+          [Op.and]: [
+            { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            {
+              name: product ? { [Op.substring]: product } : null,
+            },
+          ],
+        },
+        {
+          [Op.and]: [
+            { categoryId: categoryId ? categoryId : null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+            {
+              name: product ? { [Op.substring]: product } : null,
+            },
           ],
         },
       ],
@@ -216,6 +408,21 @@ class ProductServices {
             { sellerId: sellerId || null },
           ],
         },
+        {
+          [Op.and]: [
+            { name: product ? { [Op.substring]: product } : null },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+          ],
+        },
       ],
     };
     const orCondition = {
@@ -252,19 +459,35 @@ class ProductServices {
       ],
     };
     const condition =
-      (categoryId && price && sellerId) ||
-      (expiryDate && price && categoryId) ||
-      (expiryDate && price && sellerId)
+      categoryId && sellerId && price && product && expiryDate
+        ? allCondition
+        : (categoryId && sellerId && price && product) ||
+          (categoryId && sellerId && price && expiryDate) ||
+          (categoryId && sellerId && product && expiryDate) ||
+          (categoryId && price && product && expiryDate) ||
+          (price && sellerId && product && expiryDate)
+        ? quadrupleCodition
+        : (categoryId && price && sellerId) ||
+          (expiryDate && price && categoryId) ||
+          (expiryDate && price && sellerId) ||
+          (product && sellerId && price) ||
+          (product && expiryDate && sellerId) ||
+          (categoryId && product && expiryDate) ||
+          (categoryId && sellerId && expiryDate) ||
+          (categoryId && sellerId && product) ||
+          (product && price && expiryDate) ||
+          (categoryId && price && product)
         ? tripleCondition
         : (product && expiryDate) ||
           (product && sellerId) ||
-          (sellerId && expiryDate) ||
           (product && categoryId) ||
+          (sellerId && expiryDate) ||
           (categoryId && expiryDate) ||
           (categoryId && price) ||
           (sellerId && price) ||
           (expiryDate && price) ||
-          (categoryId && sellerId)
+          (categoryId && sellerId) ||
+          (product && price)
         ? andCondition
         : orCondition;
     const response = await Product.findAll({

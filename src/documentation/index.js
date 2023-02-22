@@ -921,6 +921,116 @@ const options = {
         },
       },
     },
+    "/Carts": {
+      get: {
+        tags: ["Cart"],
+        description: "View cart",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+      delete: {
+        tags: ["Cart"],
+        description: "Clear cart",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "Internal server error",
+          },
+          401: {
+            description: "Unathorized",
+          },
+        },
+      },
+    },
+    "/Carts/{id}": {
+      post: {
+        tags: ["Cart"],
+        description: "Update Item in Cart",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Id of a product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "Internal server error",
+          },
+          401: {
+            description: "Unathorized",
+          },
+        },
+      },
+      put: {
+        tags: ["Cart"],
+        description: "Update Item in Cart",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Id of an item in Cart",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Quantity",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          500: {
+            description: "Internal server error",
+          },
+          401: {
+            description: "Unathorized",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {
@@ -1141,6 +1251,19 @@ const options = {
         },
         example: {
           token: "123456",
+        },
+      },
+      Quantity: {
+        type: "object",
+        properties: {
+          quantity: {
+            type: "integer",
+            required: true,
+            description: "quantity of item in cart",
+          },
+        },
+        example: {
+          quantity: 13,
         },
       },
       Product: {

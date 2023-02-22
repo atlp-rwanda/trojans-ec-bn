@@ -1,5 +1,4 @@
 /* eslint-disable no-else-return, require-jsdoc */
-
 import UserServices from "../services/userService";
 import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
@@ -44,6 +43,7 @@ class UserController {
       const response = await UserServices.register(userData);
       return res.status(201).json({ status: 201, user: response });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -139,6 +139,7 @@ class UserController {
         }
       }
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, message: error });
     }
   }
@@ -158,6 +159,7 @@ class UserController {
         .status(200)
         .json({ status: 200, message: "You are logged out" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, message: error });
     }
   }
@@ -167,6 +169,7 @@ class UserController {
       await UserServices.updatePassword(req.user);
       return res.status(200).json({ status: 200, message: "Password updated" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server Error" });
     }
   }
@@ -185,6 +188,7 @@ class UserController {
         message: "Request complete",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "server error" });
     }
   }
@@ -193,6 +197,7 @@ class UserController {
     try {
       return res.status(200).json({ details: req.user });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "server error" });
     }
   }
@@ -215,6 +220,7 @@ class UserController {
       const response = await UserServices.getUsers();
       return res.status(200).json({ status: 200, users: response });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -243,6 +249,7 @@ class UserController {
         message: `User was successfully ${response}`,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         status: 500,
         message: "server error",
@@ -263,6 +270,7 @@ class UserController {
         return res.status(400).json({ status: 400, data: response.message });
       }
     } catch (err) {
+      console.log(err);
       res.status(500).json({ status: 500, message: err.message });
     }
   }
@@ -283,6 +291,7 @@ class UserController {
         });
       }
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -319,7 +328,7 @@ class UserController {
         .status(200)
         .json({ status: 200, message: "Updated successfully" });
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       return res.status(500).json({ status: 500, message: "Server error" });
     }
   }

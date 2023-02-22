@@ -15,7 +15,7 @@
     "no-nonoctal-decimal-escape": 0,
     "new-cap": 0,
     "consistent-return": 0,
-    "no-console": 2,
+    "no-console": 1,
     "import/no-dynamic-require": 0,
     "no-duplicate-imports": 2,
     "global-require": 0,

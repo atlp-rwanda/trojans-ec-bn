@@ -34,6 +34,7 @@ module.exports = {
       },
       images: {
         type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
       },
       expiryDate: {
         type: Sequelize.DATE,
@@ -48,7 +49,7 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable("Products");
   },
 };

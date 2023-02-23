@@ -1,5 +1,4 @@
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return, require-jsdoc */
 
 const { ProductWishes, Product } = require("../database/models");
 
@@ -16,7 +15,6 @@ class ProductWishesService {
       let users = wish.users.filter((item) => JSON.parse(item).id === id);
       if (users.length > 0) {
         users = wish.users.filter((item) => JSON.parse(item).id !== id);
-        console.log(id);
         wish.users = users;
         await wish.save();
         if (wish.users.length === 0) {
@@ -80,9 +78,8 @@ class ProductWishesService {
     wishList.forEach((element) => {
       const users = element.users || [];
       const user = users.filter(
-        (item) => JSON.parse(item).id.toString() === id.toString(),
+        (item) => JSON.parse(item).id.toString() === id.toString()
       );
-      console.log(user);
       if (user.length > 0) {
         newList.push({ id: element.id, product: element.Product });
       }

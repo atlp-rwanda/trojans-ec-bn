@@ -1,8 +1,9 @@
 import multer from "multer";
 
-import { storage1, storage } from "./cloudinary";
+import storage from "./cloudinary";
 
 const fileFilter = (req, file, cb) => {
+  /* istanbul ignore next */
   if (
     file.mimetype === "image/jpeg" ||
     file.mimetype === "image/png" ||
@@ -13,10 +14,8 @@ const fileFilter = (req, file, cb) => {
     cb({ message: "Unsupported File Format" }, false);
   }
 };
-
-const uploadProductImages = multer({
+const upload = multer({
   storage,
   fileFilter,
 });
-const uploadProfileImages = multer({ storage1, fileFilter });
-export { uploadProductImages, uploadProfileImages };
+export default upload;

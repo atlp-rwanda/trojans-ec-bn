@@ -1,10 +1,4 @@
-/* eslint-disable no-unneeded-ternary */
-/* eslint-disable prefer-const */
-/* eslint-disable no-const-assign */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-nested-ternary */
+/* eslint-disable require-jsdoc  */
 
 function splitPrice(data) {
   const range = data.split("-");

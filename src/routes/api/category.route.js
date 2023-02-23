@@ -7,12 +7,14 @@ import {
   verifyCategoryExists,
 } from "../../middlewares/verifyProduct";
 import { validateCategory } from "../../validations/product.validation";
+import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
 const route = Router();
 
 route.post(
   "/",
   extractToken,
+  isPasswordExpired,
   checkRole(["admin"]),
   validateCategory,
   verifyCategory,
@@ -22,6 +24,7 @@ route.get("/", ProductController.viewCategories);
 route.delete(
   "/:id",
   extractToken,
+  isPasswordExpired,
   checkRole(["admin"]),
   verifyCategoryExists,
   ProductController.deleteCategory

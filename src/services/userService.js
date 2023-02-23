@@ -1,10 +1,8 @@
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return, require-jsdoc */
 import Jwt from "jsonwebtoken";
 import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
 import SendEmail from "../utils/email";
-import generateRandom from "../utils/generateRandom";
 
 const { User, Blacklist } = require("../database/models");
 
@@ -45,8 +43,9 @@ class UserServices {
           status: user.status,
           isVerified: user.isVerified,
           profilePic: user.profilePic,
+          lastTimePasswordUpdated: user.lastTimePasswordUpdated,
         },
-        "2m",
+        "2m"
       ),
     };
     const token = JwtUtil.generate({
@@ -56,6 +55,8 @@ class UserServices {
       role: user.role,
       status: user.status,
       isVerified: user.isVerified,
+      profilePic: user.profilePic,
+      lastTimePasswordUpdated: user.lastTimePasswordUpdated,
     });
     const url = `${process.env.UI_URL}/users/verify-email/${token}`;
     await new SendEmail(userObj, url).sendWelcome();
@@ -69,7 +70,11 @@ class UserServices {
 
   static async updatePassword(data) {
     const password = BcryptUtil.hash(data.password);
-    await User.update({ password }, { where: { email: data.email } });
+    await User.update(
+      { password, lastTimePasswordUpdated: new Date() },
+      { where: { email: data.email } }
+    );
+    await new SendEmail(data, process.env.UI_URL, null).passwordUpdated();
   }
 
   static async resetRequest(email) {
@@ -92,13 +97,18 @@ class UserServices {
   static async resetpassword(data) {
     const { email, password } = data;
     await User.update(
-      { password: BcryptUtil.hash(password) },
+      {
+        password: BcryptUtil.hash(password),
+        lastTimePasswordUpdated: new Date(),
+      },
       {
         where: {
           email,
         },
       }
     );
+    const user = await User.findOne({ where: { email } });
+    await new SendEmail(user, process.env.UI_URL, null).passwordUpdated();
     return true;
   }
 
@@ -210,6 +220,7 @@ class UserServices {
         status: userExist.status,
         isVerified: userExist.isVerified,
         profilePic: userExist.profilePic,
+        lastTimePasswordUpdated: userExist.lastTimePasswordUpdated,
       });
 
       return { name: displayName, token };

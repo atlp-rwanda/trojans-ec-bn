@@ -88,7 +88,6 @@ class ProductController {
         message: `Product ${product.name} is not available!`,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -105,9 +104,8 @@ class ProductController {
   static async deleteItem(req, res) {
     try {
       await ProductServices.deleteItem(req.params.id);
-      return res.status(204).json({message:"Product deleted"});
+      return res.status(204).json({ message: "Product deleted" });
     } catch (error) {
-      console.log(error);
       return res
         .status(500)
         .json({ status: 500, error: "Item can't be deleted" });

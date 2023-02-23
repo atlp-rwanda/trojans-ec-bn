@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
       bonus: DataTypes.NUMBER,
       images: DataTypes.ARRAY(DataTypes.STRING),
       expiryDate: DataTypes.DATE,
+      expired: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

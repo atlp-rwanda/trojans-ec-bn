@@ -39,6 +39,10 @@ module.exports = {
       expiryDate: {
         type: Sequelize.DATE,
       },
+      expired: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

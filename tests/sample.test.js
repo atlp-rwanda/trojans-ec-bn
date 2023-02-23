@@ -15,6 +15,7 @@ const {
   Blacklist,
 } = require("../src/database/models");
 
+
 describe("Testing the home route", () => {
   test("Get a status of 200", async () => {
     const response = await request(app).get("/api/v1").send();
@@ -992,7 +993,7 @@ describe("Testing the create/add item route", () => {
 
 describe("Testing getting items routes", () => {
   test("Getting products when a buyer", async () => {
-    const product = await Product.findOne({ where: { available: true } });
+    const product = await Product.findOne({ where: { sellerId: 2 } });
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
@@ -1268,8 +1269,8 @@ afterAll(async () => {
   await User.destroy({ where: { email: "testBuyer@gmail.com" } });
 });
 
-describe("Testing marking products as available", () => {
-  test("get status of 200", async () => {
+describe("Testing marking products as available",()=>{
+  test("get status of 200",async () =>{
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",

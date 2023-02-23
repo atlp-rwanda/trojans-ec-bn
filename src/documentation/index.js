@@ -889,6 +889,38 @@ const options = {
         },
       },
     },
+    "/products/{id}/expired": {
+      patch: {
+        tags: ["Product"],
+        description: "Mark product as expired",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the product",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          404: {
+            description: "Product not found",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {

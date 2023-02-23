@@ -90,6 +90,10 @@ class SendEmail {
   async passwordUpdated() {
     await this.send("passwordUpdated", "Password updated");
   }
+
+  async expiredProduct() {
+    await this.send("expiredProduct", "Product Expired");
+  }
 }
 
 export default SendEmail;

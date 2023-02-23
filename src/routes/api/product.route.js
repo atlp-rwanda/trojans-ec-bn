@@ -51,6 +51,7 @@ route.patch(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
   ProductController.markAvailable
 );
@@ -59,6 +60,7 @@ route.delete(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
   ProductController.deleteItem
 );
@@ -67,6 +69,7 @@ route.put(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   upload.array("image"),
   validateProduct,
   checkOwner,

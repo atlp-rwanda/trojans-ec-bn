@@ -990,6 +990,52 @@ describe("Testing the create/add item route", () => {
     expect(response.body.status).toEqual(400);
   });
 });
+describe("Cart testing ",()=>{
+ test("adding product to cart with 201", async()=>{
+  const userLogin = await request(app).post("/api/v1/users/login").send({
+    email: `test1234@example.com`,
+    password: "default123",
+  });
+   const addTocart = await request(app)
+   .post("/api/v1/carts/1")
+   .set("Authorization", `Bearer ${userLogin.body.token}`)
+   .send();
+   expect(addTocart.statusCode).toBe(201);
+ });
+ test("updating  product to cart with 200 ", async()=>{
+  const userLogin = await request(app).post("/api/v1/users/login").send({
+    email: `test1234@example.com`,
+    password: "default123",
+  });
+   const updateTocart = await request(app)
+   .put("/api/v1/carts/1")
+   .set("Authorization", `Bearer ${userLogin.body.token}`)
+   .send({quantity: 12});
+   expect(updateTocart.statusCode).toBe(200);
+ });
+ test("view  product in cart with 200", async()=>{
+  const userLogin = await request(app).post("/api/v1/users/login").send({
+    email: `test1234@example.com`,
+    password: "default123",
+  });
+   const updateTocart = await request(app)
+   .get("/api/v1/carts")
+   .set("Authorization", `Bearer ${userLogin.body.token}`)
+   .send();
+   expect(updateTocart.statusCode).toBe(200);
+ });
+ test("clear  product in cart with 200", async()=>{
+  const userLogin = await request(app).post("/api/v1/users/login").send({
+    email: `test1234@example.com`,
+    password: "default123",
+  });
+   const updateTocart = await request(app)
+   .delete("/api/v1/carts")
+   .set("Authorization", `Bearer ${userLogin.body.token}`)
+   .send();
+   expect(updateTocart.statusCode).toBe(200);
+ });
+});
 
 describe("Testing getting items routes", () => {
   test("Getting products when a buyer", async () => {

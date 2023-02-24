@@ -65,7 +65,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: "Password Expired",
+          name: "John Doe",
           email: "password@example.com",
           password: BcryptUtil.hash("password123"),
           role: "buyer",
@@ -86,7 +86,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: "Password Expired",
+          name: "Mike",
           email: "password12@example.com",
           password: BcryptUtil.hash("password123"),
           role: "admin",

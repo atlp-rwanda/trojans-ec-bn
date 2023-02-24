@@ -4,7 +4,7 @@ const { Cart, Product } = require("../database/models");
 class CartServices {
   static async addItem(req) {
     const { id } = req.params;
-    const product = await Product.findOne({ where: { id } });
+    const product = await Product.findOne({ where: { id, available: true } });
     if (product) {
       const item = {
         id: product.id,

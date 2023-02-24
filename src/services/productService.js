@@ -32,7 +32,9 @@ class ProductServices {
     if (user.role === "seller") {
       products = await Product.findAll({ where: { sellerId: user.id } });
     } else if (user.role === "buyer") {
-      products = await Product.findAll({ where: { available: true } });
+      products = await Product.findAll({
+        where: { [Op.and]: [{ available: true, expired: false }] },
+      });
     } else if (user.role === "admin") {
       products = await Product.findAll();
     }
@@ -46,7 +48,9 @@ class ProductServices {
         where: { sellerId: user.id, id },
       });
     } else if (user.role === "buyer") {
-      products = await Product.findOne({ where: { id, available: true } });
+      products = await Product.findOne({
+        where: { [Op.and]: [{ id, available: true, expired: false }] },
+      });
     } else if (user.role === "admin") {
       products = await Product.findOne({ where: { id } });
     }
@@ -90,6 +94,9 @@ class ProductServices {
               }
             : null,
         },
+        {
+          expired: false,
+        },
       ],
     };
     const quadrupleCodition = {
@@ -108,6 +115,9 @@ class ProductServices {
                   }
                 : null,
             },
+            {
+              expired: false,
+            },
             { name: product ? { [Op.substring]: product } : null },
           ],
         },
@@ -125,6 +135,9 @@ class ProductServices {
                   }
                 : null,
             },
+            {
+              expired: false,
+            },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
           ],
         },
@@ -134,6 +147,9 @@ class ProductServices {
             { sellerId: sellerId || null },
             { name: product ? { [Op.substring]: product } : null },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -151,6 +167,9 @@ class ProductServices {
             },
             { name: product ? { [Op.substring]: product } : null },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -168,6 +187,9 @@ class ProductServices {
             },
             { name: product ? { [Op.substring]: product } : null },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              expired: false,
+            },
           ],
         },
       ],
@@ -188,6 +210,9 @@ class ProductServices {
                 : null,
             },
             { sellerId: sellerId || null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -204,6 +229,9 @@ class ProductServices {
                 : null,
             },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -220,6 +248,9 @@ class ProductServices {
                 : null,
             },
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -236,6 +267,9 @@ class ProductServices {
                 : null,
             },
             { name: product ? { [Op.substring]: product } : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -245,6 +279,9 @@ class ProductServices {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
             { name: product ? { [Op.substring]: product } : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -254,6 +291,9 @@ class ProductServices {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
             { name: product ? { [Op.substring]: product } : null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -265,6 +305,9 @@ class ProductServices {
             {
               sellerId: sellerId || null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -275,6 +318,9 @@ class ProductServices {
             },
             {
               name: product ? { [Op.substring]: product } : null,
+            },
+            {
+              expired: false,
             },
           ],
         },
@@ -294,6 +340,9 @@ class ProductServices {
             {
               name: product ? { [Op.substring]: product } : null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -311,6 +360,9 @@ class ProductServices {
             },
             {
               name: product ? { [Op.substring]: product } : null,
+            },
+            {
+              expired: false,
             },
           ],
         },
@@ -324,12 +376,18 @@ class ProductServices {
             {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
           [Op.and]: [
             { name: product ? { [Op.substring]: product } : null },
             { sellerId: sellerId || null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -338,18 +396,27 @@ class ProductServices {
             {
               expiryDate: expiryDate ? new Date(expiryDate) : null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
           [Op.and]: [
             { name: product ? { [Op.substring]: product } : null },
             { categoryId: categoryId || null },
+            {
+              expired: false,
+            },
           ],
         },
         {
           [Op.and]: [
             { expiryDate: expiryDate ? new Date(expiryDate) : null },
             { categoryId: categoryId || null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -364,6 +431,9 @@ class ProductServices {
                     ],
                   }
                 : null,
+            },
+            {
+              expired: false,
             },
           ],
         },
@@ -380,6 +450,9 @@ class ProductServices {
                   }
                 : null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -395,12 +468,18 @@ class ProductServices {
                   }
                 : null,
             },
+            {
+              expired: false,
+            },
           ],
         },
         {
           [Op.and]: [
             { categoryId: categoryId || null },
             { sellerId: sellerId || null },
+            {
+              expired: false,
+            },
           ],
         },
         {
@@ -415,6 +494,9 @@ class ProductServices {
                     ],
                   }
                 : null,
+            },
+            {
+              expired: false,
             },
           ],
         },
@@ -423,33 +505,68 @@ class ProductServices {
     const orCondition = {
       [Op.or]: [
         {
-          categoryId: categoryId || null,
+          [Op.and]: [
+            {
+              expired: false,
+            },
+            {
+              categoryId: categoryId || null,
+            },
+          ],
         },
         {
-          sellerId: sellerId || null,
+          [Op.and]: [
+            {
+              expired: false,
+            },
+            {
+              sellerId: sellerId || null,
+            },
+          ],
         },
         {
-          name: product ? { [Op.iLike]: `%${product}%` } : null,
+          [Op.and]: [
+            {
+              expired: false,
+            },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
+          ],
         },
         {
-          expiryDate: expiryDate
-            ? {
-                [Op.between]: [
-                  expirationDate(expiryDate).today,
-                  expirationDate(expiryDate).date,
-                ],
-              }
-            : null,
+          [Op.and]: [
+            {
+              expired: false,
+            },
+            {
+              expiryDate: expiryDate
+                ? {
+                    [Op.between]: [
+                      expirationDate(expiryDate).today,
+                      expirationDate(expiryDate).date,
+                    ],
+                  }
+                : null,
+            },
+          ],
         },
         {
-          price: price
-            ? {
-                [Op.between]: [
-                  splitPrice(price).range1,
-                  splitPrice(price).range2,
-                ],
-              }
-            : null,
+          [Op.and]: [
+            {
+              expired: false,
+            },
+            {
+              price: price
+                ? {
+                    [Op.between]: [
+                      splitPrice(price).range1,
+                      splitPrice(price).range2,
+                    ],
+                  }
+                : null,
+            },
+          ],
         },
       ],
     };

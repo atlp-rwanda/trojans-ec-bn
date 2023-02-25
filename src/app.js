@@ -32,8 +32,13 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use("/api/v1", allRouter);
 
-app.all("*", notFound);
+try {
+  app.use("/api/v1", allRouter);
+  app.all("*", notFound);
+} catch (error) {
+  /* istanbul ignore next */
+  console.log(error);
+}
 
 export default app;

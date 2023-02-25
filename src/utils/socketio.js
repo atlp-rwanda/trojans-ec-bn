@@ -46,19 +46,23 @@ const ioConnect = (http) => {
           attributes: ["name"],
         },
       ],
-    }).then((res) => {
-      console.log(res[0].dataValues.user.dataValues);
-      if (res.length > 0) {
-        const messages = res.map((message) => {
-          return {
-            message: cryptr.decrypt(message.message),
-            createdAt: message.createdAt,
-            name: message.user.dataValues.name,
-          };
-        });
-        socket.emit("all-messages", messages);
-      }
-    });
+    })
+      .then((res) => {
+        console.log(res[0].dataValues.user.dataValues);
+        if (res.length > 0) {
+          const messages = res.map((message) => {
+            return {
+              message: cryptr.decrypt(message.message),
+              createdAt: message.createdAt,
+              name: message.user.dataValues.name,
+            };
+          });
+          socket.emit("all-messages", messages);
+        }
+      })
+      .catch((err) => {
+        console.log(error);
+      });
     socket.emit("user-name", userObj.name);
     socket.on("new-user", () => {
       users[socket.id] = userObj.name;

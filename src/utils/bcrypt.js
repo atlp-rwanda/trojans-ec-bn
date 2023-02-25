@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 const Cryptr = require("cryptr");
-const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-// import { genSaltSync, hashSync, compareSync } from "bcrypt";
+const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
+
 const cryptr = new Cryptr(process.env.CRYPT_KEY, {
   pbkdf2Iterations: 10000,
   saltLength: 10,
@@ -18,5 +18,4 @@ class BcryptUtil {
     return validPass;
   }
 }
-// export { BcryptUtil };
 module.exports = { BcryptUtil, cryptr };

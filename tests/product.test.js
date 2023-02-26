@@ -18,6 +18,18 @@ describe("Product Expired", ()=>{
     .set("Authorization",  `Bearer ${login.body.token}`)
     .expect(404)
   })
+});
+
+describe("provide feedback on a product", ()=>{
+  test('getting a 200 for providing a rate/feedback on a product',async ()=>{
+    const login = await request(app).post('/api/v1/users/login').send({
+      email: 'testBuyer@example.com',
+      password: 'default'
+    });
+    const response = await request(app).post(`/api/v1/users/${1}/feedback`)
+    .set("Authorization", `Bearer ${login.body.token}`)
+    
+  })
 })
 
   

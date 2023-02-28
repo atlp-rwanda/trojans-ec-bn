@@ -68,11 +68,9 @@ class CartServices {
     if (cart) {
       const itemExists = cart.items.findIndex((cartitem) => cartitem.id == id); // eslint-disable-line eqeqeq
       if (itemExists !== -1) {
-        // eslint-disable-line eqeqeq
         if (quantity <= 0) {
           cart.items.splice(itemExists, 1);
           if (cart.items.length !== 0) {
-            // eslint-disable-line eqeqeq
             const subtotal = cart.items
               .map((item) => JSON.parse(item.Ptotal))
               .reduce((sum, next) => sum + next);

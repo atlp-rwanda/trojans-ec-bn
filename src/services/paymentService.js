@@ -1,7 +1,7 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-else-return */
+/* eslint-disable require-jsdoc, no-else-return */
 
 import JwtUtil from "../utils/generateToken";
+import { prodEmitter } from "./productService";
 
 const stripe = require("stripe")(`${process.env.STRIPE_KEY}`);
 
@@ -69,8 +69,16 @@ class PaymentService {
             Quantity: element.quantity,
           });
           await sales.save();
+          await Product.update(
+            { quantity: product.quantity - element.quantity },
+            { where: { id: element.id } }
+          );
         });
         await Cart.destroy({ where: { buyerId: user.id } });
+        prodEmitter.emit("productBought", {
+          buyerInfo: user,
+          products: cart.items,
+        });
         return "successfully";
       }
       return session.payment_status;

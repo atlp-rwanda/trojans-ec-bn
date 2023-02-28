@@ -18,10 +18,14 @@
         display: flex;
         justify-content: center;
       }
-      #message-container {
+      #message-container,
+      #notifications-container {
         width: 80%;
         max-width: 1200px;
         position: relative;
+      }
+      #notifications-container h3{
+        color: red;
       }
       #message-container div {
         background-color: #ccc;
@@ -50,6 +54,7 @@
     </style>
   </head>
   <body>
+    <div id="notifications-container"><h3>Notifications</h3></div>
     <div id="message-container"><small class="smallSpace"></small></div>
     <form id="send-container">
       <input type="text" id="message-input" />

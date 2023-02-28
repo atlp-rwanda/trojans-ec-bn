@@ -1102,6 +1102,58 @@ const options = {
         },
       },
     },
+    "/notifications": {
+      get: {
+        tags: ["Notifications"],
+        description: "get all notifications of the logged in user",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized or password is expired",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
+    "/notifications/{id}": {
+      delete: {
+        tags: ["Notifications"],
+        description: "Delete a notification of logged in user",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Id of the notification",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          202: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized or password is expired",
+          },
+          403: {
+            description: "Forbidden",
+          },
+          404: {
+            description: "Not Found",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
     "/payment/checkout": {
       post: {
         tags: ["Payment"],

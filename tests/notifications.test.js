@@ -79,3 +79,43 @@ describe("Testing notifications routes", () => {
     });
   });
 });
+
+describe("Tests for Marking Notification", () => {
+  let token;
+  beforeAll(async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "admin123@gmail.com",
+      password: "admin123",
+    });
+    token = login.body.token;
+  });
+  test("Testing marking one Notification as read", async () => {
+    const res = await request(app)
+      .post("/api/v1/notifications/3")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+    expect(res.statusCode).toBe(200);
+  });
+  test("Testing an already marked notification", async () => {
+    const res = await request(app)
+      .post("/api/v1/notifications/3")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+    expect(res.statusCode).toBe(207);
+  });
+  test("Testing marking one Notification", async () => {
+    const res = await request(app)
+      .post("/api/v1/notifications/1000")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+    expect(res.statusCode).toBe(404);
+  });
+
+  test("Testing Already marked notifications", async () => {
+    const res = await request(app)
+      .post("/api/v1/notifications")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+    expect(res.statusCode).toBe(207);
+  });
+});

@@ -23,5 +23,40 @@ class NotificationServices {
       where: { id: data.notId, recipientId: data.userId },
     });
   }
+
+  static async markNotification(req) {
+    const userId = req.user.id;
+    const notificationId = req.params.id;
+    const notification = await Notification.findOne({
+      where: { id: notificationId, recipientId: userId },
+    });
+    if (notification.dataValues.read === false) {
+      await Notification.update(
+        { read: true },
+        {
+          where: { recipientId: userId, id: notificationId },
+        }
+      );
+      return true;
+    }
+    return false;
+  }
+
+  static async markAllNotifications(req) {
+    const userId = req.user.id;
+    const notification = await Notification.findOne({
+      where: { recipientId: userId, read: false },
+    });
+    if (notification) {
+      await Notification.update(
+        { read: true },
+        {
+          where: { recipientId: userId },
+        }
+      );
+      return true;
+    }
+    return false;
+  }
 }
 export default NotificationServices;

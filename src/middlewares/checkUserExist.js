@@ -8,7 +8,7 @@ export default async function IsUserExist(req, res, next) {
     if (!user) {
       return res
         .status(404)
-        .json({ status: 404, message: "User is not exist" });
+        .json({ status: 404, message: "User does not exist" });
     }
     next();
   } catch (error) {

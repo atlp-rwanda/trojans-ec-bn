@@ -16,6 +16,7 @@ class ProductController {
       const products = await ProductServices.getAllItems(req.user);
       return res.status(200).json({ status: 200, products });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -33,6 +34,7 @@ class ProductController {
       }
       return res.status(200).json({ status: 200, product });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }

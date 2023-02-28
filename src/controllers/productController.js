@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import ProductServices from "../services/productService";
+import { ProductServices } from "../services/productService";
 
 class ProductController {
   static async addItem(req, res) {
@@ -75,7 +75,10 @@ class ProductController {
 
   static async markAvailable(req, res) {
     try {
-      const product = await ProductServices.markAvailable(req.params.id);
+      const product = await ProductServices.markAvailable({
+        id: req.params.id,
+        user: req.user,
+      });
       if (product.availability) {
         return res.status(200).json({
           status: 200,

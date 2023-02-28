@@ -1,10 +1,12 @@
 /* eslint-disable no-nested-ternary, require-jsdoc */
 
 import { Op } from "sequelize";
+import EventEmitter from "events";
 import { expirationDate, splitPrice } from "../utils/searchUtil";
-import SendEmail from "../utils/email";
 
-const { Product, Category, User } = require("../database/models");
+const prodEmitter = new EventEmitter();
+
+const { Product, Category } = require("../database/models");
 
 class ProductServices {
   static async addItem(req) {
@@ -24,6 +26,10 @@ class ProductServices {
       images,
     });
     await item.save();
+    prodEmitter.emit("productAdded", {
+      userInfo: req.user,
+      product: item.dataValues,
+    });
     return "item created";
   }
 
@@ -610,14 +616,17 @@ class ProductServices {
       : { response, message: "no match found" };
   }
 
-  static async markAvailable(id) {
+  static async markAvailable(data) {
+    const { id, user } = data;
     const product = await Product.findOne({ where: { id } });
     if (product.available === false) {
       await Product.update({ available: true }, { where: { id } });
+      prodEmitter.emit("productMadeAvailable", { seller: user, product });
       return { name: product.name, availability: true };
     }
     if (product.available === true) {
       await Product.update({ available: false }, { where: { id } });
+      prodEmitter.emit("productRemoved", { seller: user, product });
       return { name: product.name, availability: false };
     }
   }
@@ -645,19 +654,8 @@ class ProductServices {
     if (update === 0) {
       return "Product not found";
     }
-    const product = await Product.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          as: "seller",
-        },
-      ],
-    });
-    const { name, email } = product.seller;
-    await new SendEmail({ name, email }, null, product.name).expiredProduct();
-
+    prodEmitter.emit("productMadeExpired", { id });
     return "Product Expired";
   }
 }
-export default ProductServices;
+export { ProductServices, prodEmitter };

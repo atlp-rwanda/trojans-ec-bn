@@ -1,5 +1,4 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-else-return */
+/* eslint-disable require-jsdoc, no-else-return */
 
 const { ProductWishes, Product } = require("../database/models");
 
@@ -99,9 +98,12 @@ class ProductWishesService {
     const newList = [];
     wishList.forEach(async (element) => {
       const product = element.Product;
-      if(product.sellerId===id){
-        newList.push({ id: element.id, product: element.Product ,users:element.users});
-        console.log(newList);
+      if (product.sellerId === id) {
+        newList.push({
+          id: element.id,
+          product: element.Product,
+          users: element.users,
+        });
       }
     });
 

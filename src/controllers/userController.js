@@ -1,14 +1,14 @@
 /* eslint-disable no-else-return, require-jsdoc */
-import UserServices from "../services/userService";
+import { UserServices, userEventEmitter } from "../services/userService";
 import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
-import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
 import checkPasswordExpired from "../utils/isPasswordExpired";
 
 class UserController {
   static async register(req, res) {
     try {
+      let profilePic;
       const {
         name,
         email,
@@ -30,6 +30,14 @@ class UserController {
         postalCode,
         country,
       });
+
+      if (gender === "Female") {
+        profilePic =
+          "https://res.cloudinary.com/dqk2wjyyz/image/upload/v1677139041/TrojansEcommerce/vz4zwztmlwviotz6dkke.png";
+      } else {
+        profilePic =
+          "https://res.cloudinary.com/dqk2wjyyz/image/upload/v1677138834/TrojansEcommerce/bnkhjuyickvmvvrn4p76.png";
+      }
       const userData = {
         name,
         email,
@@ -38,6 +46,7 @@ class UserController {
         birthdate,
         preferredLanguage,
         preferredCurrency,
+        profilePic,
         billingAddress,
       };
       const response = await UserServices.register(userData);
@@ -78,7 +87,10 @@ class UserController {
             },
             Options
           );
-          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          userEventEmitter.emit("twoFactorAuth", {
+            userInfo: req.user,
+            randomAuth,
+          });
           return res.status(200).json({
             name,
             message:
@@ -123,7 +135,10 @@ class UserController {
             },
             Options
           );
-          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          userEventEmitter.emit("twoFactorAuth", {
+            userInfo: req.user,
+            randomAuth,
+          });
           return res.status(200).json({ name, token, randomAuth });
         } else {
           const token = JwtUtil.generate({

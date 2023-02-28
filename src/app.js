@@ -37,7 +37,7 @@ try {
   app.use("/api/v1", allRouter);
   app.all("*", notFound);
 } catch (error) {
-  /* istanbul ignore next */
+  /* eslint-disable-next-line no-console */
   console.log(error);
 }
 

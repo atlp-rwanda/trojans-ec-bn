@@ -1,4 +1,5 @@
 /* eslint-disable require-jsdoc */
+/* istanbul ignore file */
 import EventEmitter from "events";
 import { Product } from "../../database/models";
 
@@ -6,7 +7,7 @@ const schedule = require("node-schedule");
 
 class Emitter extends EventEmitter {
   async setupSchedules() {
-    schedule.scheduleJob("0 0 * * *", async () => {
+    schedule.scheduleJob(process.env.SCHEDULE_TIME, async () => {
       const products = await Product.findAll();
       products.forEach((data) => {
         const { id, expiryDate } = data.dataValues;
@@ -19,6 +20,9 @@ class Emitter extends EventEmitter {
       });
     });
   }
+  // checkDelayedProductInCart(){
+  //   schedule.scheduleJob(process.env.SCHEDULE_TIME, async () => {})
+  // }
 }
 
 export default Emitter;

@@ -1,8 +1,6 @@
 /* eslint-disable valid-jsdoc, require-jsdoc */
 
-const {
-  Model
-} = require('sequelize');
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Sales extends Model {
@@ -10,25 +8,28 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Order, { foreignKey: "Orderid" });
     }
   }
-  Sales.init({
-    Orderid:{
-      type: DataTypes.INTEGER,
-      references: { model: "Orders", key: "id" },
+  Sales.init(
+    {
+      Orderid: {
+        type: DataTypes.INTEGER,
+        references: { model: "Orders", key: "id" },
+      },
+      Productid: {
+        type: DataTypes.INTEGER,
+      },
+      Sellerid: {
+        type: DataTypes.INTEGER,
+      },
+      Status: {
+        type: DataTypes.STRING,
+        defaultValue: "created",
+      },
+      Quantity: DataTypes.STRING,
     },
-    Productid: {
-      type: DataTypes.INTEGER
-    },
-    Sellerid: {
-      type: DataTypes.INTEGER
-    },
-    Status: {
-      type: DataTypes.STRING,
-      defaultValue: "created",
-    },
-    Quantity: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Sales',
-  });
+    {
+      sequelize,
+      modelName: "Sales",
+    }
+  );
   return Sales;
 };

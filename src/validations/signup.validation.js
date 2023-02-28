@@ -14,7 +14,7 @@ const signUpSchema = Joi.object({
     lowerCase: 1,
     numeric: 1,
   }).required(),
-  gender: Joi.string().min(4).trim().required(),
+  gender: Joi.string().valid("Male", "Female").required(),
   birthdate: Joi.date().required(),
   preferredLanguage: Joi.string().min(2).trim().required(),
   preferredCurrency: Joi.string().min(1).trim().required(),

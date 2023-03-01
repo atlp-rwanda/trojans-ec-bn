@@ -105,7 +105,9 @@ class ProductController {
   static async deleteItem(req, res) {
     try {
       await ProductServices.deleteItem(req.params.id);
-      return res.status(204).json({ message: "Product deleted" });
+      return res
+        .status(202)
+        .json({ message: "Product deleted", product: req.product });
     } catch (error) {
       /* istanbul ignore next */
       return res

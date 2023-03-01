@@ -4,9 +4,9 @@ import checkRole from "../../middlewares/checkRole";
 import extractToken from "../../middlewares/extractToken";
 import { validateProduct } from "../../validations/product.validation";
 import upload from "../../config/multer";
+import IsProductExist from "../../middlewares/checkProductExist";
 import checkOwner from "../../middlewares/checkOwner";
 import ProductWishesController from "../../controllers/productWishesController";
-import IsProductExist from "../../middlewares/checkProductExist";
 import validationOfQueries from "../../validations/query.validation";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
@@ -51,7 +51,9 @@ route.patch(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
+  
   ProductController.markAvailable
 );
 route.delete(
@@ -59,6 +61,7 @@ route.delete(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
   ProductController.deleteItem
 );
@@ -67,6 +70,7 @@ route.put(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   upload.array("image"),
   validateProduct,
   checkOwner,

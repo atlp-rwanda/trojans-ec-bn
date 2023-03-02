@@ -9,14 +9,14 @@ describe("Product Expired", ()=>{
       password: 'admin123'
     })
 
-    await request(app).patch(`/api/v1/products/${1}/expired`)
+    await request(app).patch(`/api/v1/products/${2}/expired`)
     .set("Authorization",  `Bearer ${login.body.token}`)
     .expect(200)
 
-    //for bad request 
-    await request(app).patch(`/api/v1/products/${0}/expired`)
+    await request(app).patch(`/api/v1/products/${1}/expired`)
     .set("Authorization",  `Bearer ${login.body.token}`)
-    .expect(404)
+    .expect(409)
+
   })
 });
 

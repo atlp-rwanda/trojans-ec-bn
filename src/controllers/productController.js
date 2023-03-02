@@ -128,12 +128,7 @@ class ProductController {
   static async productExpired(req, res) {
     try {
       const response = await ProductServices.productExpired(req.params.id);
-      if (response === "Product not found") {
-        return res.status(404).json({
-          status: 404,
-          message: response,
-        });
-      }
+
       return res.status(200).json({
         status: 200,
         message: response,

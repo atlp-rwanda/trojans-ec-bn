@@ -9,6 +9,13 @@ import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
 const route = Router();
 
+route.get(
+  "/",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["seller"]),
+  SaleController.getSales
+);
 route.patch(
   "/:id",
   extractToken,

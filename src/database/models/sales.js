@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   class Sales extends Model {
     static associate(models) {
       this.belongsTo(models.Order, { foreignKey: "Orderid", as: "order" });
+      this.belongsTo(models.Product, {
+        foreignKey: "Productid",
+        as: "product",
+      });
     }
   }
   Sales.init(
@@ -16,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       Productid: {
         type: DataTypes.INTEGER,
+        references: { model: "Products", key: "id" },
       },
       Sellerid: {
         type: DataTypes.INTEGER,

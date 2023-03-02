@@ -19,6 +19,7 @@ import RatedBy from "../../middlewares/ratedBy";
 import rateAvailable from "../../middlewares/rateAvailable";
 import { uploadArray } from "../../middlewares/uploadCloud";
 import checkPriceRange from "../../middlewares/checkPrice";
+import IsPorductExpired from "../../middlewares/checkProductExpired";
 
 const route = Router();
 
@@ -74,7 +75,7 @@ route.patch(
   checkRole(["seller"]),
   IsProductExist,
   checkOwner,
-
+  IsPorductExpired,
   ProductController.markAvailable
 );
 route.delete(
@@ -102,6 +103,8 @@ route.patch(
   extractToken,
   isPasswordExpired,
   checkRole(["admin"]),
+  IsProductExist,
+  IsPorductExpired,
   ProductController.productExpired
 );
 

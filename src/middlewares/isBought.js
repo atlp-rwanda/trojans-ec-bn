@@ -18,9 +18,9 @@ const isBought = async (req, res, next) => {
       const userId = user.id;
       const buyerId = sale.order.dataValues.BuyerId;
       const orderStatus = sale.Status;
-      if (orderStatus === "complete" && userId === buyerId) {
+      if (orderStatus === "delivered" && userId === buyerId) {
         next();
-      } else if (orderStatus === "complete" && userId !== buyerId) {
+      } else if (orderStatus === "delivered" && userId !== buyerId) {
         return res.status(401).json({
           status: 401,
           message: `you have to first buy the product in order to provide feedback`,

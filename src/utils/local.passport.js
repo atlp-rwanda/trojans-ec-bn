@@ -8,24 +8,23 @@ passport.use(
   new PassportLocal.Strategy(
     {
       usernameField: "email",
+      passwordField: "password",
     },
     async (email, password, done) => {
       const userFound = await models.User.findOne({
         where: { email },
       });
+
       if (!userFound) {
-        done(null, false);
-      } else {
-        const isPin = await BcryptUtil.compare(password, userFound.password);
-        if (!isPin) {
-          done(null, false);
-        } else {
-          return done(null, userFound);
-        }
+        return done(null, false, { message: "User not Found" });
       }
+
+      const isPin = await BcryptUtil.compare(password, userFound.password);
+      if (!isPin) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+
+      return done(null, userFound);
     }
   )
 );
-
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));

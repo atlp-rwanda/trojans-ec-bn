@@ -1313,6 +1313,23 @@ const options = {
         },
       },
     },
+    "/sales": {
+      get: {
+        tags: ["Sales"],
+        description: "Get product sold belong to seller",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
     "/sales/{id}": {
       patch: {
         tags: ["Sales"],

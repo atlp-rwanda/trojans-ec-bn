@@ -844,10 +844,7 @@ class ProductServices {
 
   static async productExpired(prodId) {
     const id = prodId;
-    const [update] = await Product.update({ expired: true }, { where: { id } });
-    if (update === 0) {
-      return "Product not found";
-    }
+    await Product.update({ expired: true }, { where: { id } });
     prodEmitter.emit("productMadeExpired", { id });
     return "Product Expired";
   }

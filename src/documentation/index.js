@@ -1031,6 +1031,55 @@ const options = {
         },
       },
     },
+    "/chats": {
+      get: {
+        tags: ["Chats"],
+        description: "Viewing chats",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
+    "/chats/{id}": {
+      get: {
+        tags: ["Chats"],
+        description: "Viewing one chat",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Id of a chat",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          404: {
+            description: "Not Found",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {

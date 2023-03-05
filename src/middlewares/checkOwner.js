@@ -1,5 +1,6 @@
 import { Product } from "../database/models";
 
+
 const checkOwner = async (req, res, next) => {
   try {
     const product = await Product.findOne({ where: { id: req.params.id } });

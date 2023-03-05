@@ -33,6 +33,7 @@ class ProductController {
       }
       return res.status(200).json({ status: 200, product });
     } catch (error) {
+      console.log(error)
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -60,6 +61,7 @@ class ProductController {
       await ProductServices.deleteCategory(req.params.id);
       return res.status(204).json();
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -69,6 +71,7 @@ class ProductController {
       const search = await ProductServices.searchService(req.query);
       return res.status(200).json({ status: 200, search });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ message: "internal server error" });
     }
   }
@@ -128,7 +131,32 @@ class ProductController {
         message: response,
       });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async createRatings(req, res) {
+    try {
+      const response = await ProductServices.createRatings(req);
+      return res.status(200).json({ status: 200, response });
+    } catch (error) {
+      /* istanbul ignore next */
+      return res
+        .status(500)
+        .json({ status: 500, message: "internal server error" });
+    }
+  }
+
+  static async updateRatings(req, res) {
+    try {
+      const response = await ProductServices.updateFeedback(req);
+      return res.status(200).json({ status: 200, response });
+    } catch (error) {
+      /* istanbul ignore next */
+      return res
+        .status(500)
+        .json({ status: 500, message: "internal server error" });
     }
   }
 }

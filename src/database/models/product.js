@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "category",
       });
       this.belongsTo(models.User, { foreignKey: "sellerId", as: "seller" });
+      this.hasMany(models.Ratings, {
+        foreignKey: "productId",
+        as: "ratings",
+      });
     }
   }
   Product.init(

@@ -783,40 +783,6 @@ const options = {
         },
       },
     },
-
-    "/products/{id}/productWishes": {
-      get: {
-        tags: ["WishList"],
-        description: "get product from wishList by UserId",
-        parameters: [
-          {
-            in: "path",
-            name: "id",
-            description: "id for the User",
-            required: true,
-            schema: {
-              type: "number",
-              format: "id",
-            },
-          },
-        ],
-        requestBody: {},
-        responses: {
-          200: {
-            description: "Success",
-          },
-          400: {
-            description: "Bad Request",
-          },
-          401: {
-            description: "Unauthorized",
-          },
-          500: {
-            description: "internal server error",
-          },
-        },
-      },
-    },
     "/products/search": {
       get: {
         tags: ["Product"],
@@ -911,6 +877,26 @@ const options = {
           },
           404: {
             description: "Product not found",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+    "/products/productWishes": {
+      get: {
+        tags: ["WishList"],
+        description: "get all products wished by buyers",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          404: {
+            description: "not found",
           },
           401: {
             description: "Unauthorized",
@@ -1064,6 +1050,26 @@ const options = {
             },
           },
         ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          404: {
+            description: "Not Found",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
+    "/payment/checkout": {
+      post: {
+        tags: ["Payment"],
+        description: "make payment",
         responses: {
           200: {
             description: "Success",

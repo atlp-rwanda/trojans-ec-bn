@@ -24,6 +24,7 @@ import ProductWishesController from "../../controllers/productWishesController";
 import IsUserExist from "../../middlewares/checkUserExist";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
 import { uploadSingle } from "../../middlewares/uploadCloud";
+import { tokenValidation } from "../../validations/twofactor.validation";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -89,7 +90,7 @@ route.post(
   checkRole(["admin"]),
   UserController.disableAccount
 );
-route.post("/:token/auth/validate/", UserController.Validate);
+route.post("/:token/auth/validate/", tokenValidation, UserController.Validate);
 
 route.get(
   "/:id/productWishes",

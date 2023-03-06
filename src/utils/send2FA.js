@@ -9,13 +9,15 @@ class TwoFactorAuthenticator {
     const TOTP = extractor.data.randomAuth;
     const { token } = req.body;
     let value;
-    if (token === TOTP) {
+    if (token === parseInt(TOTP, 10)) {
       const user = {
         name: extractor.data.name,
         email: extractor.data.email,
         id: extractor.data.id,
         role: extractor.data.role,
         status: extractor.data.status,
+        profilePic: extractor.data.profilePic,
+        lastTimePasswordUpdated: extractor.data.lastTimePasswordUpdated
       };
       const newToken = JwtUtil.generate(user);
       value = true;

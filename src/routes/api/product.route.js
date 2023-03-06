@@ -18,6 +18,7 @@ import isAvailable from "../../middlewares/isAvalaible";
 import RatedBy from "../../middlewares/ratedBy";
 import rateAvailable from "../../middlewares/rateAvailable";
 import { uploadArray } from "../../middlewares/uploadCloud";
+import checkPriceRange from "../../middlewares/checkPrice";
 
 const route = Router();
 
@@ -39,7 +40,12 @@ route.get(
 );
 route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
 
-route.get("/search", validationOfQueries, ProductController.searchItem);
+route.get(
+  "/search",
+  validationOfQueries,
+  checkPriceRange,
+  ProductController.searchItem
+);
 
 route.get(
   "/productWishes",

@@ -9,6 +9,7 @@ import ProductWishesController from "../../controllers/productWishesController";
 import IsProductExist from "../../middlewares/checkProductExist";
 import validationOfQueries from "../../validations/query.validation";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
+import checkPriceRange from "../../middlewares/checkPrice";
 
 const route = Router();
 
@@ -23,7 +24,12 @@ route.post(
 );
 route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
 
-route.get("/search", validationOfQueries, ProductController.searchItem);
+route.get(
+  "/search",
+  validationOfQueries,
+  checkPriceRange,
+  ProductController.searchItem
+);
 
 route.get(
   "/",

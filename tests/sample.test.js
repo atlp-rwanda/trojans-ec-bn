@@ -1274,13 +1274,13 @@ describe("A test for search of Products", () => {
   test("get a 200 status for searching  the range price all products a seller has to sell", async () => {
     const response = await request(app)
       .get("/api/v1/products/search")
-      .query({ sellerId: "2", price: 1000 - 5000 });
+      .query({ sellerId: "2", price: 1000-5000 });
     expect(response.statusCode).toBe(200);
   });
   test("get a 200 status for searching  the range price on all products in a categorie", async () => {
     const response = await request(app)
       .get("/api/v1/products/search")
-      .query({ categoryId: "1", price: 1000 - 50000 });
+      .query({ categoryId: "1", price: 1000-50000 });
     expect(response.statusCode).toBe(200);
   });
   test("get a 200 status for searching  a specific expiration day on all products", async () => {
@@ -1304,7 +1304,7 @@ describe("A test for search of Products", () => {
   test("get a 200 status for searching the price range on all products", async () => {
     const response = await request(app)
       .get("/api/v1/products/search")
-      .query({ price: 1000 * 1 - 20000 });
+      .query({ price: 1000 * 1-20000 });
     expect(response.statusCode).toBe(200);
   });
   afterAll(async () => {

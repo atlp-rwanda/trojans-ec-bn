@@ -3,8 +3,12 @@ import Joi from "joi";
 
 const querySchema = Joi.object({
   categoryId: Joi.number(),
-  price: Joi.string(),
-  expiryDate: Joi.date(),
+  price: Joi.string()
+    .regex(/^\d+-\d+$/)
+    .messages({
+      "string.pattern.base": "Price must be in the format of Number",
+    }),
+  expiryDate: Joi.date().greater("now"),
   sellerId: Joi.number(),
   product: Joi.string(),
 });

@@ -9,7 +9,7 @@ class TwoFactorAuthenticator {
     const TOTP = extractor.data.randomAuth;
     const { token } = req.body;
     let value;
-    if (token === TOTP) {
+    if (token === parseInt(TOTP, 10)) {
       const user = {
         name: extractor.data.name,
         email: extractor.data.email,

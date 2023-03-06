@@ -827,50 +827,32 @@ const options = {
             name: "sellerId",
             description: "a seller you want to search for",
             required: false,
-            schema: {
-              type: "number",
-              format: "number",
-            },
           },
           {
             in: "query",
             name: "categoryId",
             description: "a category you want to search for",
             required: false,
-            schema: {
-              type: "number",
-              format: "number",
-            },
           },
           {
             in: "query",
             name: "price",
             description: "a seller you want to search for",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
+            example: "1000-2000",
           },
           {
             in: "query",
             name: "product",
             description: "a product you want to search for",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
           },
           {
             in: "query",
             name: "expiryDate",
             description: "product that will expire on the specify date",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
+            example: "2024-02-02",
           },
         ],
         responses: {

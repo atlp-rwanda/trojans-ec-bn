@@ -99,8 +99,12 @@ class ProductWishesService {
     const newList = [];
     wishList.forEach(async (element) => {
       const product = element.Product;
-      if(product.sellerId===id){
-        newList.push({ id: element.id, product: element.Product ,users:element.users});
+      if (product.sellerId === id) {
+        newList.push({
+          id: element.id,
+          product: element.Product,
+          users: element.users,
+        });
         console.log(newList);
       }
     });

@@ -17,7 +17,7 @@ const isBought = async (req, res, next) => {
       const { user } = req;
       const userId = user.id;
       const buyerId = sale.order.dataValues.BuyerId;
-      const orderStatus = sale.order.dataValues.status;
+      const orderStatus = sale.Status;
       if (orderStatus === "complete" && userId === buyerId) {
         next();
       } else if (orderStatus === "complete" && userId !== buyerId) {

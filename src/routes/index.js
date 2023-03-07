@@ -6,7 +6,8 @@ import category from "./api/category.route";
 import wishes from "./api/product_wishes.route";
 import cart from "./api/cart.route";
 import chat from "./api/chat.route";
-import payment from "./api/payment.route"
+import payment from "./api/payment.route";
+import sales from "./api/sale.route";
 
 const routes = express.Router();
 
@@ -19,5 +20,6 @@ routes.use("/carts", cart);
 routes.use("/chats", chat);
 routes.use("/payment", payment);
 
+routes.use("/sales", sales);
 
 export default routes;

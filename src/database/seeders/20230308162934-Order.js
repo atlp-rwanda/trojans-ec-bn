@@ -33,5 +33,5 @@ module.exports = {
       {}
     ),
 
-  down: (queryInterface) => queryInterface.bulkDelete('Orders', null, {}),
+  down: (queryInterface) => queryInterface.bulkDelete("Orders", null, {}),
 };

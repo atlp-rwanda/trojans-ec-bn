@@ -48,13 +48,12 @@ class ProductWishesController {
 
   static async getProductWishesSeller(req, res) {
     try {
-      const response = await ProductWishesService.getProductWishesSeller(req)
+      const response = await ProductWishesService.getProductWishesSeller(req);
       return res.status(200).json({ status: 200, data: response });
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });
     }
   }
-
 }
 
 export default ProductWishesController;

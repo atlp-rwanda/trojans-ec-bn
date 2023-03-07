@@ -13,6 +13,7 @@ export const tokenValidation = (req, res, next) => {
   try {
     const { error } = validToken(req.body);
     if (error) {
+      // console.log(error);
       return res.status(400).json({
         status: 400,
         error: error.details.map((detail) =>

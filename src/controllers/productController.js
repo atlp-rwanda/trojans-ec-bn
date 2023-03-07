@@ -69,8 +69,9 @@ class ProductController {
       const search = await ProductServices.searchService(req.query);
       return res.status(200).json({ status: 200, search });
     } catch (error) {
-      console.log(error)
-      return res.status(500).json({ message: "internal server error" });
+      return res
+        .status(500)
+        .json({ status: 500, message: "internal server error" });
     }
   }
 

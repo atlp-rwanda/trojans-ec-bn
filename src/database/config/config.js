@@ -46,7 +46,7 @@ module.exports = {
     dialect: "postgres",
     logging: false,
     protocol: "postgres",
-    dialectOptions: dialectToggle(),
+    // dialectOptions: dialectToggle(),
   },
   production: {
     username: DATABASE_USER,

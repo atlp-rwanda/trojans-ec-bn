@@ -22,14 +22,14 @@ route.post(
   validateProduct,
   ProductController.addItem
 );
-route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
-
 route.get(
   "/search",
   validationOfQueries,
-  checkPriceRange,
+  // checkPriceRange,
   ProductController.searchItem
 );
+route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
+
 
 route.get(
   "/",

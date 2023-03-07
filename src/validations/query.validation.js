@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
 import Joi from "joi";
 
@@ -24,7 +25,8 @@ const validationOfQueries = async (req, res, next) => {
     if (categoryId || price || expiryDate || sellerId || product) {
       const { error } = QueriesValidation(req.query);
       if (error) {
-        res.status(400).json({
+        // console.log(price)
+        return res.status(400).json({
           status: 400,
           error: error.details.map(
             (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
@@ -35,7 +37,7 @@ const validationOfQueries = async (req, res, next) => {
         next();
       }
     } else {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: "you need to provide at least one search parameter",
       });

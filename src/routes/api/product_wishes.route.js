@@ -2,7 +2,7 @@ import { Router } from "express";
 import extractToken from "../../middlewares/extractToken";
 import checkRole from "../../middlewares/checkRole";
 import ProductWishesController from "../../controllers/productWishesController";
-import IsProductExist from "../../middlewares/checkProductExist";
+import { IsProductExist } from "../../middlewares/checkProductExist";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
 const route = Router();

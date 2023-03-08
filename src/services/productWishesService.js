@@ -1,4 +1,5 @@
-/* eslint-disable no-else-return, require-jsdoc */
+/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return */
 
 const { ProductWishes, Product } = require("../database/models");
 
@@ -82,6 +83,25 @@ class ProductWishesService {
       );
       if (user.length > 0) {
         newList.push({ id: element.id, product: element.Product });
+      }
+    });
+
+    return newList;
+  }
+
+  static async getProductWishesSeller(req) {
+    const { id } = req.user;
+    const wishList =
+      (await ProductWishes.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: Product,
+      })) || [];
+    const newList = [];
+    wishList.forEach(async (element) => {
+      const product = element.Product;
+      if(product.sellerId===id){
+        newList.push({ id: element.id, product: element.Product ,users:element.users});
+        console.log(newList);
       }
     });
 

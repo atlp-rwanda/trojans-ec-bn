@@ -6,7 +6,6 @@ import { validateProduct } from "../../validations/product.validation";
 import upload from "../../config/multer";
 import checkOwner from "../../middlewares/checkOwner";
 import ProductWishesController from "../../controllers/productWishesController";
-import IsProductExist from "../../middlewares/checkProductExist";
 import validationOfQueries from "../../validations/query.validation";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
 
@@ -32,20 +31,21 @@ route.get(
   checkRole(["admin", "seller", "buyer"]),
   ProductController.getAllItems
 );
+
+route.get(
+  "/productWishes",
+  extractToken,
+  checkRole(["seller"]),
+  ProductWishesController.getProductWishesSeller
+);
+
 route.get(
   "/:id",
   extractToken,
   isPasswordExpired,
   ProductController.getSingleItem
 );
-route.get(
-  "/:id/productWishes",
-  extractToken,
-  isPasswordExpired,
-  checkRole(["admin"]),
-  IsProductExist,
-  ProductWishesController.getWishProductByProduct
-);
+
 route.patch(
   "/:id",
   extractToken,

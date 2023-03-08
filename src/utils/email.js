@@ -94,6 +94,10 @@ class SendEmail {
   async expiredProduct() {
     await this.send("expiredProduct", "Product Expired");
   }
+
+  async successPassReset() {
+    await this.send("successPassReset", "Success Password Reset");
+  }
 }
 
 export default SendEmail;

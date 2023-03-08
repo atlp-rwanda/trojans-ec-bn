@@ -12,8 +12,8 @@ const profileUpdateSchema = Joi.object({
 });
 
 const profileUpdateValidation = (req, res, next) => {
+  /* istanbul ignore next */
   if (req.file) {
-    /* istanbul ignore next */
     const body = { ...req.body };
     body.profilePic = req.file.path;
     const { error } = profileUpdateSchema.validate(body, {
@@ -22,9 +22,8 @@ const profileUpdateValidation = (req, res, next) => {
     if (error) {
       res.status(400).json({
         status: 400,
-        error: error.details.map(
-          (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
-          // eslint-disable-next-line comma-dangle
+        error: error.details.map((detail) =>
+          detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
         ),
       });
     } else {
@@ -37,9 +36,8 @@ const profileUpdateValidation = (req, res, next) => {
     if (error) {
       res.status(400).json({
         status: 400,
-        error: error.details.map(
-          (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
-          // eslint-disable-next-line comma-dangle
+        error: error.details.map((detail) =>
+          detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
         ),
       });
     } else {

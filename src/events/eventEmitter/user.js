@@ -7,7 +7,6 @@ import { User } from "../../database/models";
 class Emitter extends EventEmitter {
   isPasswordExpired() {
     schedule.scheduleJob(process.env.SCHEDULE_TIME, async () => {
-      console.log("schedule has run");
       const users = await User.findAll();
       users.forEach((user) => {
         const expirationTime = process.env.PASSWORD_EXPIRATION_TIME;

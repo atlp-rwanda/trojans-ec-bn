@@ -852,7 +852,7 @@ const options = {
             name: "expiryDate",
             description: "product that will expire on the specify date",
             required: false,
-            example: "2024-02-02",
+            example: "2024/02/02",
           },
         ],
         responses: {

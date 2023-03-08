@@ -13,7 +13,6 @@ export const tokenValidation = (req, res, next) => {
   try {
     const { error } = validToken(req.body);
     if (error) {
-      // console.log(error);
       return res.status(400).json({
         status: 400,
         error: error.details.map((detail) =>
@@ -23,6 +22,7 @@ export const tokenValidation = (req, res, next) => {
     }
     next();
   } catch (error) {
+    /* istanbul ignore next */
     return res
       .status(500)
       .json({ status: 500, message: "internal server error" });

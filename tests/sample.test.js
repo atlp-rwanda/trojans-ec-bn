@@ -1192,16 +1192,16 @@ describe("Testing wishList Routes", () => {
       .set("Authorization", `Bearer ${login.body.token}`);
     expect(getWish.statusCode).toBe(200);
   });
-  test("get wishList by product ", async () => {
+  test("get all product wished ", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
-      email: "admin123@gmail.com",
-      password: "admin123",
+      email: "testSeller@example.com",
+      password: "default",
     });
 
-    const getWishListByProduct = await request(app)
-      .get("/api/v1/products/1/productWishes")
+    const getWishListBySeller = await request(app)
+      .get("/api/v1/products/productWishes")
       .set("Authorization", `Bearer ${login.body.token}`);
-    expect(getWishListByProduct.statusCode).toBe(200);
+    expect(getWishListBySeller.statusCode).toBe(200);
   });
   test("get wishList by User ", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
@@ -1370,5 +1370,31 @@ describe("Testing marking products as available",()=>{
       );
     const response = await ProductController.updateItem(ask(1), answer());
     expect(response.body.status).toBe(500);
+  });
+});
+
+describe("Testing payment", () => {
+
+  test("Get a status of 200", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: "test1234@example.com",
+      password: "default123",
+    });
+     await request(app)
+     .post("/api/v1/carts/1")
+     .set("Authorization", `Bearer ${login.body.token}`)
+     .send();
+
+    const response = await request(app).post("/api/v1/payment/checkout")
+    .set("Authorization", `Bearer ${login.body.token}`)
+    .send();
+    expect(response.status).toBe(200);
+
+    const res = await request(app).get(`/api/v1/payment/success-callback?token=${response.body.token}&&paymentId=${response.body.paymentId}`).send();
+    expect(res.status).toBe(200);
+
+    const resCancel = await request(app).get(`/api/v1/payment/cancel-callback?token=${response.body.token}`).send();
+    expect(resCancel.status).toBe(200);
+
   });
 });

@@ -25,7 +25,7 @@ route.post(
 route.get(
   "/search",
   validationOfQueries,
-  // checkPriceRange,
+  checkPriceRange,
   ProductController.searchItem
 );
 route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);

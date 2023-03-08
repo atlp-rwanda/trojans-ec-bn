@@ -25,12 +25,10 @@ const validationOfQueries = async (req, res, next) => {
     if (categoryId || price || expiryDate || sellerId || product) {
       const { error } = QueriesValidation(req.query);
       if (error) {
-        // console.log(price)
         return res.status(400).json({
           status: 400,
-          error: error.details.map(
-            (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
-            // eslint-disable-next-line comma-dangle
+          error: error.details.map((detail) =>
+            detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
           ),
         });
       } else {
@@ -43,6 +41,7 @@ const validationOfQueries = async (req, res, next) => {
       });
     }
   } catch (error) {
+    /* istanbul ignore next */
     return res
       .status(500)
       .json({ status: 500, message: "internal server error" });

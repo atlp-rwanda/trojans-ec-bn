@@ -273,6 +273,20 @@ describe("testing the two factor authentication", () => {
       });
     expect(response.statusCode).toBe(400);
   });
+  test("verify a user and get a 400", async () => {
+    const login = await request(app).post("/api/v1/users/login").send({
+      email: `example@example.com`,
+      password: "default",
+    });
+    const MyTokener = login.body.token;
+    const authToken = 1235;
+    const response = await request(app)
+      .post(`/api/v1/users/${MyTokener}/auth/validate`)
+      .send({
+        token: authToken,
+      });
+    expect(response.statusCode).toBe(400);
+  });
   afterAll(async () => {
     await User.destroy({ where: { email: "test14@gmail.com" } });
   });
@@ -1227,7 +1241,7 @@ describe("Testing wishList Routes", () => {
   });
 });
 
-describe.only("A test for search of Products", () => {
+describe("A test for search of Products", () => {
   // testing middleware
   test("get a 400 status undefined query", async () => {
     const response = await request(app).get("/api/v1/products/search");
@@ -1237,6 +1251,12 @@ describe.only("A test for search of Products", () => {
     const response = await request(app)
       .get("/api/v1/products/search")
       .query({ sellerId: "hello" });
+    expect(response.statusCode).toBe(400);
+  });
+  test("get a 400 status  for invalid price checking", async () => {
+    const response = await request(app)
+      .get("/api/v1/products/search")
+      .query({ price: "2000-1000" });
     expect(response.statusCode).toBe(400);
   });
   // testing the actualy products

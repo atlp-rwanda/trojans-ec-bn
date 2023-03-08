@@ -1,9 +1,10 @@
 /* eslint-disable no-else-return, require-jsdoc */
+import EventEmitter from "events";
 import Jwt from "jsonwebtoken";
 import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
-import SendEmail from "../utils/email";
 
+const userEventEmitter = new EventEmitter();
 const { User, Blacklist } = require("../database/models");
 
 class UserServices {
@@ -58,8 +59,7 @@ class UserServices {
       profilePic: user.profilePic,
       lastTimePasswordUpdated: user.lastTimePasswordUpdated,
     });
-    const url = `${process.env.UI_URL}/users/verify-email/${token}`;
-    await new SendEmail(userObj, url).sendWelcome();
+    userEventEmitter.emit("sendWelcome", { name, email, token });
     return userObj;
   }
 
@@ -74,7 +74,7 @@ class UserServices {
       { password, lastTimePasswordUpdated: new Date() },
       { where: { email: data.email } }
     );
-    await new SendEmail(data, process.env.UI_URL, null).passwordUpdated();
+    userEventEmitter.emit("passwordUpdated", data);
   }
 
   static async resetRequest(email) {
@@ -86,11 +86,7 @@ class UserServices {
       { email: olduser.email, id: olduser.id },
       "5m"
     );
-    await new SendEmail(
-      olduser,
-      `${process.env.UI_URL}/users/password-reset/${token}`,
-      null
-    ).reset();
+    userEventEmitter.emit("resetRequest", { olduser, token });
     return { message: "Sent", token };
   }
 
@@ -107,8 +103,7 @@ class UserServices {
         },
       }
     );
-    const user = await User.findOne({ where: { email } });
-    await new SendEmail(user, process.env.UI_URL, null).passwordUpdated();
+    userEventEmitter.emit("passwordReset", email);
     return true;
   }
 
@@ -141,7 +136,7 @@ class UserServices {
           },
         }
       );
-      await new SendEmail(user, null, null).deactivate();
+      userEventEmitter.emit("disableAccount", { user });
       return "deactivated";
     }
     if (user.status === "inactive") {
@@ -153,7 +148,7 @@ class UserServices {
           },
         }
       );
-      await new SendEmail(user, null, null).activate();
+      userEventEmitter.emit("activateAccount", { user });
       return "activated";
     }
   }
@@ -240,10 +235,10 @@ class UserServices {
       profilePic: picture,
     };
     const resp = await this.register(userObj);
-    await new SendEmail(userObj, null, password).sendGooglePassword();
+    userEventEmitter.emit("sendGooglePassword", { userObj, password });
 
     return resp;
   }
 }
 
-export default UserServices;
+export { UserServices, userEventEmitter };

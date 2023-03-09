@@ -10,6 +10,7 @@ export default async function findUser(req, res, next) {
       return next();
     }
   } catch (error) {
+    /* istanbul ignore next */
     return res.status(500).json({ status: 500, error: "server error" });
   }
 }

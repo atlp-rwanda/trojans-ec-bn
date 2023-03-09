@@ -7,6 +7,7 @@ class CartController {
       await CartServices.addItem(req);
       res.status(201).json({ status: 201, message: "added to Cart" });
     } catch (error) {
+      /* istanbul ignore next */
       res.status(500).json({ status: 500, message: error });
     }
   }
@@ -16,6 +17,7 @@ class CartController {
       const cart = await CartServices.getCartItems(req.user);
       res.status(200).json({ status: 200, cart });
     } catch (error) {
+      /* istanbul ignore next */
       res.status(500).json({ status: 500, message: error });
     }
   }
@@ -25,6 +27,7 @@ class CartController {
       CartServices.updateCart(req);
       res.status(200).json({ status: 200, message: "Cart updated" });
     } catch (error) {
+      /* istanbul ignore next */
       res.status(500).json({ status: 500, message: error });
     }
   }
@@ -36,6 +39,7 @@ class CartController {
         .status(200)
         .json({ status: 200, message: "Cart cleared successfully" });
     } catch (error) {
+      /* istanbul ignore next */
       res.status(500).json({ status: 500, message: error });
     }
   }

@@ -1086,6 +1086,100 @@ const options = {
         },
       },
     },
+    "/products/{id}/ratings": {
+      post: {
+        tags: ["Product"],
+        description: "giving a feedback to a product",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "the Id of the product",
+            required: true,
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Ratings",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "unauthorized",
+          },
+          404: {
+            description: "no match found",
+          },
+          409: {
+            description: "conflict error",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
+    "/products/{id}/ratings/{ratingId}": {
+      put: {
+        tags: ["Product"],
+        description: "giving a feedback to a product",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "the Id of the product",
+            required: true,
+          },
+          {
+            in: "path",
+            name: "ratingId",
+            description: "the Id of the rating",
+            required: true,
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Ratings",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "unauthorized",
+          },
+          404: {
+            description: "no match found",
+          },
+          409: {
+            description: "conflict error",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {
@@ -1306,6 +1400,25 @@ const options = {
         },
         example: {
           token: "123456",
+        },
+      },
+      Ratings: {
+        type: "object",
+        properties: {
+          rate: {
+            type: "integer",
+            required: true,
+            description: "the rate you want to give to the product",
+          },
+          feedback: {
+            type: "string",
+            required: true,
+            description: "the feedback you want to give to the product",
+          },
+        },
+        example: {
+          rate: "5",
+          feedback: "this product is of best Quality ",
         },
       },
       Quantity: {

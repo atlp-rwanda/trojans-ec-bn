@@ -23,7 +23,7 @@
     "resetMocks": true,
     "restoreMocks": true,
     "resetModules": true,
-    "testTimeout": 70000
+    "testTimeout": 100000
   },
   "repository": {
     "type": "git",

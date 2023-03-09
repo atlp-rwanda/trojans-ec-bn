@@ -165,7 +165,7 @@ module.exports = {
         },
         {
           name: "Joseph Doe",
-          email: "testSeller@example.com",
+          email: "JosephDoe@example.com",
           password: BcryptUtil.hash("default"),
           role: "buyer",
           status: "active",

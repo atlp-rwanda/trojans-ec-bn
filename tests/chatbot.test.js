@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../src/app";
 
-describe.only("Testing Chat Routes", () => {
+describe("Testing Chat Routes", () => {
   test("Get a status of 200", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "admin123@gmail.com",

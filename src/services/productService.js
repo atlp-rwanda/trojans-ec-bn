@@ -1,10 +1,11 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-nested-ternary, require-jsdoc */
 
 import { Op } from "sequelize";
 import { expirationDate, splitPrice } from "../utils/searchUtil";
 import SendEmail from "../utils/email";
 
-const { Product, Category, User } = require("../database/models");
+const { Product, Category, User, Ratings } = require("../database/models");
 
 class ProductServices {
   static async addItem(req) {
@@ -42,17 +43,85 @@ class ProductServices {
   }
 
   static async getSingleItem(user, id) {
-    let products;
+    let products = {};
     if (user.role === "seller") {
-      products = await Product.findOne({
+      const getOne = await Product.findOne({
         where: { sellerId: user.id, id },
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
       });
+      const rating = getOne.dataValues.ratings;
+      let total = 0;
+      let average;
+      let message;
+      if (rating.length === 0) {
+        total = 0;
+        average = 0;
+        message = "this product is not rated yet";
+      } else {
+        for (let i = 0; i < rating.length; i++) {
+          total += rating[i].rate;
+        }
+        average = Math.round((total / rating.length) * 10) / 10;
+      }
+      products = average
+        ? { ...getOne.dataValues, average }
+        : { ...getOne.dataValues, message };
     } else if (user.role === "buyer") {
-      products = await Product.findOne({
+      const getOne = await Product.findOne({
         where: { [Op.and]: [{ id, available: true, expired: false }] },
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
       });
+      const rating = getOne.dataValues.ratings;
+      let total = 0;
+      let average;
+      let message;
+      if (rating.length === 0) {
+        total = 0;
+        average = 0;
+        message = "this product is not rated yet";
+      } else {
+        for (let i = 0; i < rating.length; i++) {
+          total += rating[i].rate;
+        }
+        average = Math.round((total / rating.length) * 10) / 10;
+      }
+      products = average
+        ? { ...getOne.dataValues, average }
+        : { ...getOne.dataValues, message };
     } else if (user.role === "admin") {
-      products = await Product.findOne({ where: { id } });
+      const getOne = await Product.findOne({
+        where: { id },
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
+      });
+      const rating = getOne.dataValues.ratings;
+      let total = 0;
+      let average;
+      let message;
+      if (rating.length === 0) {
+        total = 0;
+        average = 0;
+        message = "this product is not rated yet";
+      } else {
+        for (let i = 0; i < rating.length; i++) {
+          total += rating[i].rate;
+        }
+        average = Math.round((total / rating.length) * 10) / 10;
+      }
+      products = average
+        ? { ...getOne.dataValues, average }
+        : { ...getOne.dataValues, message };
     }
     return products;
   }
@@ -658,6 +727,42 @@ class ProductServices {
     await new SendEmail({ name, email }, null, product.name).expiredProduct();
 
     return "Product Expired";
+  }
+
+  static async createRatings(req) {
+    const { user } = req;
+    const { rate, feedback } = req.body;
+    const ratings = await Ratings.create({
+      name: user.name,
+      rate,
+      feedback,
+      buyerId: user.id,
+      productId: req.params.id,
+    });
+    ratings.save();
+    return ratings;
+  }
+
+  static async updateFeedback(req) {
+    const { user } = req;
+    const { id, ratingId } = req.params;
+    const { rate, feedback } = req.body;
+    await Ratings.update(
+      {
+        name: user.name,
+        rate,
+        feedback,
+        buyerId: user.id,
+        productId: id,
+      },
+      {
+        where: { [Op.and]: [{ productId: id, id: ratingId }] },
+      }
+    );
+    const rating = await Ratings.findOne({
+      where: { [Op.and]: [{ productId: id, id: ratingId }] },
+    });
+    return rating;
   }
 }
 export default ProductServices;

@@ -8,6 +8,13 @@ import checkOwner from "../../middlewares/checkOwner";
 import ProductWishesController from "../../controllers/productWishesController";
 import validationOfQueries from "../../validations/query.validation";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
+import isBought from "../../middlewares/isBought";
+import isProvided from "../../middlewares/isProvided";
+import validationOfRatings from "../../validations/ratings.validation";
+import isAvailable from "../../middlewares/isAvalaible";
+import RatedBy from "../../middlewares/ratedBy";
+import rateAvailable from "../../middlewares/rateAvailable";
+import IsProductExist from "../../middlewares/checkProductExist";
 
 const route = Router();
 
@@ -78,6 +85,28 @@ route.patch(
   isPasswordExpired,
   checkRole(["admin"]),
   ProductController.productExpired
+);
+route.post(
+  "/:id/ratings",
+  extractToken,
+  checkRole(["buyer"]),
+  IsProductExist,
+  isBought,
+  isProvided,
+  validationOfRatings,
+  ProductController.createRatings
+);
+
+route.put(
+  "/:id/ratings/:ratingId",
+  extractToken,
+  checkRole(["buyer"]),
+  IsProductExist,
+  rateAvailable,
+  isAvailable,
+  RatedBy,
+  validationOfRatings,
+  ProductController.updateRatings
 );
 
 export default route;

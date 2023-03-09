@@ -131,6 +131,31 @@ class ProductController {
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
+
+  static async createRatings(req, res) {
+    try {
+      const response = await ProductServices.createRatings(req);
+      return res.status(200).json({ status: 200, response });
+    } catch (error) {
+      
+      /* istanbul ignore next */
+      return res
+        .status(500)
+        .json({ status: 500, message: "internal server error" });
+    }
+  }
+
+  static async updateRatings(req, res) {
+    try {
+      const response = await ProductServices.updateFeedback(req);
+      return res.status(200).json({ status: 200, response });
+    } catch (error) {
+      /* istanbul ignore next */
+      return res
+        .status(500)
+        .json({ status: 500, message: "internal server error" });
+    }
+  }
 }
 
 export default ProductController;

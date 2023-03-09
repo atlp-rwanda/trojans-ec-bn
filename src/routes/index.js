@@ -19,7 +19,6 @@ routes.use("/productWishes", wishes);
 routes.use("/carts", cart);
 routes.use("/chats", chat);
 routes.use("/payment", payment);
-
 routes.use("/notifications", notification);
 
 export default routes;

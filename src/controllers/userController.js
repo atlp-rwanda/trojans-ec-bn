@@ -332,7 +332,6 @@ class UserController {
         .status(200)
         .json({ status: 200, message: "Updated successfully" });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, message: "Server error" });
     }
   }

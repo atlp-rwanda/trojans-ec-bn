@@ -1,5 +1,6 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-else-return */
+/* eslint-disable require-jsdoc, no-else-return */
+
+import { prodEmitter } from "./productService";
 
 const { ProductWishes, Product } = require("../database/models");
 
@@ -21,12 +22,20 @@ class ProductWishesService {
         if (wish.users.length === 0) {
           await ProductWishes.destroy({ where: { id: wish.id } });
         }
+        prodEmitter.emit("removedFromWishList", {
+          user: req.user,
+          product_id: productId,
+        });
         return "removed to ProductWishes";
       }
 
       users.push({ id, name, email });
       wish.users = [JSON.stringify(...users), ...wish.users];
       await wish.save();
+      prodEmitter.emit("addedToWishList", {
+        user: req.user,
+        product_id: productId,
+      });
       return "added to ProductWishes";
     } else {
       const productWish = await ProductWishes.create({
@@ -35,6 +44,10 @@ class ProductWishesService {
       });
 
       await productWish.save();
+      prodEmitter.emit("addedToWishList", {
+        user: req.user,
+        product_id: productId,
+      });
       return "added to ProductWishes";
     }
   }
@@ -99,9 +112,12 @@ class ProductWishesService {
     const newList = [];
     wishList.forEach(async (element) => {
       const product = element.Product;
-      if(product.sellerId===id){
-        newList.push({ id: element.id, product: element.Product ,users:element.users});
-        console.log(newList);
+      if (product.sellerId === id) {
+        newList.push({
+          id: element.id,
+          product: element.Product,
+          users: element.users,
+        });
       }
     });
 

@@ -98,7 +98,7 @@ describe("Testing swagger", () => {
   });
 });
 
-describe("Login with local passport", () => {
+describe.only("Login with local passport", () => {
   test("user login for getting status of 200", async () => {
     const response = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",

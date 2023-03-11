@@ -3,7 +3,7 @@ import morgan from "morgan";
 import passport from "passport";
 import session from "express-session";
 import cors from "cors";
-import "./utils/passport.config";
+import "./utils/local.passport";
 import "./utils/googleAuth";
 import allRouter from "./routes/index";
 import documentation from "./documentation/index";

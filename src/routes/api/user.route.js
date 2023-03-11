@@ -11,7 +11,7 @@ import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
 import passwordResetValidation from "../../validations/pass.reset.validation";
 import findUser from "../../middlewares/findUser";
-import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
+import { googleAuth, googleCallBack } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
 import verifyToken from "../../middlewares/verifyToken";
 import checkRole from "../../middlewares/checkRole";
@@ -21,6 +21,7 @@ import upload from "../../config/multer";
 import ProductWishesController from "../../controllers/productWishesController";
 import IsUserExist from "../../middlewares/checkUserExist";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
+import { isUserAuth } from "../../middlewares/isUserAuth";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -35,7 +36,7 @@ route.patch(
 route.post(
   "/login",
   loginValidation,
-  authLogin,
+  isUserAuth,
   findUser,
   checkIsVerified,
   UserController.login

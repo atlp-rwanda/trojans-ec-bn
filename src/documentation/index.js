@@ -1180,6 +1180,55 @@ const options = {
         },
       },
     },
+    "/orders": {
+      get: {
+        tags: ["Order"],
+        description: "View Orders",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/orders/{id}": {
+      get: {
+        tags: ["Order"],
+        description: "View single orders",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Order id",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {

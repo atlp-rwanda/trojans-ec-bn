@@ -1,5 +1,3 @@
-
-
 /* eslint-disable strict */
 
 "use strict";
@@ -52,5 +50,3 @@ module.exports = {
     await queryInterface.bulkDelete("Sales", null, {});
   },
 };
-
-

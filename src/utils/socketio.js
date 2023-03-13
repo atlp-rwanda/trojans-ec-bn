@@ -4,7 +4,7 @@
 import socketio from "socket.io";
 import JwtUtil from "./generateToken";
 
-const { Message, User, Notification } = require("../database/models");
+const { Message, User, Notification, Order } = require("../database/models");
 
 const userObj = {};
 
@@ -46,7 +46,7 @@ const ioConnect = (http) => {
   io.on("connection", (socket) => {
     socket.join(`user-${userObj.id}`);
     Notification.findAll({
-      where: { recipientId: userObj.id, read: false },
+      where: { recipientId: userObj.id },
     })
       .then((notRes) => {
         if (notRes.length > 0) {
@@ -58,6 +58,19 @@ const ioConnect = (http) => {
         console.error(error);
       });
 
+    Order.findAll({
+      where: { BuyerId: userObj.id },
+    })
+      .then((orders) => {
+        if (orders.length > 0) {
+          const orderList = orders.map((order) => order.dataValues);
+          // console.log(orderList);
+          socket.emit("orders", orderList);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     Message.findAll({
       include: [
         {
@@ -105,5 +118,4 @@ const ioConnect = (http) => {
     });
   });
 };
-
 export { ioConnect, userExists, io };

@@ -1400,6 +1400,95 @@ const options = {
         },
       },
     },
+    "/orders": {
+      get: {
+        tags: ["Order"],
+        description: "View Orders",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
+    "/orders/{id}": {
+      get: {
+        tags: ["Order"],
+        description: "View single orders",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "Order id",
+            required: true,
+            schema: {
+              type: "number",
+              format: "number",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "Internal server error",
+          },
+        },
+      },
+      patch: {
+        tags: ["Order"],
+        description: "Update order status",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the Order",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Orders",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          404: {
+            description: "Product not found",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {
@@ -1740,6 +1829,25 @@ const options = {
         },
         example: {
           Status: "delivered",
+        },
+      },
+      Orders: {
+        type: "object",
+        properties: {
+          status: {
+            type: "string",
+            reuired: true,
+            description: "status of order",
+          },
+          deliveredDate: {
+            type: "date",
+            required: true,
+            description: "Delivered date",
+          },
+        },
+        example: {
+          status: "delivered",
+          deliveredDate: "02/10/2023",
         },
       },
     },

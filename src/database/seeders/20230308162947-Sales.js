@@ -1,5 +1,3 @@
-
-
 /* eslint-disable strict */
 
 "use strict";
@@ -37,6 +35,15 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          Orderid: 3,
+          Productid: 2,
+          Sellerid: 7,
+          Status: "pending",
+          Quantity: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );
@@ -52,5 +59,3 @@ module.exports = {
     await queryInterface.bulkDelete("Sales", null, {});
   },
 };
-
-

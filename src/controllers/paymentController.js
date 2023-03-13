@@ -8,13 +8,13 @@ class PaymentController {
   }
 
   static async paymentSuccess(req, res) {
-   const result= await PaymentService.paymentSuccess(req, res);
-    res.json({message:result});
+    const result = await PaymentService.paymentSuccess(req, res);
+    res.json({ message: result });
   }
 
   static async paymentCancel(req, res) {
-     res.json({message:"canceled"});
-   }
+    res.json({ message: "canceled" });
+  }
 }
 
 export default PaymentController;

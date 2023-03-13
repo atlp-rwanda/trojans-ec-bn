@@ -1180,6 +1180,48 @@ const options = {
         },
       },
     },
+    "/sales/{id}": {
+      patch: {
+        tags: ["Sales"],
+        description: "Update product sold",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the Sale",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Sales",
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+          },
+          404: {
+            description: "Product not found",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
   },
 
   securityDefinitions: {
@@ -1487,6 +1529,39 @@ const options = {
             required: true,
             description: "product id",
           },
+        },
+      },
+      Sales: {
+        type: "object",
+        properties: {
+          orderId: {
+            type: "number",
+            required: true,
+            description: "order id",
+          },
+          productId: {
+            type: "number",
+            required: true,
+            description: "product id",
+          },
+          status: {
+            type: "string",
+            required: true,
+            description: "status of sale",
+          },
+          quantity: {
+            type: "number",
+            required: true,
+            description: "sale quantity",
+          },
+          sellerId: {
+            type: "number",
+            required: true,
+            description: "seller id",
+          },
+        },
+        example: {
+          Status: "delivered",
         },
       },
     },

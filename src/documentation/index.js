@@ -477,6 +477,26 @@ const options = {
         },
       },
     },
+    "/products/stats": {
+      get: {
+        tags: ["Product"],
+        description: "Viewing sales stats",
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
     "/products/{id}": {
       get: {
         tags: ["Product"],
@@ -751,6 +771,40 @@ const options = {
     },
 
     "/users/{id}/productWishes": {
+      get: {
+        tags: ["WishList"],
+        description: "get product from wishList by UserId",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id for the User",
+            required: true,
+            schema: {
+              type: "number",
+              format: "id",
+            },
+          },
+        ],
+        requestBody: {},
+        responses: {
+          200: {
+            description: "Success",
+          },
+          400: {
+            description: "Bad Request",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+          500: {
+            description: "internal server error",
+          },
+        },
+      },
+    },
+
+    "/products/{id}/productWishes": {
       get: {
         tags: ["WishList"],
         description: "get product from wishList by UserId",

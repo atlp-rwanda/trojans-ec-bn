@@ -4,8 +4,15 @@
 import { Op } from "sequelize";
 import { expirationDate, splitPrice } from "../utils/searchUtil";
 import SendEmail from "../utils/email";
+import stats from "../utils/sellerStats";
 
-const { Product, Category, User, Ratings } = require("../database/models");
+const {
+  Product,
+  Category,
+  User,
+  Ratings,
+  Sales,
+} = require("../database/models");
 
 class ProductServices {
   static async addItem(req) {
@@ -727,6 +734,13 @@ class ProductServices {
     await new SendEmail({ name, email }, null, product.name).expiredProduct();
 
     return "Product Expired";
+  }
+
+  static async getStats(user) {
+    const { id } = user;
+    const numSales = await Sales.count({ where: { Sellerid: id } });
+    const products = await Product.findAll({ where: { sellerId: id } });
+    return stats(products, numSales);
   }
 
   static async createRatings(req) {

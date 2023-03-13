@@ -27,17 +27,15 @@ route.post(
   validateProduct,
   ProductController.addItem
 );
+route.get(
+  "/stats",
+  extractToken,
+  checkRole(["seller"]),
+  ProductController.getStats
+);
 route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
 
 route.get("/search", validationOfQueries, ProductController.searchItem);
-
-route.get(
-  "/",
-  extractToken,
-  isPasswordExpired,
-  checkRole(["admin", "seller", "buyer"]),
-  ProductController.getAllItems
-);
 
 route.get(
   "/productWishes",
@@ -45,7 +43,13 @@ route.get(
   checkRole(["seller"]),
   ProductWishesController.getProductWishesSeller
 );
-
+route.get(
+  "/",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["admin", "seller", "buyer"]),
+  ProductController.getAllItems
+);
 route.get(
   "/:id",
   extractToken,
@@ -53,12 +57,12 @@ route.get(
   IsProductExist,
   ProductController.getSingleItem
 );
-
 route.patch(
   "/:id",
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
   ProductController.markAvailable
 );
@@ -67,6 +71,7 @@ route.delete(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
+  IsProductExist,
   checkOwner,
   ProductController.deleteItem
 );
@@ -76,6 +81,7 @@ route.put(
   isPasswordExpired,
   checkRole(["seller"]),
   upload.array("image"),
+  IsProductExist,
   validateProduct,
   checkOwner,
   ProductController.updateItem

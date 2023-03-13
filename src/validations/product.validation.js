@@ -1,4 +1,5 @@
 import Joi from "joi";
+import moment from "moment";
 
 const { Category } = require("../database/models");
 
@@ -6,11 +7,11 @@ const validateForm = (schema) => (payload) =>
   schema.validate(payload, { abortEarly: false });
 
 const productSchema = Joi.object({
-  price: Joi.number().required(),
-  categoryId: Joi.number().required(),
+  price: Joi.number().positive().required(),
+  categoryId: Joi.number().positive().required(),
   name: Joi.string().required(),
-  quantity: Joi.number().required(),
-  expiryDate: Joi.date().allow(""),
+  quantity: Joi.number().positive().required(),
+  expiryDate: Joi.date().min(moment().format("YYYY-MM-DD")).allow(""),
   bonus: Joi.number().required(),
   image: Joi.array().min(4).max(8).items(Joi.object()).required(),
 });

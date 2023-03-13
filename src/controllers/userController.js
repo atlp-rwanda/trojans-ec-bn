@@ -185,6 +185,7 @@ class UserController {
         message: "Request complete",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ status: 500, error: "server error" });
     }
   }

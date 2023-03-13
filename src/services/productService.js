@@ -705,7 +705,7 @@ class ProductServices {
   }
 
   static async deleteItem(id) {
-    await Product.destroy({ where: { id } });
+    await Product.destroy({ where: { id }, cascade: true });
   }
 
   static async productExpired(prodId) {

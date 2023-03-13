@@ -1346,7 +1346,7 @@ describe("Testing marking products as available",()=>{
       .set("Authorization", `Bearer ${login.body.token}`);
     expect(mark.statusCode).toBe(500);
   });
-  test("get status of 204 for delete", async () => {
+  test("get status of 202 for delete", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
@@ -1354,7 +1354,7 @@ describe("Testing marking products as available",()=>{
     const del = await request(app)
       .delete("/api/v1/products/3")
       .set("Authorization", `Bearer ${login.body.token}`);
-    expect(del.statusCode).toBe(204);
+    expect(del.statusCode).toBe(202);
   });
 
   test("Get a 200 for updating", async () => {

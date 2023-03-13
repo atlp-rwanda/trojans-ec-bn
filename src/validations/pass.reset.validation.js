@@ -5,6 +5,10 @@ import PasswordComplexity from "joi-password-complexity";
 const validateForm = (schema) => (payload) =>
   schema.validate(payload, { abortEarly: false });
 
+const resetRequestSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
 const resetPasswordSchema = Joi.object({
   newPassword: new PasswordComplexity({
     min: 8,
@@ -16,6 +20,22 @@ const resetPasswordSchema = Joi.object({
 });
 
 const validateResetPass = validateForm(resetPasswordSchema);
+const resetRequestValidation = validateForm(resetRequestSchema);
+
+const validateResetRequest = (req, res, next) => {
+  const { error } = resetRequestValidation(req.body);
+  if (error) {
+    res.status(400).json({
+      status: 400,
+      error: error.details.map(
+        (detail) => detail.message.replace(/[^a-zA-Z0-9 ]/g, "")
+        // eslint-disable-next-line comma-dangle
+      ),
+    });
+  } else {
+    next();
+  }
+};
 
 const passwordResetValidation = (req, res, next) => {
   const { newPassword, confirmPassword } = req.body;
@@ -37,4 +57,4 @@ const passwordResetValidation = (req, res, next) => {
   }
 };
 
-export default passwordResetValidation;
+export { passwordResetValidation, validateResetRequest };

@@ -9,7 +9,10 @@ import passwordValidation from "../../validations/pass.update.validation";
 import checkPass from "../../middlewares/checkPass";
 import resetData from "../../middlewares/resetData";
 import extractToken from "../../middlewares/extractToken";
-import passwordResetValidation from "../../validations/pass.reset.validation";
+import {
+  passwordResetValidation,
+  validateResetRequest,
+} from "../../validations/pass.reset.validation";
 import findUser from "../../middlewares/findUser";
 import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
@@ -17,10 +20,10 @@ import verifyToken from "../../middlewares/verifyToken";
 import checkRole from "../../middlewares/checkRole";
 import checkIsVerified from "../../middlewares/checkUserVerification";
 import profileUpdateValidation from "../../validations/profile.update.validation";
-import upload from "../../config/multer";
 import ProductWishesController from "../../controllers/productWishesController";
 import IsUserExist from "../../middlewares/checkUserExist";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
+import { uploadSingle } from "../../middlewares/uploadCloud";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -28,7 +31,7 @@ route.patch(
   "/profile",
   extractToken,
   isPasswordExpired,
-  upload.single("profilePic"),
+  uploadSingle("profilePic"),
   profileUpdateValidation,
   UserController.updateProfile
 );
@@ -51,7 +54,11 @@ route.put(
   checkPass,
   UserController.updatePassword
 );
-route.post("/password-reset-request", UserController.resetRequest);
+route.post(
+  "/password-reset-request",
+  validateResetRequest,
+  UserController.resetRequest
+);
 route.get("/password-reset/:token", resetData, UserController.getReset);
 route.post(
   "/password-reset/:token",

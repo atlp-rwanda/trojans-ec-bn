@@ -6,7 +6,10 @@ const eventObj = new Emitter();
 
 eventObj.on("productExpired", async (data) => {
   /* istanbul ignore next */
-  await ProductServices.productExpired(data.id);
+  const result = await ProductServices.productExpired(data.id);
+  if (result) {
+    console.log("email send");
+  }
 });
 
 eventObj.setupSchedules();

@@ -15,6 +15,7 @@ import isAvailable from "../../middlewares/isAvalaible";
 import RatedBy from "../../middlewares/ratedBy";
 import rateAvailable from "../../middlewares/rateAvailable";
 import IsProductExist from "../../middlewares/checkProductExist";
+import IsPorductExpired from "../../middlewares/checkProductExpired";
 
 const route = Router();
 
@@ -85,6 +86,8 @@ route.patch(
   extractToken,
   isPasswordExpired,
   checkRole(["admin"]),
+  IsProductExist,
+  IsPorductExpired,
   ProductController.productExpired
 );
 

@@ -710,10 +710,7 @@ class ProductServices {
 
   static async productExpired(prodId) {
     const id = prodId;
-    const [update] = await Product.update({ expired: true }, { where: { id } });
-    if (update === 0) {
-      return "Product not found";
-    }
+    await Product.update({ expired: true }, { where: { id } });
     const product = await Product.findOne({
       where: { id },
       include: [
@@ -723,9 +720,9 @@ class ProductServices {
         },
       ],
     });
+
     const { name, email } = product.seller;
     await new SendEmail({ name, email }, null, product.name).expiredProduct();
-
     return "Product Expired";
   }
 

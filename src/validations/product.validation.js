@@ -7,12 +7,12 @@ const validateForm = (schema) => (payload) =>
   schema.validate(payload, { abortEarly: false });
 
 const productSchema = Joi.object({
-  price: Joi.number().positive().required(),
-  categoryId: Joi.number().positive().required(),
+  price: Joi.number().positive().allow(0).required(),
+  categoryId: Joi.number().positive().allow(0).required(),
   name: Joi.string().required(),
   quantity: Joi.number().positive().required(),
   expiryDate: Joi.date().min(moment().format("YYYY-MM-DD")).allow(""),
-  bonus: Joi.number().required(),
+  bonus: Joi.number().positive().allow(0).required(),
   image: Joi.array().min(4).max(8).items(Joi.object()).required(),
 });
 const categorySchema = Joi.object({

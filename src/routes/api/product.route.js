@@ -3,7 +3,10 @@ import ProductController from "../../controllers/productController";
 import checkRole from "../../middlewares/checkRole";
 import extractToken from "../../middlewares/extractToken";
 import { validateProduct } from "../../validations/product.validation";
-import IsProductExist from "../../middlewares/checkProductExist";
+import {
+  IsProductExist,
+  productExistAlready,
+} from "../../middlewares/checkProductExist";
 import checkOwner from "../../middlewares/checkOwner";
 import ProductWishesController from "../../controllers/productWishesController";
 import validationOfQueries from "../../validations/query.validation";
@@ -25,19 +28,18 @@ route.post(
   checkRole(["seller"]),
   uploadArray("image"),
   validateProduct,
+  productExistAlready,
   ProductController.addItem
+);
+route.get(
+  "/stats",
+  extractToken,
+  checkRole(["seller"]),
+  ProductController.getStats
 );
 route.get("/", extractToken, isPasswordExpired, ProductController.getAllItems);
 
 route.get("/search", validationOfQueries, ProductController.searchItem);
-
-route.get(
-  "/",
-  extractToken,
-  isPasswordExpired,
-  checkRole(["admin", "seller", "buyer"]),
-  ProductController.getAllItems
-);
 
 route.get(
   "/productWishes",
@@ -45,7 +47,13 @@ route.get(
   checkRole(["seller"]),
   ProductWishesController.getProductWishesSeller
 );
-
+route.get(
+  "/",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["admin", "seller", "buyer"]),
+  ProductController.getAllItems
+);
 route.get(
   "/:id",
   extractToken,
@@ -53,7 +61,6 @@ route.get(
   IsProductExist,
   ProductController.getSingleItem
 );
-
 route.patch(
   "/:id",
   extractToken,
@@ -78,9 +85,9 @@ route.put(
   extractToken,
   isPasswordExpired,
   checkRole(["seller"]),
-  IsProductExist,
   uploadArray("image"),
   validateProduct,
+  IsProductExist,
   checkOwner,
   ProductController.updateItem
 );

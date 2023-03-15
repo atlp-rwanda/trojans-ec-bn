@@ -1034,18 +1034,18 @@ describe("Cart testing ", () => {
       password: "default123",
     });
     const addTocart = await request(app)
-      .post("/api/v1/carts/1")
+      .post("/api/v1/carts/4")
       .set("Authorization", `Bearer ${userLogin.body.token}`)
       .send();
     expect(addTocart.statusCode).toBe(201);
   });
   test("updating  product to cart with 200 ", async () => {
     const userLogin = await request(app).post("/api/v1/users/login").send({
-      email: `test1234@example.com`,
-      password: "default123",
+      email: `testBuyer@example.com`,
+      password: "default",
     });
     const updateTocart = await request(app)
-      .put("/api/v1/carts/1")
+      .put("/api/v1/carts/4")
       .set("Authorization", `Bearer ${userLogin.body.token}`)
       .send({ quantity: 12 });
     expect(updateTocart.statusCode).toBe(200);

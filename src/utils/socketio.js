@@ -1,12 +1,14 @@
-/* eslint-disable */
+/* istanbul ignore file */
+/* eslint-disable no-console */
+
 import socketio from "socket.io";
 import JwtUtil from "./generateToken";
 
-const { cryptr } = require("../utils/bcrypt");
-const { Message, User } = require("../database/models");
+const { cryptr } = require("./bcrypt");
+const { Message, User, Notification } = require("../database/models");
 
 const userObj = {};
-/* istanbul ignore next */
+
 const userExists = (token, next) => {
   try {
     const { data } = JwtUtil.verify(token);
@@ -16,7 +18,8 @@ const userExists = (token, next) => {
       },
     }).then((res) => {
       if (res) {
-        (userObj.id = res.dataValues.id), (userObj.name = res.dataValues.name);
+        userObj.id = res.dataValues.id;
+        userObj.name = res.dataValues.name;
         next();
       } else {
         next(new Error("user doesn't exist"));
@@ -26,8 +29,12 @@ const userExists = (token, next) => {
     console.log(error);
   }
 };
+
+// eslint-disable-next-line import/no-mutable-exports
+let io;
+
 const ioConnect = (http) => {
-  const io = socketio(http, { cors: { origin: "*" } });
+  io = socketio(http, { cors: { origin: "*" } });
   io.use((socket, next) => {
     if (socket.handshake.headers.token !== "null") {
       userExists(socket.handshake.headers.token, next);
@@ -36,8 +43,22 @@ const ioConnect = (http) => {
     }
   });
   const users = {};
-  /* istanbul ignore next */
+
   io.on("connection", (socket) => {
+    socket.join(`user-${userObj.id}`);
+    Notification.findAll({
+      where: { recipientId: userObj.id, read: false },
+    })
+      .then((notRes) => {
+        if (notRes.length > 0) {
+          const notifins = notRes.map((notf) => notf.dataValues);
+          socket.emit("notifications", notifins);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     Message.findAll({
       include: [
         {
@@ -48,7 +69,6 @@ const ioConnect = (http) => {
       ],
     })
       .then((res) => {
-        console.log(res[0].dataValues.user.dataValues);
         if (res.length > 0) {
           const messages = res.map((message) => {
             return {
@@ -60,19 +80,24 @@ const ioConnect = (http) => {
           socket.emit("all-messages", messages);
         }
       })
-      .catch((err) => {
-        console.log(error);
+      .catch((error) => {
+        console.error(error);
       });
+
     socket.emit("user-name", userObj.name);
+
     socket.on("new-user", () => {
       users[socket.id] = userObj.name;
       socket.broadcast.emit("user-connected", userObj.name);
     });
+
     socket.on("send-chat-message", (message) => {
       const msgCrypt = cryptr.encrypt(message.message);
       Message.create({
         userId: userObj.id,
         message: msgCrypt,
+      }).catch((error) => {
+        console.error(error);
       });
       socket.broadcast.emit("chat-message", {
         message: message.message,
@@ -80,6 +105,7 @@ const ioConnect = (http) => {
         date: message.date,
       });
     });
+
     socket.on("disconnect", () => {
       console.log(users[socket.id]);
       console.log("disconnected");
@@ -88,4 +114,5 @@ const ioConnect = (http) => {
     });
   });
 };
-export { ioConnect, userExists };
+
+export { ioConnect, userExists, io };

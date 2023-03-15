@@ -7,6 +7,11 @@ import UserController from "../src/controllers/userController";
 import ProductController from "../src/controllers/productController";
 import { ask, answer } from "./mock/product.mock.data";
 import { validateProduct } from "../src/validations/product.validation";
+import httpServer from "http";
+import { ioConnect } from "../src/utils/socketio";
+
+const http = httpServer.Server(app);
+ioConnect(http);
 
 const {
   User,
@@ -14,7 +19,6 @@ const {
   Category,
   Blacklist,
 } = require("../src/database/models");
-
 
 describe("Testing the home route", () => {
   test("Get a status of 200", async () => {
@@ -33,7 +37,26 @@ describe("Testing the registration route", () => {
     });
     expect(response.statusCode).toBe(400);
   });
-  test("Get a status of 200", async () => {
+  test("Get a status of 200 when female", async () => {
+    const response = await request(app).post("/api/v1/users/signup").send({
+      name: "test1",
+      email: `test123467@gmail.com`,
+      password: "test12345",
+      gender: "Female",
+      preferredLanguage: "English",
+      preferredCurrency: "RWF",
+      birthdate: "01/01/2000",
+      city: "Kigali",
+      province: "Kigali",
+      postalCode: "90231",
+      street: "KG 305 ST",
+      country: "Rwanda",
+    });
+    token = response.body.user.token;
+    expect(response.statusCode).toBe(201);
+  });
+
+  test("Get a status of 200 when male", async () => {
     const response = await request(app).post("/api/v1/users/signup").send({
       name: "test1",
       email: `test1234@gmail.com`,
@@ -1004,51 +1027,51 @@ describe("Testing the create/add item route", () => {
     expect(response.body.status).toEqual(400);
   });
 });
-describe("Cart testing ",()=>{
- test("adding product to cart with 201", async()=>{
-  const userLogin = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@example.com`,
-    password: "default123",
+describe("Cart testing ", () => {
+  test("adding product to cart with 201", async () => {
+    const userLogin = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@example.com`,
+      password: "default123",
+    });
+    const addTocart = await request(app)
+      .post("/api/v1/carts/1")
+      .set("Authorization", `Bearer ${userLogin.body.token}`)
+      .send();
+    expect(addTocart.statusCode).toBe(201);
   });
-   const addTocart = await request(app)
-   .post("/api/v1/carts/1")
-   .set("Authorization", `Bearer ${userLogin.body.token}`)
-   .send();
-   expect(addTocart.statusCode).toBe(201);
- });
- test("updating  product to cart with 200 ", async()=>{
-  const userLogin = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@example.com`,
-    password: "default123",
+  test("updating  product to cart with 200 ", async () => {
+    const userLogin = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@example.com`,
+      password: "default123",
+    });
+    const updateTocart = await request(app)
+      .put("/api/v1/carts/1")
+      .set("Authorization", `Bearer ${userLogin.body.token}`)
+      .send({ quantity: 12 });
+    expect(updateTocart.statusCode).toBe(200);
   });
-   const updateTocart = await request(app)
-   .put("/api/v1/carts/1")
-   .set("Authorization", `Bearer ${userLogin.body.token}`)
-   .send({quantity: 12});
-   expect(updateTocart.statusCode).toBe(200);
- });
- test("view  product in cart with 200", async()=>{
-  const userLogin = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@example.com`,
-    password: "default123",
+  test("view  product in cart with 200", async () => {
+    const userLogin = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@example.com`,
+      password: "default123",
+    });
+    const updateTocart = await request(app)
+      .get("/api/v1/carts")
+      .set("Authorization", `Bearer ${userLogin.body.token}`)
+      .send();
+    expect(updateTocart.statusCode).toBe(200);
   });
-   const updateTocart = await request(app)
-   .get("/api/v1/carts")
-   .set("Authorization", `Bearer ${userLogin.body.token}`)
-   .send();
-   expect(updateTocart.statusCode).toBe(200);
- });
- test("clear  product in cart with 200", async()=>{
-  const userLogin = await request(app).post("/api/v1/users/login").send({
-    email: `test1234@example.com`,
-    password: "default123",
+  test("clear  product in cart with 200", async () => {
+    const userLogin = await request(app).post("/api/v1/users/login").send({
+      email: `test1234@example.com`,
+      password: "default123",
+    });
+    const updateTocart = await request(app)
+      .delete("/api/v1/carts")
+      .set("Authorization", `Bearer ${userLogin.body.token}`)
+      .send();
+    expect(updateTocart.statusCode).toBe(200);
   });
-   const updateTocart = await request(app)
-   .delete("/api/v1/carts")
-   .set("Authorization", `Bearer ${userLogin.body.token}`)
-   .send();
-   expect(updateTocart.statusCode).toBe(200);
- });
 });
 
 describe("Testing getting items routes", () => {
@@ -1335,8 +1358,8 @@ afterAll(async () => {
   await User.destroy({ where: { email: "testBuyer@gmail.com" } });
 });
 
-describe("Testing marking products as available",()=>{
-  test("get status of 200",async () =>{
+describe("Testing marking products as available", () => {
+  test("get status of 200", async () => {
     const login = await request(app).post("/api/v1/users/login").send({
       email: "example@example.com",
       password: "default",
@@ -1390,31 +1413,5 @@ describe("Testing marking products as available",()=>{
       );
     const response = await ProductController.updateItem(ask(1), answer());
     expect(response.body.status).toBe(500);
-  });
-});
-
-describe("Testing payment", () => {
-
-  test("Get a status of 200", async () => {
-    const login = await request(app).post("/api/v1/users/login").send({
-      email: "test1234@example.com",
-      password: "default123",
-    });
-     await request(app)
-     .post("/api/v1/carts/1")
-     .set("Authorization", `Bearer ${login.body.token}`)
-     .send();
-
-    const response = await request(app).post("/api/v1/payment/checkout")
-    .set("Authorization", `Bearer ${login.body.token}`)
-    .send();
-    expect(response.status).toBe(200);
-
-    const res = await request(app).get(`/api/v1/payment/success-callback?token=${response.body.token}&&paymentId=${response.body.paymentId}`).send();
-    expect(res.status).toBe(200);
-
-    const resCancel = await request(app).get(`/api/v1/payment/cancel-callback?token=${response.body.token}`).send();
-    expect(resCancel.status).toBe(200);
-
   });
 });

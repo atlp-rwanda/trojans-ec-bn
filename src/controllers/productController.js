@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import ProductServices from "../services/productService";
+import { ProductServices } from "../services/productService";
 
 class ProductController {
   static async addItem(req, res) {
@@ -33,7 +33,6 @@ class ProductController {
       }
       return res.status(200).json({ status: 200, product });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -78,7 +77,10 @@ class ProductController {
 
   static async markAvailable(req, res) {
     try {
-      const product = await ProductServices.markAvailable(req.params.id);
+      const product = await ProductServices.markAvailable({
+        id: req.params.id,
+        user: req.user,
+      });
       if (product.availability) {
         return res.status(200).json({
           status: 200,
@@ -107,10 +109,12 @@ class ProductController {
 
   static async deleteItem(req, res) {
     try {
-      await ProductServices.deleteItem(req.params.id);
-      return res
-        .status(202)
-        .json({ message: "Product deleted", product: req.product });
+      await ProductServices.deleteItem({
+        id: req.params.id,
+        seller: req.user,
+        product: req.product,
+      });
+      return res.status(202).json({ message: "Product deleted" });
     } catch (error) {
       /* istanbul ignore next */
       return res

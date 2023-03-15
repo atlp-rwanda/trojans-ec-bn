@@ -1,18 +1,13 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable no-nested-ternary, require-jsdoc */
+/* eslint-disable no-plusplus, no-nested-ternary, require-jsdoc */
 
 import { Op } from "sequelize";
+import EventEmitter from "events";
 import { expirationDate, splitPrice } from "../utils/searchUtil";
-import SendEmail from "../utils/email";
 import stats from "../utils/sellerStats";
 
-const {
-  Product,
-  Category,
-  User,
-  Ratings,
-  Sales,
-} = require("../database/models");
+const { Product, Category, Ratings, Sales } = require("../database/models");
+
+const prodEmitter = new EventEmitter();
 
 class ProductServices {
   static async addItem(req) {
@@ -32,6 +27,10 @@ class ProductServices {
       images,
     });
     await item.save();
+    prodEmitter.emit("productAdded", {
+      userInfo: req.user,
+      product: item.dataValues,
+    });
     return "item created";
   }
 
@@ -809,14 +808,17 @@ class ProductServices {
       : { response, message: "no match found" };
   }
 
-  static async markAvailable(id) {
+  static async markAvailable(data) {
+    const { id, user } = data;
     const product = await Product.findOne({ where: { id } });
     if (product.available === false) {
       await Product.update({ available: true }, { where: { id } });
+      prodEmitter.emit("productMadeAvailable", { seller: user, product });
       return { name: product.name, availability: true };
     }
     if (product.available === true) {
       await Product.update({ available: false }, { where: { id } });
+      prodEmitter.emit("productMadeUnAvailable", { seller: user, product });
       return { name: product.name, availability: false };
     }
   }
@@ -834,8 +836,10 @@ class ProductServices {
     );
   }
 
-  static async deleteItem(id) {
+  static async deleteItem(data) {
+    const { id, seller, product } = data;
     await Product.destroy({ where: { id }, cascade: true });
+    prodEmitter.emit("productRemoved", { seller, product });
   }
 
   static async productExpired(prodId) {
@@ -844,18 +848,7 @@ class ProductServices {
     if (update === 0) {
       return "Product not found";
     }
-    const product = await Product.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          as: "seller",
-        },
-      ],
-    });
-    const { name, email } = product.seller;
-    await new SendEmail({ name, email }, null, product.name).expiredProduct();
-
+    prodEmitter.emit("productMadeExpired", { id });
     return "Product Expired";
   }
 
@@ -902,4 +895,4 @@ class ProductServices {
     return rating;
   }
 }
-export default ProductServices;
+export { ProductServices, prodEmitter };

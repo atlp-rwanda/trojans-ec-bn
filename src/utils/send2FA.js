@@ -1,5 +1,4 @@
-/* eslint-disable no-else-return */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-else-return, require-jsdoc */
 import JwtUtil from "./generateToken";
 
 class TwoFactorAuthenticator {
@@ -17,7 +16,7 @@ class TwoFactorAuthenticator {
         role: extractor.data.role,
         status: extractor.data.status,
         profilePic: extractor.data.profilePic,
-        lastTimePasswordUpdated: extractor.data.lastTimePasswordUpdated
+        lastTimePasswordUpdated: extractor.data.lastTimePasswordUpdated,
       };
       const newToken = JwtUtil.generate(user);
       value = true;

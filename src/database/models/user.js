@@ -1,5 +1,4 @@
-/* eslint-disable valid-jsdoc */
-/* eslint-disable require-jsdoc */
+/* eslint-disable valid-jsdoc, require-jsdoc */
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {

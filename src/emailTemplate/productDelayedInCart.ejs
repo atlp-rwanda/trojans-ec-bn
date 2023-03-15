@@ -35,6 +35,15 @@
         vertical-align: top;
       }
 
+      .product-images {
+        margin-bottom: 30px;
+      }
+
+      .product-images img {
+        width: 150px;
+        height: 150px;
+      }
+
       .body {
         background-color: #f6f6f6;
         width: 100%;
@@ -329,43 +338,7 @@
                     <tr>
                       <td>
                         <p>Hi there, <%= firstName %></p>
-                        <p>
-                          Your password has successfully
-                          reset. We will notify you to update it in a certain time in order to ensure that
-                          your account's security is not compromised!
-                        </p>
-                        <p>Keep enjoying our services.</p>
-
-                        <table
-                          role="presentation"
-                          border="0"
-                          cellpadding="0"
-                          cellspacing="0"
-                          class="btn btn-primary"
-                        >
-                          <tbody>
-                            <tr>
-                              <td align="left">
-                                <table
-                                  role="presentation"
-                                  border="0"
-                                  cellpadding="0"
-                                  cellspacing="0"
-                                >
-                                  <tbody>
-                                    <tr>
-                                      <td>
-                                        <a href="<%= url%>" target="_blank"
-                                          >Go to website</a
-                                        >
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                        <p><%= message %></p>
                         <p>
                           If you need any help, please don't hesitate to contact
                           us!

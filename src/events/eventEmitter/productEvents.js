@@ -1,8 +1,9 @@
 /* istanbul ignore file */
 /* eslint-disable require-jsdoc */
+/* istanbul ignore file */
 import EventEmitter from "events";
 import "dotenv/config";
-import { Product } from "../../database/models";
+import { Product, Cart } from "../../database/models";
 
 const schedule = require("node-schedule");
 
@@ -16,6 +17,25 @@ class Emitter extends EventEmitter {
         const currentDate = new Date().toLocaleDateString("en-US");
         if (currentDate === expDate) {
           this.emit("productExpired", { id });
+        }
+      });
+    });
+  }
+
+  checkDelayedProductInCart() {
+    schedule.scheduleJob(process.env.SCHEDULE_TIME, async () => {
+      const carts = await Cart.findAll();
+      carts.forEach((cart) => {
+        if (cart.items.length > 0) {
+          const lastUpdated = new Date(cart.updatedAt);
+          const delayingDate = new Date(
+            parseInt(lastUpdated.getTime(), 10) +
+              parseInt(process.env.PRODUCT_DELAY_IN_CART_PERIOD, 10)
+          );
+          const now = new Date();
+          if (now >= delayingDate) {
+            this.emit("productDelayedInCart", cart.buyerId);
+          }
         }
       });
     });

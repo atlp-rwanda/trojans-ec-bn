@@ -29,11 +29,14 @@ const emailTransport = () => {
 };
 
 class SendEmail {
-  constructor(user, url, randomAuth) {
-    this.to = user.email;
-    this.name = user.name;
+  constructor(obj, url, randomAuth) {
+    this.to = obj.email;
+    this.name = obj.name;
     this.url = url;
     this.randomAuth = randomAuth;
+    this.images = obj.images;
+    this.message = obj.message;
+    this.type = obj.type;
     this.from = `ATLP-Trojans <${process.env.EMAIL_FROM}>`;
   }
 
@@ -45,6 +48,8 @@ class SendEmail {
         firstName: this.name,
         url: this.url,
         authNum: this.randomAuth,
+        images: this.images,
+        message: this.message,
       }
     );
 
@@ -84,19 +89,51 @@ class SendEmail {
   }
 
   async expiredPassword() {
-    await this.send("expiredPassword", "Password expired");
+    await this.send("expiredPassword", "Password Expired");
   }
 
   async passwordUpdated() {
-    await this.send("passwordUpdated", "Password updated");
+    await this.send("passwordUpdated", "Password Updated");
+  }
+
+  async successPassReset() {
+    await this.send("successPassReset", "Password Reset");
   }
 
   async expiredProduct() {
     await this.send("expiredProduct", "Product Expired");
   }
 
-  async successPassReset() {
-    await this.send("successPassReset", "Success Password Reset");
+  async productMadeAvailable() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productExpired() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productMadeUnAvailable() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productAdded() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productRemoved() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async wishList() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productBought() {
+    await this.send("prodNotifns", this.type);
+  }
+
+  async productDelayedInCart() {
+    await this.send("productDelayedInCart", this.type);
   }
 }
 

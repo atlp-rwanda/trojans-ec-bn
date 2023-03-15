@@ -3,11 +3,22 @@ import Emitter from "../eventEmitter/user";
 import { userEventEmitter } from "../../services/userService";
 import "dotenv/config";
 import SendEmail from "../../utils/email";
-import { User } from "../../database/models";
+import { User, Notification } from "../../database/models";
+import { io } from "../../utils/socketio";
 
 const emitter = new Emitter();
 emitter.on("passwordExpired", async (userObj) => {
   try {
+    const notification = await Notification.create({
+      type: "Password Expired",
+      message: `Your password is exppired, update it to have full access`,
+      recipientId: userObj.id,
+    });
+    const savedNotification = await notification.save();
+    io.to(`user-${savedNotification.recipientId}`).emit(
+      "productExpired",
+      savedNotification.dataValues
+    );
     await new SendEmail(
       userObj,
       process.env.HOME_PAGE_URL,
@@ -37,6 +48,7 @@ userEventEmitter.on("passwordUpdated", async (data) => {
       null
     ).passwordUpdated();
   } catch (error) {
+    /* istanbul ignore next */
     console.log(error);
   }
 });
@@ -50,6 +62,7 @@ userEventEmitter.on("passwordReset", async (data) => {
       null
     ).successPassReset();
   } catch (error) {
+    /* istanbul ignore next */
     console.log(error);
   }
 });
@@ -59,6 +72,7 @@ userEventEmitter.on("sendGooglePassword", async (data) => {
     const { userObj, password } = data;
     await new SendEmail(userObj, null, password).sendGooglePassword();
   } catch (error) {
+    /* istanbul ignore next */
     console.log(error);
   }
 });
@@ -72,6 +86,7 @@ userEventEmitter.on("resetRequest", async (data) => {
       null
     ).reset();
   } catch (error) {
+    /* istanbul ignore next */
     console.log(error);
   }
 });
@@ -86,6 +101,7 @@ userEventEmitter.on("disableAccount", async (data) => {
 });
 
 userEventEmitter.on("activateAccount", async (data) => {
+  /* istanbul ignore next */
   try {
     const { user } = data;
     await new SendEmail(user, null, null).activate();

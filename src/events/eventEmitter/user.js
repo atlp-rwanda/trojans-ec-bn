@@ -19,6 +19,7 @@ class Emitter extends EventEmitter {
           return this.emit("passwordExpired", {
             email: user.email,
             name: user.name,
+            id: user.id,
           });
         }
       });

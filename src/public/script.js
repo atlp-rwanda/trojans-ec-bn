@@ -18,7 +18,7 @@ socket.on("user-name", (name) => {
 });
 socket.emit("new-user", username);
 socket.on("all-messages", (messages) => {
-  console.log(messages);
+  // console.log(messages);
   appendMessage("You joined", "");
   messages.forEach((message) => {
     const date = formatISODate(message.createdAt);
@@ -63,3 +63,71 @@ function formatISODate(isoDate) {
   };
   return date.toLocaleDateString(undefined, options);
 }
+
+socket.on("notifications", (data) => {
+  data.forEach(notification => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${notification.type}</h4><span >${notification.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+  })
+});
+
+socket.on("productMadeAvailable", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("productMadeUnAvailable", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("productExpired", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("productAdded", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("productRemoved", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("addedToWishList", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("removedFromWishList", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("productBought", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("orderAccepted", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});
+
+socket.on("orderDenied", (data) => {
+    const notDiv = document.createElement("div");
+    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+    document.getElementById("notifications-container").append(notDiv);
+});

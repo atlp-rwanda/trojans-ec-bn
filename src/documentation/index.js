@@ -847,50 +847,32 @@ const options = {
             name: "sellerId",
             description: "a seller you want to search for",
             required: false,
-            schema: {
-              type: "number",
-              format: "number",
-            },
           },
           {
             in: "query",
             name: "categoryId",
             description: "a category you want to search for",
             required: false,
-            schema: {
-              type: "number",
-              format: "number",
-            },
           },
           {
             in: "query",
             name: "price",
             description: "a seller you want to search for",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
+            example: "1000-2000",
           },
           {
             in: "query",
             name: "product",
             description: "a product you want to search for",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
           },
           {
             in: "query",
             name: "expiryDate",
             description: "product that will expire on the specify date",
             required: false,
-            schema: {
-              type: "string",
-              format: "string",
-            },
+            example: "2024/02/02",
           },
         ],
         responses: {
@@ -1489,13 +1471,13 @@ const options = {
         type: "object",
         properties: {
           token: {
-            type: "string",
+            type: "integer",
             required: true,
             description: "token obtained by the user",
           },
         },
         example: {
-          token: "123456",
+          token: 123456,
         },
       },
       Ratings: {
@@ -1513,7 +1495,7 @@ const options = {
           },
         },
         example: {
-          rate: "5",
+          rate: 5,
           feedback: "this product is of best Quality ",
         },
       },

@@ -1,8 +1,7 @@
 /* eslint-disable no-else-return, require-jsdoc */
-import UserServices from "../services/userService";
+import { userEventEmitter, UserServices } from "../services/userService";
 import TwoFactorAuthenticator from "../utils/send2FA";
 import generateRandom from "../utils/generateRandom";
-import SendEmail from "../utils/email";
 import JwtUtil from "../utils/generateToken";
 import checkPasswordExpired from "../utils/isPasswordExpired";
 
@@ -63,7 +62,7 @@ class UserController {
       if (expiredPassword) {
         if (role === "seller" || role === "admin") {
           const randomAuth = generateRandom();
-          const Options = { expiresIn: "120000" };
+          const Options = { expiresIn: "300000" };
           const token = JwtUtil.generate(
             {
               name,
@@ -77,7 +76,10 @@ class UserController {
             },
             Options
           );
-          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          userEventEmitter.emit("twoFactorAuth", {
+            userInfo: req.user,
+            randomAuth,
+          });
           return res.status(200).json({
             name,
             message:
@@ -107,7 +109,7 @@ class UserController {
         if (role === "seller" || role === "admin") {
           const randomAuth = generateRandom();
           const Options = {
-            expiresIn: "120000",
+            expiresIn: "300000",
           };
           const token = JwtUtil.generate(
             {
@@ -122,7 +124,10 @@ class UserController {
             },
             Options
           );
-          await new SendEmail(req.user, null, randomAuth).twoFactorAuth();
+          userEventEmitter.emit("twoFactorAuth", {
+            userInfo: req.user,
+            randomAuth,
+          });
           return res.status(200).json({ name, token, randomAuth });
         } else {
           const token = JwtUtil.generate({

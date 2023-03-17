@@ -37,6 +37,42 @@ class NotificationController {
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
-}
 
+  static async markNotification(req, res) {
+    try {
+      const responseNot = await NotificationServices.markNotification(req);
+      if (responseNot === true) {
+        return res
+          .status(200)
+          .json({ status: 200, message: "Notification marked as Read" });
+      }
+      return res.status(207).json({
+        status: 207,
+        message: "Notification Already marked as Read",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+
+  static async markAllNotifications(req, res) {
+    try {
+      const allNotificationRes =
+        await NotificationServices.markAllNotifications(req);
+      if (allNotificationRes === true) {
+        return res
+          .status(200)
+          .json({ status: 200, message: "All notifications marked as Read" });
+      }
+      return res.status(207).json({
+        status: 207,
+        message: "All notifications already marked as Read",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ status: 500, error: "Server error" });
+    }
+  }
+}
 export default NotificationController;

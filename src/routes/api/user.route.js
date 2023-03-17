@@ -25,6 +25,7 @@ import IsUserExist from "../../middlewares/checkUserExist";
 import isPasswordExpired from "../../middlewares/isPasswordExpired";
 import { uploadSingle } from "../../middlewares/uploadCloud";
 import { tokenValidation } from "../../validations/twofactor.validation";
+import checkUserStatus from "../../middlewares/checkUserStatus";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -41,6 +42,7 @@ route.post(
   loginValidation,
   authLogin,
   findUser,
+  checkUserStatus,
   checkIsVerified,
   UserController.login
 );
@@ -80,6 +82,7 @@ route.patch(
   extractToken,
   isPasswordExpired,
   checkRole(["admin"]),
+  IsUserExist,
   validateRole,
   UserController.assignRole
 );
@@ -88,6 +91,7 @@ route.post(
   extractToken,
   isPasswordExpired,
   checkRole(["admin"]),
+  IsUserExist,
   UserController.disableAccount
 );
 route.post("/:token/auth/validate/", tokenValidation, UserController.Validate);

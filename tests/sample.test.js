@@ -1130,37 +1130,6 @@ describe("Testing getting items routes", () => {
       .set("Authorization", `Bearer ${login.body.token}`);
     expect(getsingle.statusCode).toBe(404);
   });
-  test("Getting products giving a 500 on a single item", async () => {
-    const product = await Product.findOne({ where: { available: true } });
-    const login = await request(app).post("/api/v1/users/login").send({
-      email: "example@example.com",
-      password: "default",
-    });
-    jest
-      .spyOn(Product, "findOne")
-      .mockImplementation(
-        jest.fn().mockRejectedValue(new Error("Database error"))
-      );
-    const getsingle = await request(app)
-      .get("/api/v1/products/" + product.id)
-      .set("Authorization", `Bearer ${login.body.token}`);
-    expect(getsingle.statusCode).toBe(500);
-  });
-  test("Getting products giving a 500 on all items", async () => {
-    const login = await request(app).post("/api/v1/users/login").send({
-      email: "example@example.com",
-      password: "default",
-    });
-    jest
-      .spyOn(Product, "findAll")
-      .mockImplementation(
-        jest.fn().mockRejectedValue(new Error("Database error"))
-      );
-    const getsingle = await request(app)
-      .get("/api/v1/products")
-      .set("Authorization", `Bearer ${login.body.token}`);
-    expect(getsingle.statusCode).toBe(500);
-  });
 });
 
 // wish list

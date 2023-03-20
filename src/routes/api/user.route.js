@@ -14,7 +14,7 @@ import {
   validateResetRequest,
 } from "../../validations/pass.reset.validation";
 import findUser from "../../middlewares/findUser";
-import { googleAuth, googleCallBack, authLogin } from "../../utils/passport";
+import { googleAuth, googleCallBack } from "../../utils/passport";
 import validateRole from "../../validations/role.validation";
 import verifyToken from "../../middlewares/verifyToken";
 import checkRole from "../../middlewares/checkRole";
@@ -26,6 +26,7 @@ import isPasswordExpired from "../../middlewares/isPasswordExpired";
 import { uploadSingle } from "../../middlewares/uploadCloud";
 import { tokenValidation } from "../../validations/twofactor.validation";
 import checkUserStatus from "../../middlewares/checkUserStatus";
+import { isUserAuth } from "../../middlewares/isUserAuth";
 
 const route = Router();
 route.post("/signup", signupValidation, verifyUser, UserController.register);
@@ -40,7 +41,7 @@ route.patch(
 route.post(
   "/login",
   loginValidation,
-  authLogin,
+  isUserAuth,
   findUser,
   checkUserStatus,
   checkIsVerified,

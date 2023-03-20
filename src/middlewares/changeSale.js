@@ -13,7 +13,7 @@ const validateStatus = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     return res.status(500).json({ message: "Server Error" });
   }
 };

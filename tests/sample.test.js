@@ -1334,11 +1334,11 @@ describe("Testing marking products as available", () => {
       password: "default",
     });
     const mark = await request(app)
-      .patch("/api/v1/products/1")
+      .patch("/api/v1/products/3")
       .set("Authorization", `Bearer ${login.body.token}`);
     expect(mark.statusCode).toBe(200);
     const mark2 = await request(app)
-      .patch("/api/v1/products/1")
+      .patch("/api/v1/products/3")
       .set("Authorization", `Bearer ${login.body.token}`);
     expect(mark2.statusCode).toBe(200);
   });

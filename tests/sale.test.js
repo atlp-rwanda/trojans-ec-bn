@@ -2,6 +2,19 @@
 import request from "supertest";
 import app from "../src/app";
 
+describe("Sales belongs to seller", ()=>{
+  test("get Sales", async()=>{
+    const login = await request(app).post('/api/v1/users/login').send({
+      email: 'testSeller@example.com',
+      password: 'default'
+    })
+
+    await request(app).get(`/api/v1/sales`)
+    .set("Authorization",  `Bearer ${login.body.token}`)
+    .expect(200)
+  })
+})
+
 describe("Sale belongs to order", ()=>{
   test('get 200 for change sale status', async()=>{
     const login = await request(app).post('/api/v1/users/login').send({

@@ -294,13 +294,12 @@ class UserController {
           message: "User not verified",
         });
       } else {
-        return res.status(200).json({
-          status: 200,
-          name: response.name,
-          token: response.token,
-        });
+        return res.redirect(
+          `${process.env.REDIRECT_URL}?token=${response.token}`
+        );
       }
     } catch (error) {
+      console.log(error);
       /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }

@@ -16,12 +16,12 @@ passport.use(
       });
 
       if (!userFound) {
-        return done(null, false, { message: "User not Found" });
+        return done(null, false, { message: "Account doesn't exist" });
       }
 
       const isPin = await BcryptUtil.compare(password, userFound.password);
       if (!isPin) {
-        return done(null, false, { message: "Incorrect password" });
+        return done(null, false, { message: "Incorrect email or password" });
       }
 
       return done(null, userFound);

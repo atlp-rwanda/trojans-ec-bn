@@ -3,6 +3,7 @@ import EventEmitter from "events";
 import Jwt from "jsonwebtoken";
 import { BcryptUtil } from "../utils/bcrypt";
 import JwtUtil from "../utils/generateToken";
+import { userExists } from "../utils/socketio";
 
 const userEventEmitter = new EventEmitter();
 const { User, Blacklist } = require("../database/models");
@@ -20,9 +21,16 @@ class UserServices {
       billingAddress,
       profilePic,
     } = data;
+    let isVerified;
+    if (data.isVerified) {
+      isVerified = data.isVerified;
+    } else {
+      isVerified = false;
+    }
     const user = await User.create({
       name,
       email,
+      isVerified,
       password: await BcryptUtil.hash(password),
       gender,
       birthdate,
@@ -205,7 +213,8 @@ class UserServices {
 
     if (userExist) {
       if (userExist.isVerified === false) {
-        return "not verified";
+        // return "not verified";
+        userExists.isVerified = true;
       }
       const token = JwtUtil.generate({
         name: userExist.name,
@@ -224,6 +233,7 @@ class UserServices {
     const password = `default${Math.floor(Math.random() * 100)}`;
     const userObj = {
       name: displayName,
+      isVerified: true,
       email,
       password,
       gender: "Male",

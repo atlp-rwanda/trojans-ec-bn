@@ -1,9 +1,18 @@
 /* eslint-disable require-jsdoc */
-const { Message } = require("../database/models");
+const { Message, User } = require("../database/models");
 
 class chatServices {
   static async viewAllChats() {
-    const chats = await Message.findAll();
+    // console.log(await User.findAll())
+    const chats = await Message.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: User,
+          attributes:["profilePic","name","email","role"],
+        },
+      ],
+    });
     return chats;
   }
 

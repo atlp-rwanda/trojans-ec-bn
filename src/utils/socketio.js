@@ -3,7 +3,7 @@
 
 import socketio from "socket.io";
 import JwtUtil from "./generateToken";
-
+// const Cryptr = require("cryptr");
 const { cryptr } = require("./bcrypt");
 const { Message, User, Notification } = require("../database/models");
 
@@ -63,28 +63,22 @@ const ioConnect = (http) => {
       include: [
         {
           model: User,
-          as: "user",
-          attributes: ["name"],
+          attributes: ["profilePic","name","email","role"],
         },
       ],
     })
       .then((res) => {
         if (res.length > 0) {
-          const messages = res.map((message) => {
-            return {
-              message: cryptr.decrypt(message.message),
-              createdAt: message.createdAt,
-              name: message.user.dataValues.name,
-            };
-          });
-          socket.emit("all-messages", messages);
+          const messages = res.map((message) =>message.dataValues);
+          socket.emit("allMessages", messages);
         }
       })
       .catch((error) => {
         console.error(error);
       });
 
-    socket.emit("user-name", userObj.name);
+      console.log(userObj.name)
+    socket.emit("username", userObj.name);
 
     socket.on("new-user", () => {
       users[socket.id] = userObj.name;
@@ -92,10 +86,10 @@ const ioConnect = (http) => {
     });
 
     socket.on("send-chat-message", (message) => {
-      const msgCrypt = cryptr.encrypt(message.message);
+      console.log(message)
       Message.create({
         userId: userObj.id,
-        message: msgCrypt,
+        message: message.message,
       }).catch((error) => {
         console.error(error);
       });

@@ -6,7 +6,7 @@ const token = prompt("Enter your Token");
 let username;
 const socket = io("http://localhost:3000", {
   extraHeaders: {
-    token,
+    token:token,
   },
 });
 socket.on("connect_error", (err) => {

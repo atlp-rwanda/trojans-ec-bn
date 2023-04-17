@@ -99,7 +99,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: "50 Kg of sweat Potatoes",
+          name: "Potatoes",
           price: 50000,
           bonus: 0,
           images: [

@@ -6,7 +6,7 @@ export async function isUserAuth(req, res, next){
         passport.authenticate('local', (err, user, info)=>{
             if(err){ return next(err) }
             if(!user){
-                return res.status(401).json(info)
+                return res.status(401).json({status: 401, message: info.message})
             }
             req.user = user
             next()

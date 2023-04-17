@@ -340,6 +340,18 @@ class UserController {
       return res.status(500).json({ status: 500, message: "Server error" });
     }
   }
+
+  static async getProfile(req, res) {
+    try {
+      const response = await UserServices.getOneUser(req.user);
+      return res.status(200).json({
+        status: 200,
+        user: response,
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: "Server Error" });
+    }
+  }
 }
 
 export default UserController;

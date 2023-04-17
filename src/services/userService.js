@@ -249,6 +249,12 @@ class UserServices {
 
     return resp;
   }
+
+  static async getOneUser(data) {
+    const { id } = data;
+    const users = await User.findOne({ where: { id } });
+    return users;
+  }
 }
 
 export { UserServices, userEventEmitter };

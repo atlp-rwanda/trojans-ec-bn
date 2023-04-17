@@ -106,4 +106,12 @@ route.get(
   ProductWishesController.getWishProductByUser
 );
 
+route.get(
+  "/profile",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["buyer", "seller", "admin"]),
+  UserController.getProfile
+);
+
 export default route;

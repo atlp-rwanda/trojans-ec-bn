@@ -122,6 +122,19 @@ const options = {
       },
     },
     "/users/profile": {
+      get: {
+        tags: ["User"],
+        description: "Get One User",
+        parameters: [],
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
       patch: {
         tags: ["User"],
         summary: "Profile update",

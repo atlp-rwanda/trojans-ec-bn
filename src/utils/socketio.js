@@ -3,8 +3,7 @@
 
 import socketio from "socket.io";
 import JwtUtil from "./generateToken";
-// const Cryptr = require("cryptr");
-const { cryptr } = require("./bcrypt");
+
 const { Message, User, Notification } = require("../database/models");
 
 const userObj = {};

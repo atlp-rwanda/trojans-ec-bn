@@ -3,8 +3,7 @@
 
 import socketio from "socket.io";
 import JwtUtil from "./generateToken";
-
-const { cryptr } = require("./bcrypt");
+// const { cryptr } = require("./bcrypt");
 const { Message, User, Notification } = require("../database/models");
 
 const userObj = {};
@@ -63,20 +62,20 @@ const ioConnect = (http) => {
       include: [
         {
           model: User,
-          as: "user",
-          attributes: ["name"],
+          attributes: ["profilePic","name","email","role"],
         },
       ],
     })
       .then((res) => {
         if (res.length > 0) {
-          const messages = res.map((message) => {
-            return {
-              message: cryptr.decrypt(message.message),
-              createdAt: message.createdAt,
-              name: message.user.dataValues.name,
-            };
-          });
+          const messages = res.map((message) =>message.dataValues);
+          // const messages = res.map((message) => {
+          //   return {
+          //     message: cryptr.decrypt(message.message),
+          //     createdAt: message.createdAt,
+          //     name: message.user.dataValues.name,
+          //   };
+          // });
           socket.emit("all-messages", messages);
         }
       })
@@ -84,7 +83,7 @@ const ioConnect = (http) => {
         console.error(error);
       });
 
-    socket.emit("user-name", userObj.name);
+    socket.emit("username", userObj.name);
 
     socket.on("new-user", () => {
       users[socket.id] = userObj.name;
@@ -92,10 +91,16 @@ const ioConnect = (http) => {
     });
 
     socket.on("send-chat-message", (message) => {
-      const msgCrypt = cryptr.encrypt(message.message);
+      // const msgCrypt = cryptr.encrypt(message.message);
+      // Message.create({
+      //   userId: userObj.id,
+      //   message: msgCrypt,
+      // }).catch((error) => {
+      //   console.error(error);
+      // });
       Message.create({
         userId: userObj.id,
-        message: msgCrypt,
+        message: message.message,
       }).catch((error) => {
         console.error(error);
       });

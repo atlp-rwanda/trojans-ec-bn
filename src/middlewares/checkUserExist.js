@@ -15,5 +15,3 @@ export default async function IsUserExist(req, res, next) {
     return res.status(500).json({ status: 500, error: "server error" });
   }
 }
-
-// export default isInWishList;

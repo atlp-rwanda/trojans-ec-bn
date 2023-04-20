@@ -255,6 +255,11 @@ class UserServices {
     const users = await User.findOne({ where: { id } });
     return users;
   }
+
+  static async getSellers() {
+    const sellers = await User.findAll({ where: { role: "seller" } });
+    return sellers;
+  }
 }
 
 export { UserServices, userEventEmitter };

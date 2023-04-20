@@ -352,6 +352,19 @@ class UserController {
       return res.status(500).json({ status: 500, message: "Server Error" });
     }
   }
+
+  static async getSellers(req, res) {
+    try {
+      const sellers = await UserServices.getSellers();
+      return res.status(200).json({
+        status: 200,
+        sellers,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ status: 500, message: error });
+    }
+  }
 }
 
 export default UserController;

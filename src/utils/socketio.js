@@ -62,13 +62,13 @@ const ioConnect = (http) => {
       include: [
         {
           model: User,
-          attributes: ["profilePic","name","email","role"],
+          attributes: ["profilePic", "name", "email", "role"],
         },
       ],
     })
       .then((res) => {
         if (res.length > 0) {
-          const messages = res.map((message) =>message.dataValues);
+          const messages = res.map((message) => message.dataValues);
           // const messages = res.map((message) => {
           //   return {
           //     message: cryptr.decrypt(message.message),

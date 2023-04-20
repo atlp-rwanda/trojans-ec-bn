@@ -9,7 +9,7 @@ class chatServices {
       include: [
         {
           model: User,
-          attributes:["profilePic","name","email","role"],
+          attributes: ["profilePic", "name", "email", "role"],
         },
       ],
     });

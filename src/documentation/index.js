@@ -52,6 +52,21 @@ const options = {
         },
       },
     },
+    "/users/sellers": {
+      get: {
+        tags: ["User"],
+        description: "Displays Account Sellers",
+        parameters: [],
+        responses: {
+          200: {
+            description: "successfully",
+          },
+          401: {
+            description: "Unauthorized",
+          },
+        },
+      },
+    },
     "/users/signup": {
       post: {
         tags: ["User"],

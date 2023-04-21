@@ -11,6 +11,8 @@ class CartServices {
         name: product.name,
         image: product.images[0],
         quantity: 1,
+        sellerId: product.sellerId,
+        categoryId: product.categoryId,
         price: product.price,
         Ptotal: product.price,
       };

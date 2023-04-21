@@ -87,6 +87,13 @@ route.patch(
   validateRole,
   UserController.assignRole
 );
+route.get(
+  "/sellers",
+  extractToken,
+  isPasswordExpired,
+  checkRole(["admin", "buyer"]),
+  UserController.getSellers
+);
 route.post(
   "/:id/update-status",
   extractToken,

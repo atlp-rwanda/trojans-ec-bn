@@ -88,7 +88,8 @@ class CartServices {
           }
         } else {
           cart.items[itemExists].quantity = quantity;
-          cart.items[itemExists].Ptotal *= quantity;
+          cart.items[itemExists].Ptotal =
+            cart.items[itemExists].price * quantity;
           const subtotal = cart.items
             .map((item) => JSON.parse(item.Ptotal))
             .reduce((sum, next) => sum + next);

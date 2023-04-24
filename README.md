@@ -113,3 +113,10 @@ To run migrations or any other script in the node project
 ```
 $ docker exec <node-container-name> npm run <script-name>
 ```
+
+## Deployment
+
+### Render
+
+- [Swagger](https://trojans-bn-api.onrender.com/api-docs)
+- [Home](https://trojans-bn-api.onrender.com/api/v1)

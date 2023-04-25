@@ -82,7 +82,7 @@ userEventEmitter.on("resetRequest", async (data) => {
     const { olduser, token } = data;
     await new SendEmail(
       olduser,
-      `${process.env.UI_URL}/users/password-reset/${token}`,
+      `${process.env.UI_URL}/password-reset?token=${token}`,
       null
     ).reset();
   } catch (error) {

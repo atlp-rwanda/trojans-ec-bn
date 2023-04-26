@@ -1,6 +1,12 @@
 import request from "supertest";
 import app from "../src/app";
 
+const mockNodemailer = require("nodemailer-mock");
+
+jest.mock("nodemailer", () => ({
+  createTransport: () => mockNodemailer.mock,
+}));
+
 describe("Testing Chat Routes", () => {
   test("Get a status of 200", async () => {
     const login = await request(app).post("/api/v1/users/login").send({

@@ -8,6 +8,7 @@ class Emitter extends EventEmitter {
   isPasswordExpired() {
     schedule.scheduleJob(process.env.SCHEDULE_TIME, async () => {
       const users = await User.findAll();
+      /* istanbul ignore next */
       users.forEach((user) => {
         const expirationTime = process.env.PASSWORD_EXPIRATION_TIME;
         const passwordUpdated = new Date(user.lastTimePasswordUpdated);

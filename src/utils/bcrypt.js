@@ -1,5 +1,6 @@
 /* eslint-disable require-jsdoc */
 const Cryptr = require("cryptr");
+require("dotenv/config");
 const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
 
 const cryptr = new Cryptr(process.env.CRYPT_KEY, {

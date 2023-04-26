@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export const httpRequest = (email) => ({
   user: {
     email,

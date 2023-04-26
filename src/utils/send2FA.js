@@ -20,7 +20,15 @@ class TwoFactorAuthenticator {
       };
       const newToken = JwtUtil.generate(user);
       value = true;
-      return { newToken, value };
+      return {
+        newToken,
+        value,
+        role: user.role,
+        profilePic: user.profilePic,
+        name: user.name,
+        email: user.email,
+        status: user.status,
+      };
     } else {
       value = false;
       return { value, message: "invalid token" };

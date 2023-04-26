@@ -2,6 +2,12 @@ import request from "supertest";
 import app from "../src/app";
 import { Notification } from "../src/database/models";
 
+const mockNodemailer = require("nodemailer-mock");
+
+jest.mock("nodemailer", () => ({
+  createTransport: () => mockNodemailer.mock,
+}));
+
 describe("Testing notifications routes", () => {
   let token;
   beforeAll(async () => {

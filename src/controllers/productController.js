@@ -1,6 +1,8 @@
 /* eslint-disable require-jsdoc */
 import { ProductServices } from "../services/productService";
 
+const { Product } = require("../database/models");
+
 class ProductController {
   static async addItem(req, res) {
     try {
@@ -103,7 +105,12 @@ class ProductController {
   static async updateItem(req, res) {
     try {
       await ProductServices.updateItem(req);
-      return res.status(200).json({ status: 200, message: "Item updated!" });
+      const updatedItem = await Product.findOne({
+        where: { id: req.params.id },
+      });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Product updated!", data: updatedItem });
     } catch (error) {
       return res.status(500).json({ status: 500, error: "Server error" });
     }

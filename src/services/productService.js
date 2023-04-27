@@ -37,13 +37,94 @@ class ProductServices {
   static async getAllItems(user) {
     let products;
     if (user.role === "seller") {
-      products = await Product.findAll({ where: { sellerId: user.id } });
-    } else if (user.role === "buyer") {
-      products = await Product.findAll({
-        where: { [Op.and]: [{ available: true, expired: false }] },
+      const getAll = await Product.findAll({
+        where: { sellerId: user.id },
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
       });
+      const newProductsArr = getAll.map((product) => {
+        const rating = product.dataValues.ratings;
+        let total = 0;
+        let average;
+        let message;
+        if (rating.length === 0) {
+          total = 0;
+          average = 0;
+          message = "this product is not rated yet";
+        } else {
+          for (let i = 0; i < rating.length; i++) {
+            total += rating[i].rate;
+          }
+          average = Math.round((total / rating.length) * 10) / 10;
+        }
+        const returnValue = average
+          ? { ...product.dataValues, average }
+          : { ...product.dataValues, message };
+        return returnValue;
+      });
+      products = newProductsArr;
+    } else if (user.role === "buyer") {
+      const getAll = await Product.findAll({
+        where: { [Op.and]: [{ available: true, expired: false }] },
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
+      });
+      const newProductsArr = getAll.map((product) => {
+        const rating = product.dataValues.ratings;
+        let total = 0;
+        let average;
+        let message;
+        if (rating.length === 0) {
+          total = 0;
+          average = 0;
+          message = "this product is not rated yet";
+        } else {
+          for (let i = 0; i < rating.length; i++) {
+            total += rating[i].rate;
+          }
+          average = Math.round((total / rating.length) * 10) / 10;
+        }
+        const returnValue = average
+          ? { ...product.dataValues, average }
+          : { ...product.dataValues, message };
+        return returnValue;
+      });
+      products = newProductsArr;
     } else if (user.role === "admin") {
-      products = await Product.findAll();
+      const getAll = await Product.findAll({
+        include: {
+          model: Ratings,
+          as: "ratings",
+          attributes: ["name", "rate", "feedback"],
+        },
+      });
+      const newProductsArr = getAll.map((product) => {
+        const rating = product.dataValues.ratings;
+        let total = 0;
+        let average;
+        let message;
+        if (rating.length === 0) {
+          total = 0;
+          average = 0;
+          message = "this product is not rated yet";
+        } else {
+          for (let i = 0; i < rating.length; i++) {
+            total += rating[i].rate;
+          }
+          average = Math.round((total / rating.length) * 10) / 10;
+        }
+        const returnValue = average
+          ? { ...product.dataValues, average }
+          : { ...product.dataValues, message };
+        return returnValue;
+      });
+      products = newProductsArr;
     }
     return products;
   }

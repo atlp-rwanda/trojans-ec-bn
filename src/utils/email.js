@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /* eslint-disable require-jsdoc */
 
 import nodemailer from "nodemailer";

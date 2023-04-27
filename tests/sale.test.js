@@ -2,6 +2,12 @@
 import request from "supertest";
 import app from "../src/app";
 
+const mockNodemailer = require('nodemailer-mock');
+
+jest.mock('nodemailer', () => ({
+  createTransport: () => mockNodemailer.mock
+}));
+
 describe("Sales belongs to seller", ()=>{
   test("get Sales", async()=>{
     const login = await request(app).post('/api/v1/users/login').send({

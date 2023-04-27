@@ -51,7 +51,6 @@ class NotificationController {
         message: "Notification Already marked as Read",
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }
@@ -70,7 +69,6 @@ class NotificationController {
         message: "All notifications already marked as Read",
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "Server error" });
     }
   }

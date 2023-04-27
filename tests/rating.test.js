@@ -2,6 +2,12 @@ import request from "supertest";
 import app from "../src/app";
 import { Ratings } from "../src/database/models/index";
 
+const mockNodemailer = require("nodemailer-mock");
+
+jest.mock("nodemailer", () => ({
+  createTransport: () => mockNodemailer.mock,
+}));
+
 describe("A test for Product Rating", () => {
   test("get a 400 status for validation error", async () => {
     const buyer = await request(app).post("/api/v1/users/login").send({

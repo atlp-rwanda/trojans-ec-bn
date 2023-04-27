@@ -15,7 +15,6 @@ export async function IsNotificationExist(req, res, next) {
     req.notification = notification.dataValues;
     next();
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ status: 500, error: "Server error" });
   }
 }
@@ -30,7 +29,6 @@ export async function checkNotificationOwner(req, res, next) {
         .json({ status: 404, message: "Notification does not exist" });
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ status: 500, error: "Server error" });
   }
 }

@@ -1,11 +1,15 @@
 import schedule from "node-schedule";
 import Emitter from "../src/events/eventEmitter/user";
 
+const mockNodemailer = require("nodemailer-mock");
 const { User } = require("../src/database/models");
 
 jest.mock("../src/database/models");
 jest.mock("events");
 jest.mock("node-schedule");
+jest.mock("nodemailer", () => ({
+  createTransport: () => mockNodemailer.mock,
+}));
 
 describe("Emitter of user events", () => {
   let emitter;

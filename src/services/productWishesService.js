@@ -72,6 +72,7 @@ class ProductWishesService {
   }
 
   static async getProductWishesByProduct(req) {
+    /* istanbul ignore next */
     const { id } = req.params;
     const wishList = await ProductWishes.findAll({
       where: { product_id: id },

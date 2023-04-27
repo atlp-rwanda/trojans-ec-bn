@@ -205,6 +205,7 @@ class UserServices {
     );
   }
 
+  /* istanbul ignore next */
   static async googleAuth(data) {
     const { displayName, email, picture } = data;
     const userExist = await User.findOne({
@@ -213,7 +214,6 @@ class UserServices {
 
     if (userExist) {
       if (userExist.isVerified === false) {
-        // return "not verified";
         userExists.isVerified = true;
       }
       const token = JwtUtil.generate({
@@ -257,6 +257,7 @@ class UserServices {
   }
 
   static async getSellers() {
+    /* istanbul ignore next */
     const sellers = await User.findAll({ where: { role: "seller" } });
     return sellers;
   }

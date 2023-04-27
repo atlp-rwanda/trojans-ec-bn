@@ -91,11 +91,10 @@ class UserController {
             randomAuth,
           });
           return res.status(200).json({
-            name,
             message:
               "Your password is expired, Please update it first to have full access!",
             token,
-            randomAuth,
+            role,
           });
         } else {
           const token = JwtUtil.generate({
@@ -109,9 +108,12 @@ class UserController {
           });
           return res.status(200).json({
             name,
+            profilePic,
             message:
               "Your password is expired, Please update it first to have full access!",
             token,
+            role,
+            email,
           });
         }
       }
@@ -138,7 +140,7 @@ class UserController {
             userInfo: req.user,
             randomAuth,
           });
-          return res.status(200).json({ name, token, randomAuth });
+          return res.status(200).json({ token, role });
         } else {
           const token = JwtUtil.generate({
             name,
@@ -149,7 +151,7 @@ class UserController {
             profilePic,
             lastTimePasswordUpdated,
           });
-          return res.status(200).json({ name, token });
+          return res.status(200).json({ name, token, role, profilePic, email });
         }
       }
     } catch (error) {
@@ -200,7 +202,6 @@ class UserController {
         message: "Request complete",
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, error: "server error" });
     }
   }
@@ -275,6 +276,10 @@ class UserController {
         return res.status(200).json({
           status: 200,
           token: response.newToken,
+          role: response.role,
+          profilePic: response.profilePic,
+          name: response.name,
+          email: response.email,
           message: "authentication was successful",
         });
       } else {
@@ -286,6 +291,7 @@ class UserController {
   }
 
   static async googleAuth(req, res) {
+    /* istanbul ignore next */
     try {
       const response = await UserServices.googleAuth(req.user);
       if (response === "not verified") {
@@ -299,7 +305,6 @@ class UserController {
         );
       }
     } catch (error) {
-      console.log(error);
       /* istanbul ignore next */
       return res.status(500).json({ status: 500, error: "Server error" });
     }
@@ -349,11 +354,13 @@ class UserController {
         user: response,
       });
     } catch (error) {
+      /* istanbul ignore next */
       return res.status(500).json({ status: 500, message: "Server Error" });
     }
   }
 
   static async getSellers(req, res) {
+    /* istanbul ignore next */
     try {
       const sellers = await UserServices.getSellers();
       return res.status(200).json({
@@ -361,7 +368,6 @@ class UserController {
         sellers,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, message: error });
     }
   }

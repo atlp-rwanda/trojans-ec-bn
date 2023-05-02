@@ -53,7 +53,7 @@ class ProductServices {
         if (rating.length === 0) {
           total = 0;
           average = 0;
-          message = "this product is not rated yet";
+          message = "Not yet rated";
         } else {
           for (let i = 0; i < rating.length; i++) {
             total += rating[i].rate;
@@ -62,7 +62,7 @@ class ProductServices {
         }
         const returnValue = average
           ? { ...product.dataValues, average }
-          : { ...product.dataValues, message };
+          : { ...product.dataValues, average, message };
         return returnValue;
       });
       products = newProductsArr;
@@ -83,7 +83,7 @@ class ProductServices {
         if (rating.length === 0) {
           total = 0;
           average = 0;
-          message = "this product is not rated yet";
+          message = "Not yet rated";
         } else {
           for (let i = 0; i < rating.length; i++) {
             total += rating[i].rate;
@@ -92,7 +92,7 @@ class ProductServices {
         }
         const returnValue = average
           ? { ...product.dataValues, average }
-          : { ...product.dataValues, message };
+          : { ...product.dataValues, average, message };
         return returnValue;
       });
       products = newProductsArr;
@@ -112,7 +112,7 @@ class ProductServices {
         if (rating.length === 0) {
           total = 0;
           average = 0;
-          message = "this product is not rated yet";
+          message = "Not yet rated";
         } else {
           for (let i = 0; i < rating.length; i++) {
             total += rating[i].rate;
@@ -121,7 +121,7 @@ class ProductServices {
         }
         const returnValue = average
           ? { ...product.dataValues, average }
-          : { ...product.dataValues, message };
+          : { ...product.dataValues, average, message };
         return returnValue;
       });
       products = newProductsArr;
@@ -147,7 +147,7 @@ class ProductServices {
       if (rating.length === 0) {
         total = 0;
         average = 0;
-        message = "this product is not rated yet";
+        message = "Not yet rated";
       } else {
         for (let i = 0; i < rating.length; i++) {
           total += rating[i].rate;
@@ -156,7 +156,7 @@ class ProductServices {
       }
       products = average
         ? { ...getOne.dataValues, average }
-        : { ...getOne.dataValues, message };
+        : { ...getOne.dataValues, average, message };
     } else if (user.role === "buyer") {
       const getOne = await Product.findOne({
         where: { [Op.and]: [{ id, available: true, expired: false }] },
@@ -173,7 +173,7 @@ class ProductServices {
       if (rating.length === 0) {
         total = 0;
         average = 0;
-        message = "this product is not rated yet";
+        message = "Not yet rated";
       } else {
         for (let i = 0; i < rating.length; i++) {
           total += rating[i].rate;
@@ -182,7 +182,7 @@ class ProductServices {
       }
       products = average
         ? { ...getOne.dataValues, average }
-        : { ...getOne.dataValues, message };
+        : { ...getOne.dataValues, average, message };
     } else if (user.role === "admin") {
       const getOne = await Product.findOne({
         where: { id },
@@ -199,7 +199,7 @@ class ProductServices {
       if (rating.length === 0) {
         total = 0;
         average = 0;
-        message = "this product is not rated yet";
+        message = "Not yet rated";
       } else {
         for (let i = 0; i < rating.length; i++) {
           total += rating[i].rate;
@@ -208,7 +208,7 @@ class ProductServices {
       }
       products = average
         ? { ...getOne.dataValues, average }
-        : { ...getOne.dataValues, message };
+        : { ...getOne.dataValues, average, message };
     }
     return products;
   }
@@ -234,7 +234,9 @@ class ProductServices {
     const { categoryId, sellerId, expiryDate, price, product } = data;
     const allCondition = {
       [Op.and]: [
-        { name: product ? { [Op.substring]: product } : null },
+        {
+          name: product ? { [Op.iLike]: `%${product}%` } : null,
+        },
         {
           expiryDate: expiryDate
             ? {
@@ -287,7 +289,9 @@ class ProductServices {
             {
               available: true,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
           ],
         },
         {
@@ -326,7 +330,9 @@ class ProductServices {
           [Op.and]: [
             { categoryId: categoryId || null },
             { sellerId: sellerId || null },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expiryDate: expiryDate
                 ? {
@@ -358,7 +364,9 @@ class ProductServices {
                   }
                 : null,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expiryDate: expiryDate
                 ? {
@@ -390,7 +398,9 @@ class ProductServices {
                   }
                 : null,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expiryDate: expiryDate
                 ? {
@@ -510,7 +520,9 @@ class ProductServices {
                   }
                 : null,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expired: false,
             },
@@ -532,7 +544,9 @@ class ProductServices {
                   }
                 : null,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expired: false,
             },
@@ -554,7 +568,9 @@ class ProductServices {
                   }
                 : null,
             },
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expired: false,
             },
@@ -594,7 +610,7 @@ class ProductServices {
               sellerId: sellerId || null,
             },
             {
-              name: product ? { [Op.substring]: product } : null,
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
             },
             {
               expired: false,
@@ -627,7 +643,7 @@ class ProductServices {
                 : null,
             },
             {
-              name: product ? { [Op.substring]: product } : null,
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
             },
             {
               expired: false,
@@ -651,7 +667,7 @@ class ProductServices {
                 : null,
             },
             {
-              name: product ? { [Op.substring]: product } : null,
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
             },
             {
               expired: false,
@@ -667,7 +683,9 @@ class ProductServices {
       [Op.or]: [
         {
           [Op.and]: [
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               expiryDate: expiryDate
                 ? {
@@ -688,7 +706,9 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             { sellerId: sellerId || null },
             {
               expired: false,
@@ -718,7 +738,9 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             { categoryId: categoryId || null },
             {
               expired: false,
@@ -829,7 +851,9 @@ class ProductServices {
         },
         {
           [Op.and]: [
-            { name: product ? { [Op.substring]: product } : null },
+            {
+              name: product ? { [Op.iLike]: `%${product}%` } : null,
+            },
             {
               price: price
                 ? {
@@ -967,10 +991,36 @@ class ProductServices {
         : orCondition;
     const response = await Product.findAll({
       where: condition,
+      include: {
+        model: Ratings,
+        as: "ratings",
+        attributes: ["name", "rate", "feedback"],
+      },
     });
-    return response.length > 0
-      ? response
-      : { response, message: "no match found" };
+
+    const newProductsArr = response.map((prod) => {
+      const rating = prod.dataValues.ratings;
+      let total = 0;
+      let average;
+      let message;
+      if (rating.length === 0) {
+        total = 0;
+        average = 0;
+        message = "Not yet rated";
+      } else {
+        for (let i = 0; i < rating.length; i++) {
+          total += rating[i].rate;
+        }
+        average = Math.round((total / rating.length) * 10) / 10;
+      }
+      const returnValue = average
+        ? { ...prod.dataValues, average }
+        : { ...prod.dataValues, average, message };
+      return returnValue;
+    });
+    return newProductsArr.length > 0
+      ? newProductsArr
+      : { response, message: "No match found" };
   }
 
   static async markAvailable(data) {

@@ -9,6 +9,7 @@ import chat from "./api/chat.route";
 import payment from "./api/payment.route";
 import sales from "./api/sale.route";
 import notification from "./api/notification.route";
+import order from "./api/order.route";
 
 const routes = express.Router();
 
@@ -22,5 +23,6 @@ routes.use("/chats", chat);
 routes.use("/payment", payment);
 routes.use("/sales", sales);
 routes.use("/notifications", notification);
+routes.use("/orders", order);
 
 export default routes;

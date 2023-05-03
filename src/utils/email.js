@@ -136,6 +136,10 @@ class SendEmail {
   async productDelayedInCart() {
     await this.send("productDelayedInCart", this.type);
   }
+
+  async orderStatus() {
+    await this.send("productDelayedInCart", this.type);
+  }
 }
 
 export default SendEmail;

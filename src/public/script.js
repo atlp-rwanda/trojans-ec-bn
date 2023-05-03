@@ -34,6 +34,33 @@ socket.on("user-connected", (name) => {
 socket.on("user-disconnected", (name) => {
   appendMessage(`${name} disconnected`, "");
 });
+socket.on("productDelayedInCart", (data) => {
+  const notDiv = document.createElement("div");
+  notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
+  document.getElementById("notifications-container").append(notDiv);
+});
+socket.on("orders", (dataT) => {
+  dataT.forEach( (data) =>{
+  const ordTr = document.createElement("tr");
+  ordTr.innerHTML = `
+  <td class='b${data.id}'>${data.id}</td>
+
+  <td class='d${data.id}'>${data.status}</td>
+  <td class='c${data.id}'>${data.deliveredDate}</td>
+  `
+  document.getElementById("tableBody").append(ordTr)});
+});
+socket.on("orderstatus", (dataT) => {
+  
+  const v =document.querySelector(`.d${dataT.id}`);
+  const t = document.querySelector(`.c${dataT.id}`)
+  const b = document.createElement('td')
+  const y = document.createElement('td')
+  b.innerHTML = dataT.status
+  y.innerHTML = dataT.deliveredDate
+  v.parentNode[0].replaceChild(b,v);
+  v.parentNode[1].replaceChild(t,y);
+});
 messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const message = messageInput.value;
@@ -62,6 +89,7 @@ function formatISODate(isoDate) {
     hour12: false,
   };
   return date.toLocaleDateString(undefined, options);
+  
 }
 
 socket.on("notifications", (data) => {
@@ -120,14 +148,9 @@ socket.on("productBought", (data) => {
     document.getElementById("notifications-container").append(notDiv);
 });
 
-socket.on("orderAccepted", (data) => {
+socket.on("orderStatusNotif", (data) => {
     const notDiv = document.createElement("div");
     notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
     document.getElementById("notifications-container").append(notDiv);
 });
 
-socket.on("orderDenied", (data) => {
-    const notDiv = document.createElement("div");
-    notDiv.innerHTML = `<h4>${data.type}</h4><span >${data.message}</span>`
-    document.getElementById("notifications-container").append(notDiv);
-});

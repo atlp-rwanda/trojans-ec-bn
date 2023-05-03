@@ -453,26 +453,27 @@ prodEmitter.on("productBought", async (data) => {
   }
 });
 
-// prodEmitter.on("orderAccepted", async (data) => {
-//   try{
-// io.to(`user-${savedNotification.recipientId}`).emit(
-//   "orderAccepted",
-//   savedNotification.dataValues
-// );
-// await new SendEmail(obj, null, null).orderAccepted();
-//   }catch(error){
-//     console.log(error);
-//   }
-// })
-
-// prodEmitter.on("orderDenied", async (data) => {
-//   try{
-// io.to(`user-${savedNotification.recipientId}`).emit(
-//   "orderDenied",
-//   savedNotification.dataValues
-// );
-// await new SendEmail(obj, null, null).orderDenied();
-//   }catch(error){
-//     console.log(error);
-//   }
-// })
+prodEmitter.on("orderStatus", async (data) => {
+  try {
+    const buyerNotif = await Notification.create({
+      type: `Order ${data.status}`,
+      message: `Your order was ${data.status}`,
+      recipientId: data.BuyerId,
+    });
+    const savedBuyerNotification = await buyerNotif.save();
+    io.to(`user-${savedBuyerNotification.recipientId}`).emit(
+      "orderStatusNotif",
+      savedBuyerNotification.dataValues
+    );
+    const user = await User.findOne({ where: { id: data.BuyerId } });
+    const obj = {
+      name: user.name,
+      email: user.email,
+      type: savedBuyerNotification.type,
+      message: savedBuyerNotification.message,
+    };
+    await new SendEmail(obj, null, null).orderStatus();
+  } catch (error) {
+    console.log(error);
+  }
+});

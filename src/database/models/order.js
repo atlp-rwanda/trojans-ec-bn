@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: "pending",
       },
+      deliveredDate: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,

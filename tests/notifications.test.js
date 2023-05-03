@@ -118,6 +118,10 @@ describe("Tests for Marking Notification", () => {
   });
 
   test("Testing Already marked notifications", async () => {
+    await request(app)
+      .post("/api/v1/notifications")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
     const res = await request(app)
       .post("/api/v1/notifications")
       .set("Authorization", `Bearer ${token}`)

@@ -33,7 +33,7 @@ emitter.isPasswordExpired();
 userEventEmitter.on("sendWelcome", async (data) => {
   try {
     const { name, email, token } = data;
-    const url = `${process.env.UI_URL}/users/verify-email/${token}`;
+    const url = `${process.env.UI_URL}/users/verify-email?token=${token}`;
     await new SendEmail({ name, email }, url, null).sendWelcome();
   } catch (error) {
     console.log(error);

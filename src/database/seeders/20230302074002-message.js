@@ -1,4 +1,4 @@
-const { cryptr } = require("../../utils/bcrypt");
+// const { cryptr } = require("../../utils/bcrypt");
 
 module.exports = {
   up: (queryInterface) =>
@@ -8,7 +8,8 @@ module.exports = {
         {
           id: 1,
           userId: 6,
-          message: cryptr.encrypt("Hey there"),
+          // message: cryptr.encrypt("Hey there"),
+          message: "Hey there",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

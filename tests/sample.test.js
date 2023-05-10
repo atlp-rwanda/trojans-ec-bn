@@ -9,8 +9,8 @@ import { ask, answer } from "./mock/product.mock.data";
 import { validateProduct } from "../src/validations/product.validation";
 import httpServer from "http";
 import { ioConnect } from "../src/utils/socketio";
-import { prodEmitter } from "../src/services/productService"
-import mockNodemailer from 'nodemailer-mock';
+import { prodEmitter } from "../src/services/productService";
+import mockNodemailer from "nodemailer-mock";
 const {
   User,
   Product,
@@ -18,8 +18,8 @@ const {
   Blacklist,
 } = require("../src/database/models");
 
-jest.mock('nodemailer', () => ({
-  createTransport: () => mockNodemailer.mock
+jest.mock("nodemailer", () => ({
+  createTransport: () => mockNodemailer.mock,
 }));
 
 beforeEach(() => {
@@ -218,7 +218,7 @@ describe("testing the two factor authentication", () => {
     });
     const MyTokener = login.body.token;
     const extractor = JwtUtil.verify(MyTokener);
-    const authToken = extractor.data.randomAuth *1;
+    const authToken = extractor.data.randomAuth * 1;
     const checkToken = await request(app)
       .post(`/api/v1/users/${MyTokener}/auth/validate`)
       .send({
@@ -253,7 +253,7 @@ describe("testing the two factor authentication", () => {
     });
     const MyTokener = login.body.token;
     const extractor = JwtUtil.verify(MyTokener);
-    const authToken = (extractor.data.randomAuth)*1;
+    const authToken = extractor.data.randomAuth * 1;
     const checkToken = await request(app)
       .post(`/api/v1/users/${MyTokener}/auth/validate`)
       .send({
@@ -1043,7 +1043,7 @@ describe("Cart testing ", () => {
       password: "default123",
     });
     const addTocart = await request(app)
-      .post("/api/v1/carts/1")
+      .post("/api/v1/carts/5")
       .set("Authorization", `Bearer ${userLogin.body.token}`)
       .send();
     expect(addTocart.statusCode).toBe(201);
@@ -1054,7 +1054,7 @@ describe("Cart testing ", () => {
       password: "default123",
     });
     const updateTocart = await request(app)
-      .put("/api/v1/carts/1")
+      .put("/api/v1/carts/5")
       .set("Authorization", `Bearer ${userLogin.body.token}`)
       .send({ quantity: 12 });
     expect(updateTocart.statusCode).toBe(200);

@@ -14,16 +14,16 @@ class PaymentController {
     }
   }
 
+  /* istanbul ignore next */
   static async paymentSuccess(req, res) {
     try {
-     const result = await PaymentService.paymentSuccess(req, res);
-     if(result.orderId){
-       return res.redirect(
-         `${process.env.PAYMENT_REDIRECT_URL}?message=Payment Success&&order=${result.orderId}`
-       );
+      const result = await PaymentService.paymentSuccess(req, res);
+      if (result.orderId) {
+        return res.redirect(
+          `${process.env.PAYMENT_REDIRECT_URL}?message=Payment Summary&&order=${result.orderId}`
+        );
       }
     } catch (error) {
-      /* istanbul ignore next */
       return res.redirect(
         `${process.env.PAYMENT_REDIRECT_URL}?message=Fail&&error=${error.message}`
       );

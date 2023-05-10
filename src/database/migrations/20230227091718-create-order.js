@@ -12,6 +12,9 @@ module.exports = {
       BuyerId: {
         type: Sequelize.INTEGER,
       },
+      items: {
+        type: Sequelize.JSONB,
+      },
       Subtotal: Sequelize.STRING,
       status: {
         type: Sequelize.STRING,

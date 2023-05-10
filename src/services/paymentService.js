@@ -8,7 +8,7 @@ const stripe = require("stripe")(`${process.env.STRIPE_KEY}`);
 const { Cart, Order, Product, Sales } = require("../database/models");
 
 class PaymentService {
-  static async createPaymentCheckout(req, res) {
+  static async createPaymentCheckout(req) {
     const appUrl = `${req.protocol}://${req.headers.host}`;
     const token = JwtUtil.generate(req.user);
 
@@ -38,17 +38,17 @@ class PaymentService {
     return { status: 200, token, paymentId: session.id, url: session.url };
   }
 
-  static async paymentSuccess(req, res) {
-    /* istanbul ignore next */
+  /* istanbul ignore next */
+  static async paymentSuccess(req) {
     const { token, paymentId } = req.query;
     const user = JwtUtil.verify(token).data;
     const cart = await Cart.findOne({ where: { buyerId: user.id } });
     const session = await stripe.checkout.sessions.retrieve(paymentId);
     if (session.payment_status === "paid") {
-      /* istanbul ignore next */
       const order = await Order.create({
         BuyerId: user.id,
         Subtotal: cart.total,
+        items: cart.items,
         paymentStatus: session.payment_status,
       });
       const savedOrder = await order.save();

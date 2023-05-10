@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: "created",
       },
+      items: {
+        type: DataTypes.JSONB,
+      },
       paymentStatus: {
         type: DataTypes.STRING,
         defaultValue: "pending",

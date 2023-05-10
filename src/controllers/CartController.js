@@ -6,21 +6,17 @@ class CartController {
     try {
       const resp = await CartServices.addItem(req);
       if (resp === "Out of stock") {
-        return res
-          .status(400)
-          .json({
-            status: 400,
-            message: "Sorry! This product is out of stock",
-          });
+        return res.status(400).json({
+          status: 400,
+          message: "Sorry! This product is out of stock",
+        });
       }
       if (resp === "not found") {
-        return res
-          .status(400)
-          .json({
-            status: 400,
-            message:
-              "Oops! This product temporarily unavalable or It has been expired",
-          });
+        return res.status(400).json({
+          status: 400,
+          message:
+            "Oops! This product temporarily unavalable or It has been expired",
+        });
       }
       return res.status(201).json({ status: 201, message: "added to Cart" });
     } catch (error) {
@@ -43,12 +39,10 @@ class CartController {
     try {
       const result = await CartServices.updateCart(req);
       if (result === "Out of stock") {
-        return res
-          .status(400)
-          .json({
-            status: 400,
-            message: "Sorry! This product is out of stock",
-          });
+        return res.status(400).json({
+          status: 400,
+          message: "Sorry! This product is out of stock",
+        });
       }
       if (result.message) {
         return res.status(400).json({ status: 400, message: result.message });

@@ -1,11 +1,17 @@
+/* eslint-disable no-else-return */
 /* eslint-disable require-jsdoc */
 const { Cart, Product } = require("../database/models");
 
 class CartServices {
   static async addItem(req) {
     const { id } = req.params;
-    const product = await Product.findOne({ where: { id, available: true } });
+    const product = await Product.findOne({
+      where: { id, available: true, expired: false },
+    });
     if (product) {
+      if (product.quantity < 1) {
+        return "Out of stock";
+      }
       const item = {
         id: product.id,
         name: product.name,
@@ -26,7 +32,7 @@ class CartServices {
           .map((item1) => JSON.parse(item1.Ptotal))
           .reduce((sum, next) => sum + next);
         await newCart.save();
-        return " added to Cart2";
+        return "added to Cart2";
       }
       const itemExists = cart.items.findIndex(
         (cartitem) => cartitem.id === item.id
@@ -40,8 +46,11 @@ class CartServices {
           { items: cart.items, total: subtotal },
           { where: { id: cart.id } }
         );
-        return " added to Cart2";
+        return "added to Cart2";
       }
+    }
+    if (!product) {
+      return "not found";
     }
   }
 
@@ -80,13 +89,27 @@ class CartServices {
               { items: cart.items, total: subtotal },
               { where: { id: cart.id } }
             );
+            return "updated";
           } else {
             await Cart.update(
               { items: cart.items, total: 0 },
               { where: { id: cart.id } }
             );
+            return "product Removed";
           }
         } else {
+          const product = await Product.findOne({
+            where: { id, available: true, expired: false },
+            attributes: ["quantity"],
+          });
+          if (product.quantity === 0) {
+            return "Out of stock";
+          }
+          if (product.quantity < quantity) {
+            return {
+              message: `Oops! The available quantity is ${product.quantity}`,
+            };
+          }
           cart.items[itemExists].quantity = quantity;
           cart.items[itemExists].Ptotal =
             cart.items[itemExists].price * quantity;
@@ -97,6 +120,7 @@ class CartServices {
             { items: cart.items, total: subtotal },
             { where: { id: cart.id } }
           );
+          return "updated";
         }
       }
     }

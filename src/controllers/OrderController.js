@@ -14,9 +14,9 @@ class OrderController {
   static async singleOrder(req, res) {
     try {
       const response = await OrderService.singleOrder(req);
-      res.status(200).json({ status: 200, response });
+      return res.status(200).json({ status: 200, response });
     } catch (err) {
-      res.status(500).json({ status: 500, message: err });
+      return res.status(500).json({ status: 500, message: err.message });
     }
   }
 
@@ -28,7 +28,6 @@ class OrderController {
         Order: UpdatedOrder,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ status: 500, message: error });
     }
   }

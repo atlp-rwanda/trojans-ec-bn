@@ -19,7 +19,7 @@ module.exports = {
       [
         {
           Orderid: 1,
-          Productid: 1,
+          Productid: 3,
           Sellerid: 2,
           Status: "delivered",
           Quantity: 2,
@@ -28,7 +28,7 @@ module.exports = {
         },
         {
           Orderid: 2,
-          Productid: 2,
+          Productid: 1,
           Sellerid: 2,
           Status: "delivered",
           Quantity: 2,

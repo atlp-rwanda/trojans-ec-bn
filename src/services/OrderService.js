@@ -11,7 +11,7 @@ class OrderService {
     if (role === "buyer") {
       orders = await Order.findAll({
         where: { BuyerId: id },
-        attributes: ["id", "Subtotal", "deliveredDate", "status"],
+        attributes: ["id", "Subtotal", "deliveredDate", "status", "items"],
         order: ["updatedAt"],
       });
     } else if (role === "admin") {

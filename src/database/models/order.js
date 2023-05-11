@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: { model: "Users", key: "id" },
       },
+      items: {
+        type: DataTypes.JSONB,
+      },
       Subtotal: DataTypes.STRING,
       status: {
         type: DataTypes.STRING,

@@ -55,8 +55,10 @@ class PaymentService {
         const order = await Order.create({
           BuyerId: user.id,
           Subtotal: cart.total,
+          items:cart.items,
           paymentStatus: session.payment_status,
         });
+        console.log(cart)
         await order.save();
 
         cart.items.map(async (element) => {

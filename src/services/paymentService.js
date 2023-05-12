@@ -61,6 +61,7 @@ class PaymentService {
           Productid: element.id,
           Sellerid: product.sellerId,
           Quantity: element.quantity,
+          Status: "pending",
         });
         await sales.save();
         await Product.update(

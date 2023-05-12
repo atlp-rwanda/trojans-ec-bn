@@ -12,12 +12,6 @@ module.exports = {
         {
           name: "food",
         },
-        {
-          name: "phones",
-        },
-        {
-          name: "laptops",
-        },
       ],
       {}
     ),

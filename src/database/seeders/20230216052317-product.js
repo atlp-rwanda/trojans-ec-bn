@@ -87,7 +87,7 @@ module.exports = {
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815875/iphone_14_1_o60aaj.webp",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815875/iphone_14_2_fgljdv.jpg",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815874/iphone_14_4_hnwgzo.jpg",
-            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815877/iphone_14_3_mokmuq.jpg"
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815877/iphone_14_3_mokmuq.jpg",
           ],
           sellerId: 2,
           expiryDate: new Date("2050/01/01"),
@@ -106,7 +106,7 @@ module.exports = {
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815874/macBook_1_wqrcfg.jpg",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815874/macbook_2_gzjf0t.jpg",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815873/macbook_4_afelxw.jpg",
-            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815874/macbook_3_djozgo.webp"
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683815874/macbook_3_djozgo.webp",
           ],
           sellerId: 2,
           expiryDate: new Date("2024/01/01"),
@@ -144,7 +144,7 @@ module.exports = {
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816554/iphone_12_2_hjfszk.webp",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816612/iphone_12_mini_rhjgdo.jpg",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/iphone_12_4_lilpls.webp",
-            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/iphone_12_3_p16exv.webp"
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/iphone_12_3_p16exv.webp",
           ],
           sellerId: 2,
           expiryDate: new Date(),
@@ -163,7 +163,7 @@ module.exports = {
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/hp_envy_1_l1atp8.jpg",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/hp_envy_2_c4lo2w.webp",
             "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/hp_envy_3_kd696m.webp",
-            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/hp_envy_3_kd696m.webp"
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683816553/hp_envy_3_kd696m.webp",
           ],
           sellerId: 2,
           expiryDate: new Date(),
@@ -179,10 +179,10 @@ module.exports = {
           price: 5000,
           bonus: 0,
           images: [
-          "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/Samsung_galaxy_1_cirqjq.jpg",
-          "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_3_vh2yqp.jpg",
-          "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_2_d9hqph.webp",
-          "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_4_zomhpc.webp"
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/Samsung_galaxy_1_cirqjq.jpg",
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_3_vh2yqp.jpg",
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_2_d9hqph.webp",
+            "https://res.cloudinary.com/dmyztchh9/image/upload/v1683817189/samsung_4_zomhpc.webp",
           ],
           sellerId: 2,
           expiryDate: new Date(),
